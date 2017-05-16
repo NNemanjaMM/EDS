@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram 
+    xmlns="https://github.com/NNemanjaMM/TAS/XML/DiagramSchema.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/NNemanjaMM/TAS/XML/DiagramSchema.xsd file:/D:/Master/TAS/XML/DiagramSchema.xsd">
+    
+    <browserClient id="1234567890" 
+        name="Firefox Browser"
+        outOfScope="true"
+        outOfScopeReason="Not in our jurisdiction" />   
+    
+    <webApplication id="1234567891" 
+        name="SEP Server" 
+        trustSection="1234567897"
+        outOfScope="false" />
+    
+    <database id="1234567892" 
+        name="Main Database" 
+        type="SQLDatabase"
+        trustSection="1234567897" />
+    
+    <flow id="1234567893" 
+        source="1234567890" 
+        target="1234567891" 
+        nname="Server Request" 
+        internetBoundary="1234567898"
+        outOfScope="true" />
+    
+    <flow id="1234567894" 
+        source="1234567891" 
+        target="1234567890" 
+        name="Server Response" 
+        internetBoundary="1234567898"
+        outOfScope="true"
+        outOfScopeReason="Not in our jurisdiction" />
+    
+    <flow id="1234567895" 
+        source="1234567891"
+        target="1234567892" 
+        name="Database Request"
+        outOfScope="false" />
+    
+    <flow id="1234567896" 
+        source="1234567892" 
+        target="1234567891" 
+        name="Database Response" />
+    
+    <trustSection id="1234567897" 
+        name="Server Trust Section" />
+    
+    <internetBoundary id="1234567898"
+        name="Internet Edge" />
+    
+</diagram>

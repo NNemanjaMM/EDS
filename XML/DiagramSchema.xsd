@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://github.com/NNemanjaMM/TAS/XML/DiagramSchema.xsd" vc:minVersion="1.1"
+    xmlns:ds="https://github.com/NNemanjaMM/TAS/XML/DiagramSchema.xsd"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning">
+    <xs:element name="diagram">
+        <xs:complexType>
+            <xs:sequence maxOccurs="1" minOccurs="1">
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="element" type="ds:element"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType abstract="true" name="element">
+        <xs:attribute name="id">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:minLength value="10"/>
+                    <xs:maxLength value="20"/>
+                    <xs:whiteSpace value="replace"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:simpleType name="typeId">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="1000000000"/>
+            <xs:totalDigits value="10"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="externalEntity">
+        <xs:complexContent>
+            <xs:extension base="ds:element"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="dataStore">
+        <xs:complexContent>
+            <xs:extension base="ds:element"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="process">
+        <xs:complexContent>
+            <xs:extension base="ds:element"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="stream">
+        <xs:complexContent>
+            <xs:extension base="ds:element">
+                <xs:attribute name="source"/>
+                <xs:attribute name="destination"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="newElement"/>
+</xs:schema>
