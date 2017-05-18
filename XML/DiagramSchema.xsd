@@ -1,54 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-    targetNamespace="https://github.com/NNemanjaMM/TAS/XML/DiagramSchema.xsd" vc:minVersion="1.1"
-    xmlns:ds="https://github.com/NNemanjaMM/TAS/XML/DiagramSchema.xsd"
+    targetNamespace="https://raw.githubusercontent.com/NNemanjaMM/TAS/master/XML/DiagramSchema.xsd"
+    vc:minVersion="1.1"
+    xmlns:ds="https://raw.githubusercontent.com/NNemanjaMM/TAS/master/XML/DiagramSchema.xsd"
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning">
-    <xs:element name="diagram">
-        <xs:complexType>
-            <xs:sequence maxOccurs="1" minOccurs="1">
-                <xs:element maxOccurs="unbounded" minOccurs="0" name="element" type="ds:element"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-    <xs:complexType abstract="true" name="element">
-        <xs:attribute name="id">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:minLength value="10"/>
-                    <xs:maxLength value="20"/>
-                    <xs:whiteSpace value="replace"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
-    </xs:complexType>
-    <xs:simpleType name="typeId">
+    <xs:simpleType final="" name="typeId">
         <xs:restriction base="xs:int">
-            <xs:minInclusive value="1000000000"/>
             <xs:totalDigits value="10"/>
+            <xs:pattern value="[0-9]{10}"/>
         </xs:restriction>
     </xs:simpleType>
-    <xs:complexType name="externalEntity">
+    <xs:complexType abstract="true" name="base">
+        <xs:attribute form="unqualified" name="id" type="ds:typeId" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType abstract="true" name="element">
         <xs:complexContent>
-            <xs:extension base="ds:element"/>
+            <xs:extension base="ds:base">
+                <xs:attribute default="false" name="outOfScope" type="xs:boolean"/>
+                <xs:attribute name="outOfScopeReason" type="xs:string"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:complexType name="dataStore">
+    <xs:complexType abstract="false" name="shape">
         <xs:complexContent>
-            <xs:extension base="ds:element"/>
+            <xs:extension base="ds:base"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="diagram">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:group minOccurs="1" ref="ds:processes"/>
+                <xs:group minOccurs="1" ref="ds:dataStores"/>
+                <xs:group minOccurs="1" ref="ds:externalEntities"/>
+                <xs:group minOccurs="1" ref="ds:flows"/>
+                <xs:group ref="ds:boundaries"/>
+                <xs:group ref="ds:sections"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="block">
+        <xs:complexContent>
+            <xs:extension base="ds:element">
+                <xs:attribute name="trustSection" type="ds:typeId"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="flow">
+        <xs:complexContent>
+            <xs:extension base="ds:element">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="boundaryCross">
+                        <xs:complexType>
+                            <xs:attribute name="boundary" type="ds:typeId" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="source" type="ds:typeId" use="required"/>
+                <xs:attribute name="destination" type="ds:typeId" use="required"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="process">
         <xs:complexContent>
-            <xs:extension base="ds:element"/>
+            <xs:extension base="ds:block"/>
         </xs:complexContent>
     </xs:complexType>
-    <xs:complexType name="stream">
+    <xs:complexType name="dataStore">
         <xs:complexContent>
-            <xs:extension base="ds:element">
-                <xs:attribute name="source"/>
-                <xs:attribute name="destination"/>
-            </xs:extension>
+            <xs:extension base="ds:block"/>
         </xs:complexContent>
     </xs:complexType>
-    <xs:element name="newElement"/>
+    <xs:complexType name="externalEntity">
+        <xs:complexContent>
+            <xs:extension base="ds:block"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:group name="flows">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="flow" type="ds:flow"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="processes">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="webApplication" type="ds:process"
+            />
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="dataStores">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="SQLdatabase" type="ds:dataStore"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="externalEntities">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="browserClient"
+                type="ds:externalEntity"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="sections">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="trustSection" type="ds:shape"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="boundaries">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="internetBoundary" type="ds:shape"
+            />
+        </xs:sequence>
+    </xs:group>
 </xs:schema>
