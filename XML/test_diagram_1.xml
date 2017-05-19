@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<diagram xmlns="https://raw.githubusercontent.com/NNemanjaMM/TAS/master/XML/DiagramSchema.xsd"
+<diagram xmlns="https://www.tas.org/diagram-schema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://raw.githubusercontent.com/NNemanjaMM/TAS/master/XML/DiagramSchema.xsd file:/D:/Master/TAS/XML/DiagramSchema.xsd">
+    xsi:schemaLocation="https://www.tas.org/diagram-schema file:/D:/Master/TAS/XML/DiagramSchema.xsd">
     
     <browserClient id="1234567890" 
         name="Firefox Browser"
@@ -17,7 +17,8 @@
         name="Main Database" 
         trustSection="1234567897" />
     
-    <flow id="1234567893" 
+    <flow
+        id="1234567893"
         source="1234567890" 
         destination="1234567891" 
         name="Server Request" 
@@ -45,7 +46,9 @@
     <flow id="1234567896" 
         source="1234567892" 
         destination="1234567891" 
-        name="Database Response" />
+        name="Database Response" >
+        <containsCookie value="true" />
+    </flow>
     
     <trustSection id="1234567897" 
         name="Server Trust Section" />
