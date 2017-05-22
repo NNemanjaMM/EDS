@@ -4,9 +4,13 @@
     xmlns:ds="https://www.tas.org/diagram-schema"
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning">
     <xs:simpleType final="" name="typeId">
-        <xs:restriction base="xs:int">
-            <xs:totalDigits value="10"/>
-            <xs:pattern value="[0-9]{10}"/>
+        <xs:restriction base="xs:ID">
+            <xs:pattern value="[\i-[:]][\c-[:]]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType final="" name="typeIdRef">
+        <xs:restriction base="xs:IDREF">
+            <xs:pattern value="[\i-[:]][\c-[:]]*"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType abstract="true" name="base">
@@ -49,6 +53,13 @@
             <xs:extension base="ds:base"/>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="blockShape">
+        <xs:complexContent>
+            <xs:extension base="ds:shape">
+                <xs:attribute name="parentSection" type="ds:typeIdRef"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:element name="diagram">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded" minOccurs="0">
@@ -62,10 +73,10 @@
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:complexType abstract="false" name="block">
+    <xs:complexType abstract="false" name="blockElement">
         <xs:complexContent>
             <xs:extension base="ds:element">
-                <xs:attribute name="trustSection" use="optional" type="ds:typeId"/>
+                <xs:attribute name="section" use="optional" type="ds:typeIdRef"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -75,30 +86,28 @@
                 <xs:choice maxOccurs="unbounded" minOccurs="0">
                     <xs:element maxOccurs="1" minOccurs="1" name="boundaryCross">
                         <xs:complexType>
-                            <xs:attribute name="boundary" type="ds:typeId" use="required"/>
+                            <xs:attribute name="boundary" type="ds:typeIdRef" use="required"/>
                         </xs:complexType>
                     </xs:element>
                 </xs:choice>
-                <xs:attribute name="source" type="ds:typeId" use="required"/>
-                <xs:attribute name="destination" type="ds:typeId" use="required"/>
-                <xs:attribute name="containsCookie" type="xs:boolean"/>
-                <xs:attribute name="isDestinationAuthenicated" type="xs:boolean"/>
+                <xs:attribute name="source" type="ds:typeIdRef" use="required"/>
+                <xs:attribute name="destination" type="ds:typeIdRef" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="process">
         <xs:complexContent>
-            <xs:extension base="ds:block"/>
+            <xs:extension base="ds:blockElement"/>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="dataStore">
         <xs:complexContent>
-            <xs:extension base="ds:block"/>
+            <xs:extension base="ds:blockElement"/>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="externalEntity">
         <xs:complexContent>
-            <xs:extension base="ds:block"/>
+            <xs:extension base="ds:blockElement"/>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="customAttribute">
@@ -107,7 +116,7 @@
     </xs:complexType>
     <xs:group name="flows">
         <xs:sequence>
-            <xs:element maxOccurs="1" minOccurs="1" name="flow" type="ds:flow"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="http" type="ds:flow"/>
         </xs:sequence>
     </xs:group>
     <xs:group name="processes">
@@ -142,7 +151,7 @@
                 <xs:alternative test="(@parent='DATA_STORE')" type="ds:dataStore"/>
                 <xs:alternative test="(@parent='EXTERNAL_ENTITY')" type="ds:externalEntity"/>
                 <xs:alternative test="(@parent='FLOW')" type="ds:flow"/>
-                <xs:alternative test="(@parent='OTHER')" type="ds:block"/>
+                <xs:alternative test="(@parent='OTHER')" type="ds:blockElement"/>
             </xs:element>
         </xs:sequence>
     </xs:group>

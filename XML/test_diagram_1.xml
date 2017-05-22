@@ -3,67 +3,57 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.tas.org/diagram-schema file:/D:/Master/TAS/XML/DiagramSchema.xsd">
     
-    <browserClient id="1234567890" 
+    <browserClient id="ic1000001" 
         name="Firefox Browser"
         outOfScope="true"
         outOfScopeReason="Not in our jurisdiction" />
         
-    <webApplication id="1234567891" 
+    <webApplication id="ic1000002" 
         name="SEP Server" 
-        trustSection="1234567897"
+        section="ic1000005"
         outOfScope="false" />
         
-    <SQLdatabase id="1234567892" 
+    <SQLdatabase id="ic1000003" 
         name="Main Database"
-        trustSection="1234567897" >
+        section="ic1000005" >
     </SQLdatabase>
     
-    <flow
-        id="1234567893"
-        source="1234567890" 
-        destination="1234567891" 
+    <http
+        id="ic1000006"
+        source="ic1000001" 
+        destination="ic1000002" 
         name="Server Request" 
         outOfScope="true" >
-        <custom title="asdas" value="asd" />
-        <boundaryCross boundary="1234567898"/>
-    </flow>    
+        <custom title="CarriesCookies" value="true" />
+        <boundaryCross boundary="ic1000010"/>
+    </http>    
     
-    <flow id="1234567894" 
-        source="1234567891" 
-        destination="1234567890" 
+    <http id="ic1000007" 
+        source="ic1000002" 
+        destination="ic1000001" 
         name="Server Response" 
         outOfScope="true"
         outOfScopeReason="Not in our jurisdiction" >
-        <boundaryCross boundary="1234567898"/>
-    </flow>
+        <boundaryCross boundary="ic1000010"/>
+    </http>
     
-    <custom id="1934567894"
-        name="someName"
-        regularType="false"
-        title="asdads"
-        parent="OTHER" >
-        <custom title="asd" value="123" />
-    </custom>
-    
-    <flow id="1234567895" 
-        source="1234567891"
-        destination="1234567892" 
+    <http id="ic1000008" 
+        source="ic1000002"
+        destination="ic1000003" 
         name="Database Request"
         outOfScope="false" >
-        <boundaryCross boundary="1231123458"/>
-    </flow>
+    </http>
     
-    <flow id="1234567896" 
-        source="1234567892" 
-        destination="1234567891" 
-        name="Database Response"
-        containsCookie="true" >
-    </flow>
+    <http id="ic1000009" 
+        source="ic1000003" 
+        destination="ic1000002" 
+        name="Database Response" >
+    </http>
     
-    <trustSection id="1234567897" 
+    <trustSection id="ic1000005" 
         name="Server Trust Section" />
     
-    <internetBoundary id="1234567898"
+    <internetBoundary id="ic1000010"
         name="Internet Edge" />
     
 </diagram>
