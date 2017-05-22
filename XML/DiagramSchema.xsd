@@ -21,10 +21,29 @@
                     />
                 </xs:choice>
                 <xs:attribute default="false" name="outOfScope" type="xs:boolean"/>
-                <xs:attribute name="outOfScopeReason" type="xs:string"/>
+                <xs:attribute name="outOfScopeReason" type="xs:string" default=""/>
+                <xs:attributeGroup ref="ds:customElementAttributes"/>
+                <xs:assert
+                    test="((not(xs:boolean(@regularType)) and @parent and @title) or (xs:boolean(@regularType) and not(@parent) and not(@title)))"
+                />
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:attributeGroup name="customElementAttributes">
+        <xs:attribute name="regularType" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute form="unqualified" name="parent" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:NMTOKENS">
+                    <xs:enumeration value="OTHER"/>
+                    <xs:enumeration value="PROCESS"/>
+                    <xs:enumeration value="DATA_STORE"/>
+                    <xs:enumeration value="EXTERNAL_ENTITY"/>
+                    <xs:enumeration value="FLOW"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="title" type="xs:string" use="optional"/>
+    </xs:attributeGroup>
     <xs:complexType abstract="false" name="shape">
         <xs:complexContent>
             <xs:extension base="ds:base"/>
@@ -43,16 +62,13 @@
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:complexType abstract="true" name="block">
+    <xs:complexType abstract="false" name="block">
         <xs:complexContent>
             <xs:extension base="ds:element">
-                <xs:attributeGroup ref="ds:blockAttributes"/>
+                <xs:attribute name="trustSection" use="optional" type="ds:typeId"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:attributeGroup name="blockAttributes">
-        <xs:attribute name="trustSection" use="optional" type="ds:typeId"/>
-    </xs:attributeGroup>
     <xs:complexType name="flow">
         <xs:complexContent>
             <xs:extension base="ds:element">
@@ -88,36 +104,6 @@
     <xs:complexType name="customAttribute">
         <xs:attribute name="title" type="xs:string" use="required"/>
         <xs:attribute name="value" type="xs:string" use="required"/>
-        <xs:attribute fixed="ATTRIBUTE" form="unqualified" name="context" type="xs:string"
-            use="required"/>
-    </xs:complexType>
-    <xs:complexType name="customElement">
-        <xs:complexContent>
-            <xs:extension base="ds:element">
-                <xs:attribute name="title" type="xs:string" use="required"/>
-                <xs:attribute form="unqualified" name="parent" use="required">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:NMTOKENS">
-                            <xs:enumeration value="OTHER"/>
-                            <xs:enumeration value="PROCESS"/>
-                            <xs:enumeration value="DATA_STORE"/>
-                            <xs:enumeration value="EXTERNAL_ENTITY"/>
-                            <xs:enumeration value="FLOW"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:attribute>
-                <xs:attribute fixed="ELEMENT" form="unqualified" name="context" type="xs:string"
-                    use="required"/>
-                <xs:attributeGroup ref="ds:blockAttributes"/>
-                <xs:assert
-                    test="((@parent='PROCESS' and @trustSection)
-                    or (@parent='DATA_STORE' and @trustSection)
-                    or (@parent='EXTERNAL_ENTITY' and @trustSection)
-                    or (@parent='OTHER' and not(@trustSection))
-                    or (@parent='FLOW' and not(@trustSection)))"
-                />
-            </xs:extension>
-        </xs:complexContent>
     </xs:complexType>
     <xs:group name="flows">
         <xs:sequence>
@@ -151,7 +137,13 @@
     </xs:group>
     <xs:group name="custom">
         <xs:sequence>
-            <xs:element name="custom" type="ds:customElement"> </xs:element>
+            <xs:element name="custom" type="ds:element">
+                <xs:alternative test="(@parent='PROCESS')" type="ds:process"/>
+                <xs:alternative test="(@parent='DATA_STORE')" type="ds:dataStore"/>
+                <xs:alternative test="(@parent='EXTERNAL_ENTITY')" type="ds:externalEntity"/>
+                <xs:alternative test="(@parent='FLOW')" type="ds:flow"/>
+                <xs:alternative test="(@parent='OTHER')" type="ds:block"/>
+            </xs:element>
         </xs:sequence>
     </xs:group>
 </xs:schema>
