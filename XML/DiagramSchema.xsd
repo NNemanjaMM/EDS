@@ -16,6 +16,10 @@
     <xs:complexType abstract="true" name="element">
         <xs:complexContent>
             <xs:extension base="ds:base">
+                <xs:choice maxOccurs="unbounded" minOccurs="0">
+                    <xs:element maxOccurs="1" minOccurs="1" name="custom" type="ds:customAttribute"
+                    />
+                </xs:choice>
                 <xs:attribute default="false" name="outOfScope" type="xs:boolean"/>
                 <xs:attribute name="outOfScopeReason" type="xs:string"/>
             </xs:extension>
@@ -35,17 +39,20 @@
                 <xs:group minOccurs="1" ref="ds:flows"/>
                 <xs:group ref="ds:boundaries"/>
                 <xs:group ref="ds:sections"/>
+                <xs:group ref="ds:custom"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
     <xs:complexType abstract="true" name="block">
         <xs:complexContent>
             <xs:extension base="ds:element">
-                <xs:attribute form="unqualified" inheritable="false" name="trustSection"
-                    use="optional"/>
+                <xs:attributeGroup ref="ds:blockAttributes"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:attributeGroup name="blockAttributes">
+        <xs:attribute name="trustSection" use="optional" type="ds:typeId"/>
+    </xs:attributeGroup>
     <xs:complexType name="flow">
         <xs:complexContent>
             <xs:extension base="ds:element">
@@ -55,10 +62,11 @@
                             <xs:attribute name="boundary" type="ds:typeId" use="required"/>
                         </xs:complexType>
                     </xs:element>
-                    <xs:group maxOccurs="1" minOccurs="1" ref="ds:attributesFlow"/>
                 </xs:choice>
                 <xs:attribute name="source" type="ds:typeId" use="required"/>
                 <xs:attribute name="destination" type="ds:typeId" use="required"/>
+                <xs:attribute name="containsCookie" type="xs:boolean"/>
+                <xs:attribute name="isDestinationAuthenicated" type="xs:boolean"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -80,13 +88,36 @@
     <xs:complexType name="customAttribute">
         <xs:attribute name="title" type="xs:string" use="required"/>
         <xs:attribute name="value" type="xs:string" use="required"/>
-        <xs:attribute fixed="ATTRIBUTE" form="unqualified" name="type" type="xs:string"
+        <xs:attribute fixed="ATTRIBUTE" form="unqualified" name="context" type="xs:string"
             use="required"/>
     </xs:complexType>
     <xs:complexType name="customElement">
-        <xs:attribute name="title" type="xs:string" use="required"/>
-        <xs:attribute fixed="ELEMENT" form="unqualified" name="type" type="xs:string" use="required"
-        />
+        <xs:complexContent>
+            <xs:extension base="ds:element">
+                <xs:attribute name="title" type="xs:string" use="required"/>
+                <xs:attribute form="unqualified" name="parent" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:NMTOKENS">
+                            <xs:enumeration value="OTHER"/>
+                            <xs:enumeration value="PROCESS"/>
+                            <xs:enumeration value="DATA_STORE"/>
+                            <xs:enumeration value="EXTERNAL_ENTITY"/>
+                            <xs:enumeration value="FLOW"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute fixed="ELEMENT" form="unqualified" name="context" type="xs:string"
+                    use="required"/>
+                <xs:attributeGroup ref="ds:blockAttributes"/>
+                <xs:assert
+                    test="((@parent='PROCESS' and @trustSection)
+                    or (@parent='DATA_STORE' and @trustSection)
+                    or (@parent='EXTERNAL_ENTITY' and @trustSection)
+                    or (@parent='OTHER' and not(@trustSection))
+                    or (@parent='FLOW' and not(@trustSection)))"
+                />
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
     <xs:group name="flows">
         <xs:sequence>
@@ -118,29 +149,9 @@
             <xs:element maxOccurs="1" minOccurs="1" name="internetBoundary" type="ds:shape"/>
         </xs:sequence>
     </xs:group>
-    <xs:group name="attributesFlow">
+    <xs:group name="custom">
         <xs:sequence>
-            <xs:element maxOccurs="1" minOccurs="0" name="custom" type="ds:customAttribute"/>
-            <xs:element minOccurs="0" name="containsCookie" type="ds:attributeBoolean"/>
-            <xs:element minOccurs="0" name="isDestinationAuthenicated" type="ds:attributeBoolean"/>
+            <xs:element name="custom" type="ds:customElement"> </xs:element>
         </xs:sequence>
     </xs:group>
-    <xs:complexType name="attributeBoolean">
-        <xs:attribute name="value" type="xs:boolean" use="required"/>
-    </xs:complexType>
-    <xs:complexType name="attributeString">
-        <xs:attribute name="value" type="xs:string" use="required"/>
-    </xs:complexType>
-    <xs:complexType name="attributeInt">
-        <xs:attribute name="value" type="xs:int" use="required"/>
-    </xs:complexType>
-    <xs:complexType name="attributeLong">
-        <xs:attribute name="value" type="xs:long" use="required"/>
-    </xs:complexType>
-    <xs:complexType name="attributeDouble">
-        <xs:attribute name="value" type="xs:double" use="required"/>
-    </xs:complexType>
-    <xs:complexType name="attributeFloat">
-        <xs:attribute name="value" type="xs:float" use="required"/>
-    </xs:complexType>
 </xs:schema>

@@ -15,7 +15,8 @@
         
     <SQLdatabase id="1234567892" 
         name="Main Database" 
-        trustSection="1234567897" />
+        trustSection="1234567897" >
+    </SQLdatabase>
     
     <flow
         id="1234567893"
@@ -23,6 +24,7 @@
         destination="1234567891" 
         name="Server Request" 
         outOfScope="true" >
+        <custom title="asdas" value="asd" context="ATTRIBUTE" />
         <boundaryCross boundary="1234567898"/>
     </flow>    
     
@@ -35,6 +37,14 @@
         <boundaryCross boundary="1234567898"/>
     </flow>
     
+    <custom title="ime" 
+        parent="PROCESS"
+        id="1231231233"
+        trustSection="1233211221"
+        context="ELEMENT" >
+        <custom title="asd" value="123" context="ATTRIBUTE"/>
+    </custom>
+    
     <flow id="1234567895" 
         source="1234567891"
         destination="1234567892" 
@@ -46,8 +56,8 @@
     <flow id="1234567896" 
         source="1234567892" 
         destination="1234567891" 
-        name="Database Response" >
-        <containsCookie value="true" />
+        name="Database Response"
+        containsCookie="true" >
     </flow>
     
     <trustSection id="1234567897" 
