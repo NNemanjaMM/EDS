@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="https://www.tas.org/diagram-schema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+    targetNamespace="https://www.tas.org/diagram-schema" elementFormDefault="qualified"
+    vc:minVersion="1.1">
+
+    <xs:redefine schemaLocation="DiagramSchema.xsd">
+        <xs:group name="processes">
+            <xs:choice>
+                <xs:group ref="ds:processes"/>
+                <xs:group ref="ds:processElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="dataStores">
+            <xs:choice>
+                <xs:group ref="ds:dataStores"/>
+                <xs:group ref="ds:dataStoreElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="externalEntities">
+            <xs:choice>
+                <xs:group ref="ds:externalEntities"/>
+                <xs:group ref="ds:externalEntityElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="flows">
+            <xs:choice>
+                <xs:group ref="ds:flows"/>
+                <xs:group ref="ds:flowElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="boundaries">
+            <xs:choice>
+                <xs:group ref="ds:boundaries"/>
+                <xs:group ref="ds:boundaryElements"/>
+            </xs:choice>
+        </xs:group>
+    </xs:redefine>
+    <xs:group name="processElements">
+        <xs:choice>
+            <xs:element name="webServer" type="ds:process"/>
+            <xs:element name="databaseServer" type="ds:process"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="dataStoreElements">
+        <xs:choice>
+            <xs:element name="logFile" type="ds:dataStore"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="externalEntityElements">
+        <xs:choice/>
+    </xs:group>
+    <xs:group name="flowElements">
+        <xs:choice>
+            <xs:element name="binary" type="ds:flow"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="boundaryElements">
+        <xs:choice>
+            <xs:element name="machineBoundary" type="ds:shape"/>
+        </xs:choice>
+    </xs:group>
+</xs:schema>
