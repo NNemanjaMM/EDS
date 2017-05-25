@@ -17,38 +17,23 @@
         <xs:attribute form="unqualified" name="id" type="ds:typeId" use="required"/>
         <xs:attribute name="name" type="xs:string" use="optional"/>
     </xs:complexType>
+    <xs:complexType name="customAttribute">
+        <xs:attribute name="title" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
     <xs:complexType abstract="true" name="element">
         <xs:complexContent>
             <xs:extension base="ds:base">
                 <xs:choice maxOccurs="unbounded" minOccurs="0">
-                    <xs:element maxOccurs="1" minOccurs="1" name="custom" type="ds:customAttribute"
-                    />
+                    <xs:element maxOccurs="1" minOccurs="1" name="customAttribute"
+                        type="ds:customAttribute"/>
                 </xs:choice>
                 <xs:attribute default="false" name="outOfScope" type="xs:boolean"/>
-                <xs:attribute name="outOfScopeReason" type="xs:string" default=""/>
-                <xs:attributeGroup ref="ds:customElementAttributes"/>
-                <xs:assert
-                    test="((not(xs:boolean(@regularType)) and @parent and @title) or (xs:boolean(@regularType) and not(@parent) and not(@title)))"
-                />
+                <xs:attribute name="outOfScopeReason" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:attributeGroup name="customElementAttributes">
-        <xs:attribute name="regularType" type="xs:boolean" use="optional" default="true"/>
-        <xs:attribute form="unqualified" name="parent" use="optional">
-            <xs:simpleType>
-                <xs:restriction base="xs:NMTOKENS">
-                    <xs:enumeration value="OTHER"/>
-                    <xs:enumeration value="PROCESS"/>
-                    <xs:enumeration value="DATA_STORE"/>
-                    <xs:enumeration value="EXTERNAL_ENTITY"/>
-                    <xs:enumeration value="FLOW"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
-        <xs:attribute name="title" type="xs:string" use="optional"/>
-    </xs:attributeGroup>
-    <xs:complexType abstract="false" name="shape">
+    <xs:complexType name="shape">
         <xs:complexContent>
             <xs:extension base="ds:base"/>
         </xs:complexContent>
@@ -62,18 +47,37 @@
     </xs:complexType>
     <xs:element name="diagram">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded" minOccurs="0">
-                <xs:group minOccurs="1" ref="ds:processes"/>
-                <xs:group minOccurs="1" ref="ds:dataStores"/>
-                <xs:group minOccurs="1" ref="ds:externalEntities"/>
-                <xs:group minOccurs="1" ref="ds:flows"/>
-                <xs:group ref="ds:boundaries"/>
-                <xs:group ref="ds:sections"/>
-                <xs:group ref="ds:custom"/>
-            </xs:choice>
+            <xs:sequence>
+                <xs:element name="elements">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group minOccurs="1" ref="ds:processes"/>
+                            <xs:group minOccurs="1" ref="ds:dataStores"/>
+                            <xs:group minOccurs="1" ref="ds:externalEntities"/>
+                            <xs:group ref="ds:customElements"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="flows">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group minOccurs="1" ref="ds:flows"/>
+                            <xs:group ref="ds:customFlow"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="shapes">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group ref="ds:boundaries"/>
+                            <xs:group ref="ds:sections"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:complexType abstract="false" name="blockElement">
+    <xs:complexType abstract="true" name="blockElement">
         <xs:complexContent>
             <xs:extension base="ds:element">
                 <xs:attribute name="section" use="optional" type="ds:typeIdRef"/>
@@ -110,49 +114,81 @@
             <xs:extension base="ds:blockElement"/>
         </xs:complexContent>
     </xs:complexType>
-    <xs:complexType name="customAttribute">
-        <xs:attribute name="title" type="xs:string" use="required"/>
-        <xs:attribute name="value" type="xs:string" use="required"/>
-    </xs:complexType>
-    <xs:group name="flows">
-        <xs:sequence>
-            <xs:element maxOccurs="1" minOccurs="1" name="http" type="ds:flow"/>
-        </xs:sequence>
-    </xs:group>
     <xs:group name="processes">
-        <xs:sequence>
+        <xs:choice>
             <xs:element maxOccurs="1" minOccurs="1" name="webApplication" type="ds:process"/>
-        </xs:sequence>
+        </xs:choice>
     </xs:group>
     <xs:group name="dataStores">
-        <xs:sequence>
+        <xs:choice>
             <xs:element maxOccurs="1" minOccurs="1" name="SQLdatabase" type="ds:dataStore"/>
-        </xs:sequence>
+        </xs:choice>
     </xs:group>
     <xs:group name="externalEntities">
-        <xs:sequence>
+        <xs:choice>
             <xs:element maxOccurs="1" minOccurs="1" name="browserClient" type="ds:externalEntity"/>
-        </xs:sequence>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="flows">
+        <xs:choice>
+            <xs:element maxOccurs="1" minOccurs="1" name="http" type="ds:flow"/>
+        </xs:choice>
     </xs:group>
     <xs:group name="sections">
-        <xs:sequence>
-            <xs:element maxOccurs="1" minOccurs="1" name="trustSection" type="ds:shape"/>
-        </xs:sequence>
+        <xs:choice>
+            <xs:element maxOccurs="1" minOccurs="1" name="trustSection" type="ds:blockShape"/>
+        </xs:choice>
     </xs:group>
     <xs:group name="boundaries">
-        <xs:sequence>
+        <xs:choice>
             <xs:element maxOccurs="1" minOccurs="1" name="internetBoundary" type="ds:shape"/>
-        </xs:sequence>
+        </xs:choice>
     </xs:group>
-    <xs:group name="custom">
-        <xs:sequence>
-            <xs:element name="custom" type="ds:element">
-                <xs:alternative test="(@parent='PROCESS')" type="ds:process"/>
-                <xs:alternative test="(@parent='DATA_STORE')" type="ds:dataStore"/>
-                <xs:alternative test="(@parent='EXTERNAL_ENTITY')" type="ds:externalEntity"/>
-                <xs:alternative test="(@parent='FLOW')" type="ds:flow"/>
-                <xs:alternative test="(@parent='OTHER')" type="ds:blockElement"/>
+    <xs:group name="customElements">
+        <xs:choice>
+            <xs:element name="customProcess">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ds:process">
+                            <xs:attributeGroup ref="ds:customElementAttributes"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
             </xs:element>
-        </xs:sequence>
+            <xs:element name="customExternalEntities">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ds:externalEntity">
+                            <xs:attributeGroup ref="ds:customElementAttributes"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="customDataStore">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ds:dataStore">
+                            <xs:attributeGroup ref="ds:customElementAttributes"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
     </xs:group>
+    <xs:group name="customFlow">
+        <xs:choice>
+            <xs:element name="customFlow">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ds:flow">
+                            <xs:attributeGroup ref="ds:customElementAttributes"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:group>
+    <xs:attributeGroup name="customElementAttributes">
+        <xs:attribute name="title" type="xs:string" use="required"/>
+    </xs:attributeGroup>
 </xs:schema>
