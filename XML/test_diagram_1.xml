@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <diagram xmlns="https://www.tas.org/diagram-schema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://www.tas.org/diagram-schema file:/D:/Master/TAS/XML/DiagramSchema.xsd">
+    xsi:schemaLocation="https://www.tas.org/diagram-schema file:/D:/Master/TAS/XML/ComponentsSchema.xsd">
     
     <elements>
-        <browserClient id="ic1000001" 
+        <browser id="ic1000001" 
             name="Firefox Browser"
             outOfScope="true"
             outOfScopeReason="Not in our jurisdiction" />
@@ -14,7 +14,7 @@
             section="ic1000005"
             outOfScope="false" />
             
-        <SQLdatabase id="ic1000003" 
+        <sqlDatabase id="ic1000003" 
             name="Main Database"
             section="ic1000005" />        
     </elements>
@@ -54,7 +54,7 @@
     </flows>
     
     <shapes>
-        <trustSection id="ic1000005" 
+        <companyTrustSection id="ic1000005" 
             name="Server Trust Section" />
         
         <internetBoundary id="ic1000010"

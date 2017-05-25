@@ -70,7 +70,8 @@
                     <xs:complexType>
                         <xs:choice maxOccurs="unbounded" minOccurs="0">
                             <xs:group ref="ds:boundaries"/>
-                            <xs:group ref="ds:sections"/>
+                            <xs:group ref="ds:trustSections"/>
+                            <xs:group ref="ds:networkSections"/>
                         </xs:choice>
                     </xs:complexType>
                 </xs:element>
@@ -115,34 +116,25 @@
         </xs:complexContent>
     </xs:complexType>
     <xs:group name="processes">
-        <xs:choice>
-            <xs:element maxOccurs="1" minOccurs="1" name="webApplication" type="ds:process"/>
-        </xs:choice>
+        <xs:choice> </xs:choice>
     </xs:group>
     <xs:group name="dataStores">
-        <xs:choice>
-            <xs:element maxOccurs="1" minOccurs="1" name="SQLdatabase" type="ds:dataStore"/>
-        </xs:choice>
+        <xs:choice> </xs:choice>
     </xs:group>
     <xs:group name="externalEntities">
-        <xs:choice>
-            <xs:element maxOccurs="1" minOccurs="1" name="browserClient" type="ds:externalEntity"/>
-        </xs:choice>
+        <xs:choice> </xs:choice>
     </xs:group>
     <xs:group name="flows">
-        <xs:choice>
-            <xs:element maxOccurs="1" minOccurs="1" name="http" type="ds:flow"/>
-        </xs:choice>
+        <xs:choice> </xs:choice>
     </xs:group>
-    <xs:group name="sections">
-        <xs:choice>
-            <xs:element maxOccurs="1" minOccurs="1" name="trustSection" type="ds:blockShape"/>
-        </xs:choice>
+    <xs:group name="trustSections">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="networkSections">
+        <xs:choice/>
     </xs:group>
     <xs:group name="boundaries">
-        <xs:choice>
-            <xs:element maxOccurs="1" minOccurs="1" name="internetBoundary" type="ds:shape"/>
-        </xs:choice>
+        <xs:choice> </xs:choice>
     </xs:group>
     <xs:group name="customElements">
         <xs:choice>

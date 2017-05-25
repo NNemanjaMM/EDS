@@ -3,20 +3,20 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.tas.org/diagram-schema file:/D:/Master/TAS/XML/ComponentsSchema.xsd">
 
-    <elements>
-        <browserClient id="ic1000001" 
+    <elements>        
+        <browser id="ic1000001" 
             name="Firefox Browser" />
         
         <webServer id="ic1000002" 
             name="Server"  />
         
-        <databaseServer id="ic1000003" 
+        <webService id="ic1000003" 
             name="Database Server" />   
         
         <logFile id="ic1000004" 
             name="Log store" />  
         
-        <SQLdatabase id="ic1000005" 
+        <sqlDatabase id="ic1000005" 
             name="Main Database" />       
     </elements>
     
