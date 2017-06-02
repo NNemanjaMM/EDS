@@ -1,4 +1,4 @@
-package tas.actions;
+package tas.controls;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;

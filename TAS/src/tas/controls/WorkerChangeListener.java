@@ -1,4 +1,4 @@
-package tas.actions;
+package tas.controls;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

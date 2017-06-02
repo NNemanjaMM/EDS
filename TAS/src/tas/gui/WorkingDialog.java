@@ -15,10 +15,10 @@ import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import tas.actions.CancelAnalysisAction;
-import tas.actions.CloseAnalysisAction;
-import tas.actions.OpenAnalysisAction;
 import tas.analyzer.ThreatAnalyzer;
+import tas.controls.CancelAnalysisAction;
+import tas.controls.CloseAnalysisAction;
+import tas.controls.OpenAnalysisAction;
 
 public class WorkingDialog extends JDialog {
 

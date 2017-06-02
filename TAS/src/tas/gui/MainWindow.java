@@ -14,10 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import tas.actions.BrowseDiagramAction;
-import tas.actions.BrowseReportAction;
-import tas.actions.CancelAnalysisAction;
-import tas.actions.StartAnalysisAction;
+import tas.controls.BrowseDiagramAction;
+import tas.controls.BrowseReportAction;
+import tas.controls.CancelAnalysisAction;
+import tas.controls.StartAnalysisAction;
 
 public class MainWindow extends JFrame {
 

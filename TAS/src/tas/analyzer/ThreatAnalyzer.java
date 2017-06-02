@@ -2,6 +2,7 @@ package tas.analyzer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
@@ -12,8 +13,10 @@ import org.xml.sax.SAXException;
 
 import tas.gui.WorkingDialog;
 import tas.model.diagram.Diagram;
-import xml_components.Marshaller;
-import xml_components.SchemaValidator;
+import tas.model.risk_pattern.DiagramPiece;
+import tas.utils.DiagramDecomposer;
+import tas.utils.Marshaller;
+import tas.utils.SchemaValidator;
 
 public class ThreatAnalyzer extends SwingWorker<Boolean, Object> {
 	
@@ -36,7 +39,7 @@ public class ThreatAnalyzer extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(1);
 		
-		/* **********	VALIDATING XML FILE			********** */
+		/* **********	VALIDATING XML FILE			**********	-DONE */
 		if (!validateDiagram()) {
 			return false;
 		}
@@ -46,7 +49,7 @@ public class ThreatAnalyzer extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(10);
 
-		/* **********	READING XML FILE TO MEMORY	********** */
+		/* **********	READING XML FILE TO MEMORY	**********	-DONE */
 		if (!readDiagram()) {
 			return false;
 		}
@@ -57,7 +60,8 @@ public class ThreatAnalyzer extends SwingWorker<Boolean, Object> {
 		setProgress(20);
 
 		/* **********	DECOMPOSING XML DIAGRAM		********** */
-		
+		DiagramDecomposer decomposer = new DiagramDecomposer(diagram);
+		List<DiagramPiece> pieces = decomposer.decomposeAllPiecesComplex();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -136,7 +140,9 @@ public class ThreatAnalyzer extends SwingWorker<Boolean, Object> {
 	private boolean readDiagram() {
 
 		try {
+			
 			diagram = Marshaller.readXMLDiagram(diagramFile);
+			
 		} catch (JAXBException e) {
 			String message = "Parser can not be initialized!\nPlease try again.";
 			JOptionPane.showMessageDialog(dialog, message, "Parser Initialization Error", JOptionPane.ERROR_MESSAGE);
