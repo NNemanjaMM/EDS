@@ -17,16 +17,16 @@
             name="Log store" />  
         
         <sqlDatabase id="ic1000005" 
-            name="Main Database" />       
+            name="Main Database" />    
     </elements>
     
-    <flows>
-        <http
-            id="ic1000006"
+    <flows>   
+        <http id="ic1000006"
             source="ic1000001" 
             destination="ic1000002" 
             name="Server Request" >
             <boundaryCross boundary="ic1000010"/>
+            <boundaryCross boundary="ic1000011"/>
         </http>    
         
         <http id="ic1000007" 
@@ -40,14 +40,14 @@
             source="ic1000002"
             destination="ic1000003" 
             name="Database Request" >
-            <boundaryCross boundary="ic10000011"/>
+            <boundaryCross boundary="ic1000011"/>
         </binary>
         
         <binary id="ic1000009" 
             source="ic1000003" 
             destination="ic1000002" 
             name="Database Response" >
-            <boundaryCross boundary="ic10000011"/>
+            <boundaryCross boundary="ic1000011"/>
         </binary>
         
         <binary id="ic1000018" 
@@ -79,7 +79,7 @@
         <internetBoundary id="ic1000010"
             name="Internet Edge" />
         
-        <machineBoundary id="ic10000011" 
+        <machineBoundary id="ic1000011" 
             name="Different machine" />
     </shapes>
     

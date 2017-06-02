@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://www.tas.org/diagram-schema" vc:minVersion="1.1"
+    xmlns:ds="https://www.tas.org/diagram-schema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning">
+    <xs:simpleType final="" name="typeId">
+        <xs:restriction base="xs:ID">
+            <xs:pattern value="[\i-[:]][\c-[:]]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType final="" name="typeIdRef">
+        <xs:restriction base="xs:IDREF">
+            <xs:pattern value="[\i-[:]][\c-[:]]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType abstract="true" name="base">
+        <xs:attribute form="unqualified" name="id" type="ds:typeId" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="customAttribute">
+        <xs:attribute name="title" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType abstract="true" name="element">
+        <xs:complexContent>
+            <xs:extension base="ds:base">
+                <xs:choice maxOccurs="unbounded" minOccurs="0">
+                    <xs:element maxOccurs="1" minOccurs="1" name="customAttribute"
+                        type="ds:customAttribute"/>
+                </xs:choice>
+                <xs:attribute default="false" name="outOfScope" type="xs:boolean"/>
+                <xs:attribute name="outOfScopeReason" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="shape">
+        <xs:complexContent>
+            <xs:extension base="ds:base"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="blockShape">
+        <xs:complexContent>
+            <xs:extension base="ds:shape">
+                <xs:attribute name="parentSection" type="ds:typeIdRef"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="diagram">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="elements">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group minOccurs="1" ref="ds:processes"/>
+                            <xs:group minOccurs="1" ref="ds:dataStores"/>
+                            <xs:group minOccurs="1" ref="ds:externalEntities"/>
+                            <xs:group ref="ds:customElements"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="flows">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group minOccurs="1" ref="ds:flows"/>
+                            <xs:group ref="ds:customFlow"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="shapes">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group ref="ds:boundaries"/>
+                            <xs:group ref="ds:trustSections"/>
+                            <xs:group ref="ds:networkSections"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType abstract="true" name="blockElement">
+        <xs:complexContent>
+            <xs:extension base="ds:element">
+                <xs:attribute name="section" use="optional" type="ds:typeIdRef"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="flow">
+        <xs:complexContent>
+            <xs:extension base="ds:element">
+                <xs:choice maxOccurs="unbounded" minOccurs="0">
+                    <xs:element maxOccurs="1" minOccurs="1" name="boundaryCross">
+                        <xs:complexType>
+                            <xs:attribute name="boundary" type="ds:typeIdRef" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+                <xs:attribute name="source" type="ds:typeIdRef" use="required"/>
+                <xs:attribute name="destination" type="ds:typeIdRef" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="process">
+        <xs:complexContent>
+            <xs:extension base="ds:blockElement"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="dataStore">
+        <xs:complexContent>
+            <xs:extension base="ds:blockElement"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="externalEntity">
+        <xs:complexContent>
+            <xs:extension base="ds:blockElement"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:group name="processes">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="dataStores">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="externalEntities">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="flows">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="trustSections">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="networkSections">
+        <xs:choice/>
+    </xs:group>
+    <xs:group name="boundaries">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="customElements">
+        <xs:choice>
+            <xs:element name="customProcess">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ds:process">
+                            <xs:attributeGroup ref="ds:customElementAttributes"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="customExternalEntities">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ds:externalEntity">
+                            <xs:attributeGroup ref="ds:customElementAttributes"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="customDataStore">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ds:dataStore">
+                            <xs:attributeGroup ref="ds:customElementAttributes"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="customFlow">
+        <xs:choice>
+            <xs:element name="customFlow">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ds:flow">
+                            <xs:attributeGroup ref="ds:customElementAttributes"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:group>
+    <xs:attributeGroup name="customElementAttributes">
+        <xs:attribute name="title" type="xs:string" use="required"/>
+    </xs:attributeGroup>
+</xs:schema>
