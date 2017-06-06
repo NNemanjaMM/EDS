@@ -52,7 +52,7 @@ public class MainWindow extends JFrame {
 	
 	private void initializeContent() {
 		setLayout(new GridBagLayout());
-		contentDiagram = new JTextField();
+		contentDiagram = new JTextField("D:\\Master\\work\\TAS\\XML\\test_diagram_1.xml"); // TODO AFTER remove default diagram
 		contentReport = new JTextField();
 		JLabel labelBrowse = new JLabel("Source diagram location: ");
 		JLabel labelReport = new JLabel("Save report location: ");

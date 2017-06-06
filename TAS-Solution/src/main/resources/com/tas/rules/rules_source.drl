@@ -1,0 +1,20 @@
+//created on: Jun 6, 2017
+package com.tas.rules
+
+//list any import classes here.
+import com.tas.model.risk_pattern.DiagramPiece;
+
+
+//declare any global variables here
+
+
+
+
+rule "Your First Rule"
+
+    when
+        component: DiagramPiece(component.getCoreDestinationFlowsOut().size() > 0)
+    then
+        component.addThreat(1);
+
+end

@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 public class Validator {
 	
-	private static String schemaPath = "src\\main\\resources\\com\\tas\\schemas\\ComponentsSchema.xsd";
+	private static final String SCHEMA_PATH = "src\\main\\resources\\com\\tas\\schemas\\ComponentsSchema.xsd";
 
 	@SuppressWarnings("unused")
  	public static void checkWellFormness(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
@@ -33,7 +33,7 @@ public class Validator {
  
  	public static void checkValidity(File xmlFile) throws SAXException, IOException {	
  		
-		Source schemaFile = new StreamSource(new File(schemaPath));	 		
+		Source schemaFile = new StreamSource(new File(SCHEMA_PATH));	 		
 		Source stream = new StreamSource(xmlFile);
 		
 	    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

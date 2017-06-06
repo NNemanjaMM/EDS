@@ -19,6 +19,8 @@ public class DiagramPiece {
 	private List<Flow> coreSourceFlowsIn;
 	private List<Flow> coreSourceFlowsOut;
 	
+	private List<Integer> threats;
+	
 	
 	public DiagramPiece(Flow coreFlow) {
 		this.coreFlow = coreFlow;
@@ -30,6 +32,8 @@ public class DiagramPiece {
 		coreDestinationFlowsOut = new ArrayList<Flow>();
 		coreSourceFlowsIn = new ArrayList<Flow>();
 		coreSourceFlowsOut = new ArrayList<Flow>();
+		
+		threats = new ArrayList<Integer>();
 	}
 	
 	
@@ -65,6 +69,10 @@ public class DiagramPiece {
 		return coreSourceFlowsOut;
 	}
 	
+	public List<Integer> getThreats() {
+		return threats;
+	}
+	
 	
 	public void setCoreFlow(Flow coreFlow) {
 		this.coreFlow = coreFlow;
@@ -98,6 +106,10 @@ public class DiagramPiece {
 		this.coreSourceFlowsOut = coreSourceFlows;
 	}
 	
+	public void setThreats(List<Integer> threats) {
+		this.threats = threats;
+	}
+		
 	
 	public void addCoreReturnFlow(Flow coreReturnFlow) {
 		this.coreReturnFlows.add(coreReturnFlow);
@@ -117,6 +129,10 @@ public class DiagramPiece {
 	
 	public void addCoreSourceFlowOut(Flow coreSourceFlowOut) {
 		this.coreSourceFlowsOut.add(coreSourceFlowOut);
+	}
+	
+	public void addThreat(Integer threatId) {
+		this.threats.add(threatId);
 	}
 	
 	public String toString() {

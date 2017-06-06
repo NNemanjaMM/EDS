@@ -9,14 +9,19 @@ import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.FactException;
+import org.drools.core.RuleBase;
+import org.drools.core.WorkingMemory;
 import org.xml.sax.SAXException;
 
 import com.tas.gui.WorkingDialog;
 import com.tas.model.diagram.Diagram;
 import com.tas.model.risk_pattern.DiagramPiece;
-import com.tas.utils.DiagramDecomposer;
+import com.tas.utils.Decomposer;
 import com.tas.utils.Marshaller;
-import com.tas.utils.SchemaValidator;
+import com.tas.utils.RulesBase;
+import com.tas.utils.Validator;
 
 public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	
@@ -39,7 +44,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(1);
 		
-		/* **********	VALIDATING XML FILE			**********	-DONE */
+		/* **********	VALIDATING XML FILE			**********	- DONE */
 		if (!validateDiagram()) {
 			return false;
 		}
@@ -49,7 +54,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(10);
 
-		/* **********	READING XML FILE TO MEMORY	**********	-DONE */
+		/* **********	READING XML FILE TO MEMORY	**********	- DONE */
 		if (!readDiagram()) {
 			return false;
 		}
@@ -59,8 +64,8 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(20);
 
-		/* **********	DECOMPOSING XML DIAGRAM		**********	-DONE */
-		DiagramDecomposer decomposer = new DiagramDecomposer(diagram);
+		/* **********	DECOMPOSING XML DIAGRAM		**********	- DONE */
+		Decomposer decomposer = new Decomposer(diagram);
 		List<DiagramPiece> pieces = decomposer.decomposeAllPiecesComplex();
 		
 		if(Thread.currentThread().isInterrupted()) {
@@ -70,7 +75,11 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 
 		/* **********	ANALYZING DECOMPOSED DATA	********** */
-        
+		
+		if (!createAndFireRules(pieces)) {
+			return false;
+		}		
+		
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -92,8 +101,11 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		if(Thread.currentThread().isInterrupted()) {
 			return false;
-		}							
+		}
 		
+		for (DiagramPiece diagramPiece : pieces) {
+			System.out.println("Th count: " + diagramPiece.getThreats().size());
+		}
 		
 		return true;
 	}
@@ -103,7 +115,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		try {
 			
-			SchemaValidator.checkWellFormness(diagramFile);
+			Validator.checkWellFormness(diagramFile);
 			
 		} catch (ParserConfigurationException e) {
 			message = "Parser can not be initialized!\nPlease try again.";
@@ -122,7 +134,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		try {
 			
-			SchemaValidator.checkValidity(diagramFile);
+			Validator.checkValidity(diagramFile);
 			
 		} catch (SAXException e) {
 			message = "XML Diagram is not valid!\nXML Diagram contains semantic errors. Please choose another diagram or fix current.";
@@ -148,6 +160,38 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			JOptionPane.showMessageDialog(dialog, message, "Parser Initialization Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
+		
+		return true;
+	}
+	
+	private boolean createAndFireRules(List<DiagramPiece> diagramParts) {		
+		String message;		
+		
+		RuleBase ruleBase = null;
+		try {
+			ruleBase = RulesBase.createBase();
+		} catch (DroolsParserException e) {
+			message = "Defined rules can not be initialized!\n.Check rules definitions or contact supervisors.";
+			JOptionPane.showMessageDialog(dialog, message, "Rules Initialization Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		} catch (IOException e) {
+			message = "File can not be read!\nPlease load file again and then try.";
+			JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}		
+		
+		WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		for (DiagramPiece diagramPiece : diagramParts) {
+			workingMemory.insert(diagramPiece);
+		}
+
+		try {
+			workingMemory.fireAllRules();	
+		} catch (FactException e) {
+			message = "Defined rules can not be applied!\n.Check your diagram or contact supervisors.";
+			JOptionPane.showMessageDialog(dialog, message, "Rules Applying Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}			
 		
 		return true;
 	}
