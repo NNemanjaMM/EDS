@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<threatsDefinitions xmlns="https://www.tas.org/threat-definition"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.tas.org/threat-definition file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/schemas/ThreatsSchema.xsd">
+    
+    <threatDefinition id="1">
+        <name>Cross Site Request Forgery</name>
+        <category>Elevation Of Privilege</category>
+        <shortDescription>
+            Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute 
+            unwanted actions on a web application in which they're currently authenticated.
+        </shortDescription>
+        <longDescription>
+            Cross-site request forgery (CSRF or XSRF)<link address="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)">
+            (more information here)</link>  is a type of attack in 
+            which an attacker forces a user's browser to make a forged request to a vulnerable 
+            site by exploiting an existing trust relationship between the browser and the 
+            vulnerable web site.  In a simple scenario, a user is logged in to web site A 
+            using a cookie as a credential.  The other browses to web site B.  Web site B 
+            returns a page with a hidden form that posts to web site A.  Since the browser 
+            will carry the user's cookie to web site A, web site B now can take any action 
+            on web site A, for example, adding an admin to an account.  The attack can be 
+            used to exploit any requests that the browser automatically authenticates, e.g. 
+            by session cookie, integrated authentication, IP whitelisting, …  The attack can be 
+            carried out in many ways such as by luring the victim to a site under control of the 
+            attacker, getting the user to click a link in a phishing email, or hacking a reputable 
+            web site that the victim will visit. The issue can only be resolved on the server side 
+            by requiring that all authenticated state-changing requests include an additional piece 
+            of secret payload (canary or CSRF token) which is known only to the legitimate web site 
+            and the browser and which is protected in transit through SSL/TLS. See the Forgery 
+            Protection property on the flow stencil for a list of mitigations.
+        </longDescription>
+        <severity>3</severity>
+        <reference>https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)</reference>
+        <preventions>
+            <prevention>
+                <name>Using a secret cookie</name>
+                <description>
+                    Remember that all cookies, even the secret ones, will be submitted with every 
+                    request. All authentication tokens will be submitted regardless of whether or 
+                    not the end-user was tricked into submitting the request. Furthermore, session 
+                    identifiers are simply used by the application container to associate the request 
+                    with a specific session object. The session identifier does not verify that the 
+                    end-user intended to submit the request.
+                </description>
+                <reference>https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)#Using_a_secret_cookie</reference>
+            </prevention>
+            <prevention>
+                <name>Only accepting POST requests</name>
+                <description>
+                    Applications can be developed to only accept POST requests for the execution of 
+                    business logic. The misconception is that since the attacker cannot construct a 
+                    malicious link, a CSRF attack cannot be executed. Unfortunately, this logic is 
+                    incorrect. There are numerous methods in which an attacker can trick a victim 
+                    into submitting a forged POST request, such as a simple form hosted in an attacker's 
+                    Website with hidden values. This form can be triggered automatically by JavaScript or 
+                    can be triggered by the victim who thinks the form will do something else.
+                    
+                    A number of flawed ideas for defending against CSRF attacks have been developed over 
+                    time. Here are a few that we recommend you avoid.
+                </description>
+                <reference>https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)#Only_accepting_POST_requests</reference>
+            </prevention>
+        </preventions>
+    </threatDefinition>
+    
+    <threatDefinition id="2">
+        <name>Replay Attacks</name>
+        <category>Tampering</category>
+        <shortDescription>Packets or messages without sequence numbers or timestamps can be captured and 
+            replayed in a wide variety of ways. Implement or utilize an existing communication protocol 
+            that supports anti-replay techniques (investigate sequence numbers before timers) and strong 
+            integrity.
+        </shortDescription>
+        <longDescription>
+            A replay attack is a "man-in-the-middle" type of attack where a message is intercepted and 
+            replayed by an attacker to impersonate the original sender. For web services, as with other 
+            types of HTTP traffic, a sniffer such as Ethereal or Wireshark can capture traffic posted to 
+            a web service and using a tool like WebScarab, a tester can resend a packet to the target 
+            server. A tester can attempt to resend the original message or change the message in order 
+            to compromise the host server.
+        </longDescription>
+        <severity>3</severity>
+        <reference>https://en.wikipedia.org/wiki/Replay_attack</reference>
+        <preventions>
+            <prevention>
+                <name>One-time passwords</name>
+                <description>
+                    One-time passwords are similar to session tokens in that the password 
+                    expires after it has been used or after a very short amount of time. They can 
+                    be used to authenticate individual transactions in addition to sessions. These 
+                    can also be used during the authentication process to help establish trust between 
+                    the two parties that are communicating with each other.
+                </description>
+                <reference>https://en.wikipedia.org/wiki/Replay_attack#One-time_passwords</reference>
+            </prevention>            
+            <prevention>
+                <name>Timestamps</name>
+                <description>
+                    Timestamping is another way of preventing a replay attack. Synchronization should 
+                    be achieved using a secure protocol. For example Bob periodically broadcasts the 
+                    time on his clock together with a MAC. When Alice wants to send Bob a message, she 
+                    includes her best estimate of the time on his clock in her message, which is also 
+                    authenticated. Bob only accepts messages for which the timestamp is within a reasonable 
+                    tolerance. The advantage of this scheme is that Bob does not need to generate (pseudo-) 
+                    random numbers, with the trade-off being that replay attacks, if they are performed 
+                    quickly enough i.e. within that 'reasonable' limit, could succeed.
+                </description>
+                <reference>https://en.wikipedia.org/wiki/Replay_attack#Timestamps</reference>
+            </prevention>
+            
+        </preventions>
+    </threatDefinition>
+    
+</threatsDefinitions>
