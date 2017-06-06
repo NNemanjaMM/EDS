@@ -102,17 +102,23 @@
     </xs:complexType>
     <xs:complexType name="process">
         <xs:complexContent>
-            <xs:extension base="ds:blockElement"/>
+            <xs:extension base="ds:blockElement">
+                <xs:attribute fixed="PROCESS" name="type" type="xs:string" use="required"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="dataStore">
         <xs:complexContent>
-            <xs:extension base="ds:blockElement"/>
+            <xs:extension base="ds:blockElement">
+                <xs:attribute fixed="DATA_STORE" name="type" type="xs:string" use="required"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="externalEntity">
         <xs:complexContent>
-            <xs:extension base="ds:blockElement"/>
+            <xs:extension base="ds:blockElement">
+                <xs:attribute fixed="EXTERNAL_ENTITY" name="type" type="xs:string" use="required"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:group name="processes">

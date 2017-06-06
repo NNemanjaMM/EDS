@@ -5,18 +5,23 @@
 
     <elements>        
         <browser id="ic1000001" 
+            type="EXTERNAL_ENTITY"
             name="Firefox Browser" />
         
-        <webServer id="ic1000002" 
+        <webServer id="ic1000002"  
+            type="PROCESS"
             name="Server"  />
         
-        <webService id="ic1000003" 
+        <webService id="ic1000003"   
+            type="PROCESS"
             name="Database Server" />   
         
-        <logFile id="ic1000004" 
+        <logFile id="ic1000004"  
+            type="DATA_STORE"
             name="Log store" />  
         
         <sqlDatabase id="ic1000005" 
+            type="DATA_STORE"
             name="Main Database" />    
     </elements>
     

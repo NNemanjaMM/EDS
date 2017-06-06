@@ -5,16 +5,19 @@
     
     <elements>
         <browser id="ic1000001" 
+            type="EXTERNAL_ENTITY"
             name="Firefox Browser"
             outOfScope="true"
             outOfScopeReason="Not in our jurisdiction" />
             
-        <webApplication id="ic1000002" 
+        <webApplication id="ic1000002"   
+            type="PROCESS"
             name="SEP Server" 
             section="ic1000005"
             outOfScope="false" />
             
         <sqlDatabase id="ic1000003" 
+            type="DATA_STORE"
             name="Main Database"
             section="ic1000005" />        
     </elements>
