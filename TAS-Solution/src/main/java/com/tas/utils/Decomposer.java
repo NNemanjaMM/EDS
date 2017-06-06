@@ -1,4 +1,5 @@
-package tas.utils;
+package com.tas.utils;
+
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,17 +7,17 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import tas.model.diagram.BlockElement;
-import tas.model.diagram.Diagram;
-import tas.model.diagram.Flow;
-import tas.model.risk_pattern.DiagramPiece;
+import com.tas.model.diagram.BlockElement;
+import com.tas.model.diagram.Diagram;
+import com.tas.model.diagram.Flow;
+import com.tas.model.risk_pattern.DiagramPiece;
 
-public class DiagramDecomposer {
+public class Decomposer {
 	
 	private Diagram diagram;
 	private HashSet<String> hashedFlows;
 
-	public DiagramDecomposer(Diagram diagram) {
+	public Decomposer(Diagram diagram) {
 		this.diagram = diagram;
 	}
 	
@@ -32,7 +33,7 @@ public class DiagramDecomposer {
 	public ArrayList<DiagramPiece> decomposeAllPieces() {
 		
 		int flowsCount = diagram.getFlows().getOrBinaryOrHttpOrHttps().size();
-		ArrayList<DiagramPiece> pieces = new ArrayList<>();
+		ArrayList<DiagramPiece> pieces = new ArrayList<DiagramPiece>();
 		
 		for (int i = 0; i < flowsCount; i++) {
 			pieces.add(decomposeSinglePiece(i));
@@ -45,7 +46,7 @@ public class DiagramDecomposer {
 		
 		Flow flow = diagram.getFlows().getOrBinaryOrHttpOrHttps().get(position).getValue();
 		
-		hashedFlows = new HashSet<>();
+		hashedFlows = new HashSet<String>();
 		hashedFlows.add(flow.getId());
 		
 		DiagramPiece pieces = new DiagramPiece(flow);	
@@ -71,7 +72,7 @@ public class DiagramDecomposer {
 	public ArrayList<DiagramPiece> decomposeAllPiecesComplex() {
 		
 		int flowsCount = diagram.getFlows().getOrBinaryOrHttpOrHttps().size();
-		ArrayList<DiagramPiece> pieces = new ArrayList<>();
+		ArrayList<DiagramPiece> pieces = new ArrayList<DiagramPiece>();
 		
 		for (int i = 0; i < flowsCount; i++) {
 			pieces.add(decomposeSinglePieceComplex(i));
@@ -87,7 +88,7 @@ public class DiagramDecomposer {
 	private List<Flow> findFlowsForSourceElement(BlockElement sourceElement) {
 		
 		String elementId = sourceElement.getId();
-		List<Flow> flowsList = new ArrayList<>();
+		List<Flow> flowsList = new ArrayList<Flow>();
 		List<JAXBElement<? extends Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
 		for (JAXBElement<? extends Flow> flow : diagramFlows) {
@@ -105,7 +106,7 @@ public class DiagramDecomposer {
 	private List<Flow> findFlowsForDestinationElement(BlockElement destinationElement) {
 		
 		String elementId = destinationElement.getId();
-		List<Flow> flowsList = new ArrayList<>();
+		List<Flow> flowsList = new ArrayList<Flow>();
 		List<JAXBElement<? extends Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
 		for (JAXBElement<? extends Flow> flow : diagramFlows) {
@@ -125,7 +126,7 @@ public class DiagramDecomposer {
 		String firstId = firstElement.getId();
 		String secondId = secondElement.getId();
 		
-		List<Flow> flowsList = new ArrayList<>();
+		List<Flow> flowsList = new ArrayList<Flow>();
 		List<JAXBElement<? extends Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
 		for (JAXBElement<? extends Flow> flow : diagramFlows) {

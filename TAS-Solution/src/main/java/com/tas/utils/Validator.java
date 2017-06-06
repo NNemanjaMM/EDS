@@ -13,12 +13,11 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class SchemaValidator {
+public class Validator {
 	
 	private static String schemaPath = "src\\main\\resources\\com\\tas\\schemas\\ComponentsSchema.xsd";
 
@@ -39,7 +38,7 @@ public class SchemaValidator {
 		
 	    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	    Schema schema = factory.newSchema(schemaFile);
-	    Validator validator = schema.newValidator();	
+	    javax.xml.validation.Validator validator = schema.newValidator();	
 	    
         validator.validate(stream);
 	 }
