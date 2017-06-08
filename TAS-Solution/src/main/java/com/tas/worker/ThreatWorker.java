@@ -29,11 +29,13 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 	private File diagramFile;
 	private File reportFile;
+	private boolean analyseComponents;
 	private Diagram diagram;
 	
-	public ThreatWorker(File diagram, File report) {
+	public ThreatWorker(File diagram, File report, boolean analyseComponents) {
 		this.diagramFile = diagram;
 		this.reportFile = report;
+		this.analyseComponents = analyseComponents;
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		/* **********	VALIDATING XML FILE			**********	- DONE */
 		if (!validateDiagram()) {
-			return false;
+			//return false;
 		}
 		
 		if(Thread.currentThread().isInterrupted()) {
@@ -66,7 +68,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		/* **********	DECOMPOSING XML DIAGRAM		**********	- DONE */
 		Decomposer decomposer = new Decomposer(diagram);
-		List<DiagramPiece> pieces = decomposer.decomposeAllPiecesComplex();
+		List<DiagramPiece> pieces = decomposer.decomposeAllPieces();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -78,6 +80,21 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		if (!createAndFireRules(pieces)) {
 			return false;
+		}		
+		
+		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false; 
+		}
+		setProgress(70);
+		
+
+		/* **********	ANALYZING COMPONENTS 		********** */
+		
+		if (analyseComponents) {
+			if (!analyseComponentsThreats()) {
+				return false;
+			}
 		}		
 		
 		
@@ -103,8 +120,12 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			return false;
 		}
 		
-		for (DiagramPiece diagramPiece : pieces) {
-			System.out.println("Th count: " + diagramPiece.getThreats().size());
+		for (DiagramPiece diagramPiece : pieces) {						
+			System.out.println("*******************\nThreats between " + 
+					diagramPiece.getCoreSource().getName() + " and " + diagramPiece.getCoreDestination().getName());
+			for (Integer threat : diagramPiece.getThreats()) {
+				System.out.println("Threat id: " + threat);
+			}
 		}
 		
 		return true;
@@ -192,6 +213,12 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			JOptionPane.showMessageDialog(dialog, message, "Rules Applying Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}			
+		
+		return true;
+	}
+	
+	private boolean analyseComponentsThreats() {
+		
 		
 		return true;
 	}

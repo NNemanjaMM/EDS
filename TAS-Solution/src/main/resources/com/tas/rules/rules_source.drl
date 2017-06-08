@@ -3,18 +3,44 @@ package com.tas.rules
 
 //list any import classes here.
 import com.tas.model.risk_pattern.DiagramPiece;
-
+import com.tas.model.diagram.Process;
+import com.tas.model.diagram.*;
+import com.tas.utils.ThreatCode;
 
 //declare any global variables here
 
 
-
-
-rule "Your First Rule"
-
+rule "Cross Site Request Forgery"
     when
-        component: DiagramPiece(component.getCoreDestinationFlowsOut().size() > 0)
+        component: DiagramPiece(component.getCoreSource() instanceof ExternalEntity,
+        						component.getCoreDestination() instanceof Process)                    
     then
-        component.addThreat(1);
+        component.addThreat(ThreatCode.CSRF);
+end
 
+
+rule "Replay Attack"
+    when
+        component: DiagramPiece(component.getCoreSource() instanceof Process, 
+        						component.getCoreDestination() instanceof ExternalEntity)                    
+    then
+        component.addThreat(ThreatCode.REPLAY_ATTACK);
+end
+
+
+rule "Weak Credentials Storage"
+    when
+        component: DiagramPiece(component.getCoreSource() instanceof Process, 
+        						component.getCoreDestination() instanceof DataStore)                    
+    then
+        component.addThreat(ThreatCode.WEAK_CREDENTIALS_STORAGE);
+end
+
+
+rule "Weak Access Control For A Resource"
+    when
+        component: DiagramPiece(component.getCoreSource() instanceof DataStore, 
+        						component.getCoreDestination() instanceof Process)                    
+    then
+        component.addThreat(ThreatCode.WEAK_ACCESS_CONTROL_FOR_A_RESOURCE);
 end

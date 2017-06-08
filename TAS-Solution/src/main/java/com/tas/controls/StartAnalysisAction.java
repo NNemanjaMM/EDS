@@ -22,6 +22,7 @@ public class StartAnalysisAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		String diagramPath = MainWindow.getInstance().getDiagramLocation();
 		String reportPath = MainWindow.getInstance().getReportLocation();
+		boolean analyseComponents = MainWindow.getInstance().getComponentsThreatsSelected();
 		
 		if (diagramPath.equals("")) {
 			String message = "Diagram file name can not be empty!\nPlease locate the diagram file.";
@@ -35,9 +36,9 @@ public class StartAnalysisAction extends AbstractAction {
 		}
 
 		File diagram = new File(diagramPath);	
-		File report = new File(reportPath);	
+		File report = new File(reportPath);
 				
-		ThreatWorker analyzer = new ThreatWorker(diagram, report);		
+		ThreatWorker analyzer = new ThreatWorker(diagram, report, analyseComponents);		
 		WorkingDialog dialog = new WorkingDialog(analyzer, diagram.getName(), report.getName(), reportPath);
 		analyzer.setDialog(dialog);
 		analyzer.addPropertyChangeListener(new WorkerChangeListener(dialog));
