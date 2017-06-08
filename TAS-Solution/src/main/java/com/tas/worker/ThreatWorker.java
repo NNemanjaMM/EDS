@@ -48,7 +48,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		/* **********	VALIDATING XML FILE			**********	- DONE */
 		if (!validateDiagram()) {
-			//return false;
+			return false;
 		}
 		
 		if(Thread.currentThread().isInterrupted()) {
