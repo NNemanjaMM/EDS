@@ -9,6 +9,7 @@ import com.tas.model.diagram.Flow;
 public class DiagramPiece {
 	
 	private Flow coreFlow;
+	Object o;
 	private BlockElement coreSource;
 	private BlockElement coreDestination;
 	

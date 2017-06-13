@@ -68,7 +68,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		/* **********	DECOMPOSING XML DIAGRAM		**********	- DONE */
 		Decomposer decomposer = new Decomposer(diagram);
-		List<DiagramPiece> pieces = decomposer.decomposeAllPieces();
+		List<DiagramPiece> pieces = decomposer.decomposeAllPiecesComplex();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -76,7 +76,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(45);
 		
 
-		/* **********	ANALYZING DECOMPOSED DATA	********** */
+		/* **********	ANALYZING DECOMPOSED DATA	**********	- DONE */
 		
 		if (!createAndFireRules(pieces)) {
 			return false;
@@ -213,6 +213,8 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			JOptionPane.showMessageDialog(dialog, message, "Rules Applying Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}			
+		
+		workingMemory.dispose();
 		
 		return true;
 	}

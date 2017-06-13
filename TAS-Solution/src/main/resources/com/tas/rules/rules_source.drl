@@ -6,14 +6,15 @@ import com.tas.model.risk_pattern.DiagramPiece;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
 import com.tas.utils.ThreatCode;
+import java.util.List;
 
 //declare any global variables here
 
 
 rule "Cross Site Request Forgery"
     when
-        component: DiagramPiece(component.getCoreSource() instanceof ExternalEntity,
-        						component.getCoreDestination() instanceof Process)                    
+        component: DiagramPiece(coreSource instanceof ExternalEntity,
+        						coreDestination instanceof Process)                    
     then
         component.addThreat(ThreatCode.CSRF);
 end
@@ -21,8 +22,8 @@ end
 
 rule "Replay Attack"
     when
-        component: DiagramPiece(component.getCoreSource() instanceof Process, 
-        						component.getCoreDestination() instanceof ExternalEntity)                    
+        component: DiagramPiece(coreSource instanceof Process, 
+        						coreDestination instanceof ExternalEntity)                    
     then
         component.addThreat(ThreatCode.REPLAY_ATTACK);
 end
@@ -30,8 +31,8 @@ end
 
 rule "Weak Credentials Storage"
     when
-        component: DiagramPiece(component.getCoreSource() instanceof Process, 
-        						component.getCoreDestination() instanceof DataStore)                    
+        component: DiagramPiece(coreSource instanceof Process, 
+        						coreDestination instanceof DataStore)                    
     then
         component.addThreat(ThreatCode.WEAK_CREDENTIALS_STORAGE);
 end
@@ -39,8 +40,18 @@ end
 
 rule "Weak Access Control For A Resource"
     when
-        component: DiagramPiece(component.getCoreSource() instanceof DataStore, 
-        						component.getCoreDestination() instanceof Process)                    
+        component: DiagramPiece(coreSource instanceof DataStore, 
+        						coreDestination instanceof Process)                    
     then
         component.addThreat(ThreatCode.WEAK_ACCESS_CONTROL_FOR_A_RESOURCE);
+end
+
+
+rule "Iteration test rule"
+    when    
+     	component : DiagramPiece($list : coreDestinationFlowsIn)  
+     	$value : Flow() from $list  
+     	Boolean(booleanValue == true) from $value.source instanceof DataStore
+    then
+        component.addThreat(ThreatCode.GO_GET_IT);
 end
