@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="https://www.tas.org/tas-schemas" vc:minVersion="1.1"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+    xmlns:ts="https://www.tas.org/tas-schemas">
+    <xs:simpleType final="" name="typeId">
+        <xs:restriction base="xs:ID">
+            <xs:pattern value="[\i-[:]][\c-[:]]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType final="" name="typeIdRef">
+        <xs:restriction base="xs:IDREF">
+            <xs:pattern value="[\i-[:]][\c-[:]]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="assets">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="asset">
+                <xs:complexType>
+                    <xs:attribute name="assetId" type="xs:string" use="required"/>
+                    <xs:attribute default="false" name="protectConfidentiality" type="xs:boolean"
+                        use="optional"/>
+                    <xs:attribute default="false" name="protectIntegrity " type="xs:boolean"
+                        use="optional"/>
+                    <xs:attribute default="false" name="protectAvailability" type="xs:boolean"
+                        use="optional"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="threats">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="threat">
+                <xs:complexType>
+                    <xs:attribute name="threatName" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType abstract="true" name="base">
+        <xs:attribute form="unqualified" name="id" type="ts:typeId" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType abstract="true" name="element">
+        <xs:complexContent>
+            <xs:extension base="ts:base">
+                <xs:sequence minOccurs="0">
+                    <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="threats"
+                        type="ts:threats"/>
+                </xs:sequence>
+                <xs:attribute default="false" name="outOfScope" type="xs:boolean"/>
+                <xs:attribute name="outOfScopeReason" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="shape">
+        <xs:complexContent>
+            <xs:extension base="ts:base"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="blockShape">
+        <xs:complexContent>
+            <xs:extension base="ts:shape">
+                <xs:attribute name="parentSection" type="ts:typeIdRef"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="diagram">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="elements">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group minOccurs="1" ref="ts:processes"/>
+                            <xs:group minOccurs="1" ref="ts:dataStores"/>
+                            <xs:group minOccurs="1" ref="ts:externalEntities"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="flows">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group minOccurs="1" ref="ts:flows"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="boundaries">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group ref="ts:boundaries"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="sections">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:group ref="ts:networkSections"/>
+                            <xs:group ref="ts:trustSections"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:key name="elementKey">
+            <xs:selector xpath="ts:elements/*"/>
+            <xs:field xpath="@id"/>
+        </xs:key>
+        <xs:key name="boundaryKey">
+            <xs:selector xpath="ts:boundaries/*"/>
+            <xs:field xpath="@id"/>
+        </xs:key>
+        <xs:key name="sectionsKey">
+            <xs:selector xpath="ts:sections/*"/>
+            <xs:field xpath="@id"/>
+        </xs:key>
+        <xs:keyref name="flowKeyRefSrc" refer="ts:elementKey">
+            <xs:selector xpath="ts:flows/*"/>
+            <xs:field xpath="@source"/>
+        </xs:keyref>
+        <xs:keyref name="flowKeyRefDest" refer="ts:elementKey">
+            <xs:selector xpath="ts:flows/*"/>
+            <xs:field xpath="@destination"/>
+        </xs:keyref>
+        <xs:keyref name="boundaryKeyRef" refer="ts:boundaryKey">
+            <xs:selector xpath="ts:flows/*/ts:boundariesCrossed/ts:boundaryCross"/>
+            <xs:field xpath="@boundary"/>
+        </xs:keyref>
+        <xs:keyref name="sectionsKeyRefElement" refer="ts:sectionsKey">
+            <xs:selector xpath="ts:elements/*"/>
+            <xs:field xpath="@section"/>
+        </xs:keyref>
+        <xs:keyref name="sectionsKeyRefSection" refer="ts:sectionsKey">
+            <xs:selector xpath="ts:sections/*"/>
+            <xs:field xpath="@parentSection"/>
+        </xs:keyref>
+    </xs:element>
+    <xs:complexType abstract="true" name="blockElement">
+        <xs:complexContent>
+            <xs:extension base="ts:element">
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="0" name="assets" type="ts:assets"/>
+                </xs:sequence>
+                <xs:attribute name="section" use="optional" type="ts:typeIdRef"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="flow">
+        <xs:complexContent>
+            <xs:extension base="ts:element">
+                <xs:sequence maxOccurs="1" minOccurs="1">
+                    <xs:element minOccurs="0" name="boundariesCrossed">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element maxOccurs="unbounded" minOccurs="1" name="boundaryCross">
+                                    <xs:complexType>
+                                        <xs:attribute name="boundary" type="ts:typeIdRef"
+                                            use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element maxOccurs="1" minOccurs="0" name="assets" type="ts:assets"/>
+                </xs:sequence>
+                <xs:attribute name="source" type="ts:typeIdRef" use="required"/>
+                <xs:attribute name="destination" type="ts:typeIdRef" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="process">
+        <xs:complexContent>
+            <xs:extension base="ts:blockElement"> </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="dataStore">
+        <xs:complexContent>
+            <xs:extension base="ts:blockElement"> </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="externalEntity">
+        <xs:complexContent>
+            <xs:extension base="ts:blockElement"> </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:group name="processes">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="dataStores">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="externalEntities">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="flows">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="trustSections">
+        <xs:choice> </xs:choice>
+    </xs:group>
+    <xs:group name="networkSections">
+        <xs:choice/>
+    </xs:group>
+    <xs:group name="boundaries">
+        <xs:choice> </xs:choice>
+    </xs:group>
+</xs:schema>

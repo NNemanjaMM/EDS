@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.tas.org/tas-schemas"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/threats/ThreatSchema.xsd">
+    <elementsList>
+        <element title="SQL Database" elementId="el00000001" elementName="sqlDatabase" />
+        <element title="Web Application" elementId="el00000002" elementName="webApplication" />
+    </elementsList>
+    
+    <assetsList>
+        <asset assetName="Password" assetId="al00000001" />
+    </assetsList>
+    
+    <threatsList>
+        <threat threatName="DOS" threatId="tl00000001"/>
+    </threatsList>
+    
+    <threatDefinitions>
+        <threatDefinition id="td00000001">
+            <requirements
+                elementId="el00000002"
+                assetId="al00000001" />
+            <threats>
+                <threat threatId="tl00000001"
+                    severity="3"/>
+            </threats>
+        </threatDefinition>
+    </threatDefinitions>
+</definitions>

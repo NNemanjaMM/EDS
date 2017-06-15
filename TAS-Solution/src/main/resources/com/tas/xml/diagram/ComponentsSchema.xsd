@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+    targetNamespace="https://www.tas.org/tas-schemas" elementFormDefault="qualified"
+    vc:minVersion="1.1" xmlns:ts="https://www.tas.org/tas-schemas">
+
+    <xs:redefine schemaLocation="DiagramSchema.xsd">
+        <xs:group name="processes">
+            <xs:choice>
+                <xs:group ref="ts:processes"/>
+                <xs:group ref="ts:processElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="dataStores">
+            <xs:choice>
+                <xs:group ref="ts:dataStores"/>
+                <xs:group ref="ts:dataStoreElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="externalEntities">
+            <xs:choice>
+                <xs:group ref="ts:externalEntities"/>
+                <xs:group ref="ts:externalEntityElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="flows">
+            <xs:choice>
+                <xs:group ref="ts:flows"/>
+                <xs:group ref="ts:flowElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="boundaries">
+            <xs:choice>
+                <xs:group ref="ts:boundaries"/>
+                <xs:group ref="ts:boundaryElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="networkSections">
+            <xs:choice>
+                <xs:group ref="ts:networkSections"/>
+                <xs:group ref="ts:networkSectionElements"/>
+            </xs:choice>
+        </xs:group>
+        <xs:group name="trustSections">
+            <xs:sequence>
+                <xs:group ref="ts:trustSections"/>
+                <xs:group ref="ts:trustSectionElements"/>
+            </xs:sequence>
+        </xs:group>
+        <xs:complexType name="flow">
+            <xs:complexContent>
+                <xs:extension base="ts:flow">
+                    <xs:attributeGroup ref="ts:additionalFlowProperties"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+        <xs:complexType name="process">
+            <xs:complexContent>
+                <xs:extension base="ts:process">
+                    <xs:attributeGroup ref="ts:additionalProcessProperties"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+        <xs:complexType name="dataStore">
+            <xs:complexContent>
+                <xs:extension base="ts:dataStore">
+                    <xs:attributeGroup ref="ts:additionaDatastoreProperties"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+        <xs:complexType name="externalEntity">
+            <xs:complexContent>
+                <xs:extension base="ts:externalEntity">
+                    <xs:attributeGroup ref="ts:additionalExternalEntityProperties"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:redefine>
+    <xs:group name="processElements">
+        <xs:choice>
+            <xs:element name="webApplication" type="ts:process"/>
+            <xs:element name="webService" type="ts:process"/>
+            <xs:element name="webServer" type="ts:process"/>
+            <xs:element name="managedApplication" type="ts:process"/>
+            <xs:element name="thickClient" type="ts:process"/>
+            <xs:element name="specialApplication" type="ts:process"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="dataStoreElements">
+        <xs:choice>
+            <xs:element name="cloudStorage" type="ts:dataStore"/>
+            <xs:element name="sqlDatabase" type="ts:dataStore"/>
+            <xs:element name="noSqlDatabase" type="ts:dataStore"/>
+            <xs:element name="fileSystem" type="ts:dataStore"/>
+            <xs:element name="configurationFile" type="ts:dataStore"/>
+            <xs:element name="cache" type="ts:dataStore"/>
+            <xs:element name="html5LocalStorage" type="ts:dataStore"/>
+            <xs:element name="logFile" type="ts:dataStore"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="externalEntityElements">
+        <xs:choice>
+            <xs:element name="browser" type="ts:externalEntity"/>
+            <xs:element name="externalWebApplication" type="ts:externalEntity"/>
+            <xs:element name="externalWebService" type="ts:externalEntity"/>
+            <xs:element name="authorizedProvider" type="ts:externalEntity"/>
+            <xs:element name="securityGateway" type="ts:externalEntity"/>
+            <xs:element name="smartPhone" type="ts:externalEntity"/>
+            <xs:element name="user" type="ts:externalEntity"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="flowElements">
+        <xs:choice>
+            <xs:element name="binary" type="ts:flow"/>
+            <xs:element name="http" type="ts:flow"/>
+            <xs:element name="https" type="ts:flow"/>
+            <xs:element name="tcp" type="ts:flow"/>
+            <xs:element name="udp" type="ts:flow"/>
+            <xs:element name="ipSec" type="ts:flow"/>
+            <xs:element name="namedPipe" type="ts:flow"/>
+            <xs:element name="smb" type="ts:flow"/>
+            <xs:element name="sql" type="ts:flow"/>
+            <xs:element name="ssl" type="ts:flow"/>
+            <xs:element name="rpcOrDcom" type="ts:flow"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="boundaryElements">
+        <xs:choice>
+            <xs:element name="internetBoundary" type="ts:shape"/>
+            <xs:element name="machineBoundary" type="ts:shape"/>
+            <xs:element name="localDMZBoundary" type="ts:shape"/>
+            <xs:element name="appContainerBoundary" type="ts:shape"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="trustSectionElements">
+        <xs:choice>
+            <xs:element name="companyTrustSection" type="ts:blockShape"/>
+            <xs:element name="sandboxTrustSection" type="ts:blockShape"/>
+            <xs:element name="otherTrustSection" type="ts:blockShape"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="networkSectionElements">
+        <xs:choice>
+            <xs:element name="internetDmz" type="ts:blockShape"/>
+            <xs:element name="officeNetwork" type="ts:blockShape"/>
+            <xs:element name="sharedNetwork" type="ts:blockShape"/>
+        </xs:choice>
+    </xs:group>
+    <xs:attributeGroup name="additionalFlowProperties"/>
+    <xs:attributeGroup name="additionalProcessProperties"/>
+    <xs:attributeGroup name="additionaDatastoreProperties"/>
+    <xs:attributeGroup name="additionalExternalEntityProperties"/>
+</xs:schema>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram xmlns="https://www.tas.org/tas-schemas"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/diagram/ComponentsSchema.xsd">
+    
+    <elements>        
+        <browser id="de1000001" 
+            name="Firefox Browser" />
+        
+        <webServer id="de1000002"  
+            name="Server"  />
+        
+        <webService id="de1000003"   
+            name="Database Server" />   
+        
+        <logFile id="de1000004"  
+            name="Log store" />  
+        
+        <sqlDatabase id="de1000005" 
+            name="Main Database" />    
+    </elements>
+    
+    <flows>   
+        <http id="df1000006"
+            source="de1000001" 
+            destination="de1000002" 
+            name="Server Request" >
+            <boundariesCrossed>
+                <boundaryCross boundary="ds1000010"/>
+            </boundariesCrossed>
+        </http>    
+        
+        <http id="df1000007" 
+            source="de1000002" 
+            destination="de1000001" 
+            name="Server Response" >
+            <boundariesCrossed>
+                <boundaryCross boundary="ds1000010"/>
+            </boundariesCrossed>
+        </http>
+        
+        <binary id="df1000008" 
+            source="de1000002"
+            destination="de1000003" 
+            name="Database Request" >
+            <boundariesCrossed>
+                <boundaryCross boundary="ds1000011"/>
+            </boundariesCrossed>
+        </binary>
+        
+        <binary id="df1000009" 
+            source="de1000003" 
+            destination="de1000002" 
+            name="Database Response" >
+            <boundariesCrossed>
+                <boundaryCross boundary="ds1000011"/>
+            </boundariesCrossed>
+        </binary>
+        
+        <binary id="df1000018" 
+            source="de1000002"
+            destination="de1000004" 
+            name="Log Request" >
+        </binary>
+        
+        <binary id="df1000019" 
+            source="de1000004" 
+            destination="de1000002" 
+            name="Log Response" >
+        </binary>
+        
+        <binary id="df1000028" 
+            source="de1000003"
+            destination="de1000005" 
+            name="DataStore Request" >
+        </binary>
+        
+        <binary id="df1000029" 
+            source="de1000005" 
+            destination="de1000003" 
+            name="DataStore Response" >
+        </binary>
+    </flows>
+    
+    <boundaries>        
+        <internetBoundary id="ds1000010"
+            name="Internet Edge" />
+        
+        <machineBoundary id="ds1000011" 
+            name="Different machine" />
+    </boundaries>
+    
+    <sections>
+        
+    </sections>
+</diagram>
