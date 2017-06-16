@@ -139,16 +139,19 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			Validator.checkWellFormness(diagramFile);
 			
 		} catch (ParserConfigurationException e) {
-			message = "Parser can not be initialized!\nPlease try again.";
-			JOptionPane.showMessageDialog(dialog, message, "Parser Initialization Error", JOptionPane.ERROR_MESSAGE);
+			message = "Parser could not be initialized!\nPlease try again.";
+			//JOptionPane.showMessageDialog(dialog, message, "Parser Initialization Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		} catch (SAXException e) {
 			message = "XML Diagram is not well formed!\nXML Diagram contains syntax errors. Please choose another diagram or fix current.";
-			JOptionPane.showMessageDialog(dialog, message, "Diagram Error", JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(dialog, message, "Diagram Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		} catch (IOException e) {
-			message = "File can not be read!\nPlease load file again and then try.";
-			JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			message = "File could not be read!\nPlease load file again and then try.";
+			//JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		}
 		
@@ -159,11 +162,13 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			
 		} catch (SAXException e) {
 			message = "XML Diagram is not valid!\nXML Diagram contains semantic errors. Please choose another diagram or fix current.";
-			JOptionPane.showMessageDialog(dialog, message, "Diagram Error", JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(dialog, message, "Diagram Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		} catch (IOException e) {
-			message = "File can not be read!\nPlease load file again and then try.";
-			JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			message = "File could not be read!\nPlease load file again and then try.";
+			//JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		} 
 		
@@ -177,8 +182,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			diagram = Marshaller.readXMLDiagram(diagramFile);
 			
 		} catch (JAXBException e) {
-			String message = "Parser can not be initialized!\nPlease try again.";
-			JOptionPane.showMessageDialog(dialog, message, "Parser Initialization Error", JOptionPane.ERROR_MESSAGE);
+			String message = "Parser could not be initialized!\nPlease try again.";
+			//JOptionPane.showMessageDialog(dialog, message, "Parser Initialization Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		}
 		
@@ -192,12 +198,14 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		try {
 			ruleBase = RulesBase.createBase();
 		} catch (DroolsParserException e) {
-			message = "Defined rules can not be initialized!\n.Check rules definitions or contact supervisors.";
-			JOptionPane.showMessageDialog(dialog, message, "Rules Initialization Error", JOptionPane.ERROR_MESSAGE);
+			message = "Defined rules could not be initialized!\n.Check rules definitions or contact supervisors.";
+			//JOptionPane.showMessageDialog(dialog, message, "Rules Initialization Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		} catch (IOException e) {
-			message = "File can not be read!\nPlease load file again and then try.";
-			JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			message = "File could not be read!\nPlease load file again and then try.";
+			//JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		}		
 		
@@ -209,8 +217,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		try {
 			workingMemory.fireAllRules();	
 		} catch (FactException e) {
-			message = "Defined rules can not be applied!\n.Check your diagram or contact supervisors.";
-			JOptionPane.showMessageDialog(dialog, message, "Rules Applying Error", JOptionPane.ERROR_MESSAGE);
+			message = "Defined rules could not be applied!\n.Check your diagram or contact supervisors.";
+			//JOptionPane.showMessageDialog(dialog, message, "Rules Applying Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
 			return false;
 		}			
 		

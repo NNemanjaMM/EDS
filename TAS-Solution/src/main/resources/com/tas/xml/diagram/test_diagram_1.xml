@@ -10,7 +10,7 @@
             outOfScopeReason="Not in our jurisdiction" >
             <assets>                
                 <asset 
-                    name=""
+                    assetId=""
                     protectConfidentiality="true"  />
             </assets>      
         </browser>
@@ -21,7 +21,7 @@
             outOfScope="false" >
             <assets>     
                 <asset 
-                    name=""
+                    assetId=""
                     protectAvailability="true" />
             </assets>      
         </webApplication>
@@ -44,7 +44,7 @@
             </boundariesCrossed>
             <assets>     
                 <asset 
-                    name=""
+                    assetId=""
                     protectConfidentiality="false" 
                     protectIntegrity="true" 
                     protectAvailability="true" />
@@ -75,7 +75,7 @@
             name="Database Response" >
             <assets>     
                 <asset 
-                    name=""
+                    assetId=""
                     protectConfidentiality="false" 
                     protectIntegrity="false"  />
             </assets>      

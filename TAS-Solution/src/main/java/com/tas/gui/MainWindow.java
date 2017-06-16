@@ -54,11 +54,11 @@ public class MainWindow extends JFrame {
 	
 	private void initializeContent() {
 		setLayout(new GridBagLayout());
-		contentDiagram = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\schemas\\test_diagram_1.xml"); // TODO AFTER remove default diagram
+		contentDiagram = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\diagram\\test_diagram_1.xml"); // TODO AFTER remove default diagram
 		contentReport = new JTextField();
 		JLabel labelBrowse = new JLabel("Source diagram location: ");
 		JLabel labelReport = new JLabel("Save report location: ");
-		checkboxComponentsThreats = new JCheckBox("Analyse potential threats of components");
+		checkboxComponentsThreats = new JCheckBox("Analyse components vulnerabilities");
 		
 		JButton buttonBrowse = new JButton(new BrowseDiagramAction("..."));
 		JButton buttonReport = new JButton(new BrowseReportAction("..."));

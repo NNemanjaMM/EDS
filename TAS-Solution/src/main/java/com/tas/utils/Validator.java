@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 public class Validator {
 	
-	private static final String SCHEMA_PATH = "src\\main\\resources\\com\\tas\\schemas\\ComponentsSchema.xsd";
+	private static final String SCHEMA_PATH = "src\\main\\resources\\com\\tas\\xml\\diagram\\ComponentsSchema.xsd";
 
 	@SuppressWarnings("unused")
  	public static void checkWellFormness(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
