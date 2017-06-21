@@ -10,6 +10,7 @@ package com.tas.model.diagram;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -21,16 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="externalEntity">
  *   &lt;complexContent>
- *     &lt;extension base="{https://www.tas.org/tas-schemas}externalEntity">
- *       &lt;redefine>
- *         &lt;complexType name="externalEntity">
- *           &lt;complexContent>
- *             &lt;extension base="{https://www.tas.org/tas-schemas}blockElement">
- *             &lt;/extension>
- *           &lt;/complexContent>
- *         &lt;/complexType>
- *       &lt;/redefine>
- *       &lt;attGroup ref="{https://www.tas.org/tas-schemas}additionalExternalEntityProperties"/>
+ *     &lt;extension base="{https://www.tas.org/tas-schemas}blockElement">
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -39,9 +31,12 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "externalEntity")
-public class ExternalEntity
-    extends OriginalExternalEntity
+@XmlType(name = "")
+@XmlSeeAlso({
+    ExternalEntity.class
+})
+public class OriginalExternalEntity
+    extends BlockElement
 {
 
 
