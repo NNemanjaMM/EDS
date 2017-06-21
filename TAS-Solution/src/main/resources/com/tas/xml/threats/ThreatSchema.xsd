@@ -3,35 +3,41 @@
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
     vc:minVersion="1.1" targetNamespace="https://www.tas.org/tas-schemas"
     xmlns:ts="https://www.tas.org/tas-schemas">
-    <xs:complexType name="elementsListType">
-        <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="1" name="element" type="ts:elementType"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="assetsListType">
-        <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="1" name="asset" type="ts:assetType">
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="threatsListType">
-        <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="1" name="threat" type="ts:threatType"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="threatDefinitionsType">
-        <xs:sequence>
-            <xs:element name="threatDefinition" type="ts:threatDefinitionType" maxOccurs="unbounded"
-            />
-        </xs:sequence>
-    </xs:complexType>
     <xs:element name="definitions">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="elementsList" type="ts:elementsListType"/>
-                <xs:element name="assetsList" type="ts:assetsListType"/>
-                <xs:element name="threatsList" type="ts:threatsListType"/>
-                <xs:element name="threatDefinitions" type="ts:threatDefinitionsType"/>
+                <xs:element name="elementsList">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs="unbounded" minOccurs="1" name="element"
+                                type="ts:elementType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="assetsList">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs="unbounded" minOccurs="1" name="asset"
+                                type="ts:assetType"> </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="threatsList">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs="unbounded" minOccurs="1" name="threat"
+                                type="ts:threatType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="threatDefinitions">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs="unbounded" minOccurs="0" name="threatsForElement"
+                                type="ts:threatsForElementType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
         </xs:complexType>
         <xs:key name="elementKey">
@@ -47,15 +53,16 @@
             <xs:field xpath="@threatId"/>
         </xs:key>
         <xs:keyref name="elemenKeyRef" refer="ts:elementKey">
-            <xs:selector xpath="ts:threatDefinitions/ts:threatDefinition/ts:requirements"/>
+            <xs:selector xpath="ts:threatDefinitions/ts:threatsForElement"/>
             <xs:field xpath="@elementId"/>
         </xs:keyref>
         <xs:keyref name="assetKeyRef" refer="ts:assetKey">
-            <xs:selector xpath="ts:threatDefinitions/ts:threatDefinition/ts:requirements"/>
+            <xs:selector xpath="ts:threatDefinitions/ts:threatsForElement/ts:threatDefinition"/>
             <xs:field xpath="@assetId"/>
         </xs:keyref>
         <xs:keyref name="threatKeyRef" refer="ts:threatKey">
-            <xs:selector xpath="ts:threatDefinitions/ts:threatDefinition/ts:threats/ts:threat"/>
+            <xs:selector
+                xpath="ts:threatDefinitions/ts:threatsForElement/ts:threatDefinition/*/ts:threat"/>
             <xs:field xpath="@threatId"/>
         </xs:keyref>
     </xs:element>
@@ -78,38 +85,38 @@
     <xs:complexType name="threatType">
         <xs:attribute name="threatId" type="xs:ID" use="required"/>
         <xs:attribute name="threatName" type="xs:string"/>
+        <xs:attribute name="severity">
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="1"/>
+                    <xs:maxInclusive value="5"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="threatsForElementType">
+        <xs:sequence>
+            <xs:element name="threatDefinition" type="ts:threatDefinitionType" maxOccurs="unbounded"
+            />
+        </xs:sequence>
+        <xs:attribute name="elementId" type="xs:IDREF" use="required"/>
     </xs:complexType>
     <xs:complexType name="threatDefinitionType">
         <xs:sequence>
-            <xs:element name="requirements">
+            <xs:element name="confidentialityThreats" type="ts:threatsForCIA"/>
+            <xs:element name="integrityThreats" type="ts:threatsForCIA"> </xs:element>
+            <xs:element name="availabilityThreats" type="ts:threatsForCIA"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="assetId" type="xs:IDREF" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="threatsForCIA">
+        <xs:sequence>
+            <xs:element name="threat" maxOccurs="unbounded" minOccurs="0">
                 <xs:complexType>
-                    <xs:attribute name="assetId" type="xs:IDREF" use="required"/>
-                    <xs:attribute default="false" name="endangersConfidentiality" type="xs:boolean"/>
-                    <xs:attribute default="false" name="endangersIntegrity" type="xs:boolean"/>
-                    <xs:attribute default="false" name="endangersAvailability" type="xs:boolean"/>
-                    <xs:attribute name="elementId" type="xs:IDREF" use="required"/>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="threats">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="threat" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="threatId" type="xs:IDREF" use="required"/>
-                                <xs:attribute name="severity">
-                                    <xs:simpleType>
-                                        <xs:restriction base="xs:int">
-                                            <xs:minInclusive value="1"/>
-                                            <xs:maxInclusive value="5"/>
-                                        </xs:restriction>
-                                    </xs:simpleType>
-                                </xs:attribute>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
+                    <xs:attribute name="threatId" type="xs:IDREF" use="required"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
-        <xs:attribute name="id" type="xs:ID" use="required"/>
     </xs:complexType>
 </xs:schema>

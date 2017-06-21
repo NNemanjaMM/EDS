@@ -2,28 +2,302 @@
 <definitions xmlns="https://www.tas.org/tas-schemas"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/threats/ThreatSchema.xsd">
+    
     <elementsList>
-        <element title="SQL Database" elementId="el00000001" elementName="sqlDatabase" />
-        <element title="Web Application" elementId="el00000002" elementName="webApplication" />
+        <element title="Browser" elementId="el00000001" elementName="browser" />
+        <element title="Web Server" elementId="el00000002" elementName="webServer" />
+        <element title="Web Service" elementId="el00000003" elementName="webService" />
+        <element title="Log File" elementId="el00000004" elementName="logFile" />
+        <element title="SQL Database" elementId="el00000005" elementName="sqlDatabase" />
+        <element title="HTTP flow" elementId="el00000006" elementName="http" />
+        <element title="Binary flow" elementId="el00000007" elementName="binary" />        
     </elementsList>
     
     <assetsList>
-        <asset assetName="Password" assetId="al00000001" />
+        <asset assetName="PII" assetId="al00000001" />
+        <asset assetName="Password" assetId="al00000002" />
+        <asset assetName="Cookie" assetId="al00000003" />
+        <asset assetName="Work Station" assetId="al00000004" />
     </assetsList>
     
     <threatsList>
-        <threat threatName="DOS" threatId="tl00000001"/>
+        <threat threatName="KeyLogger" threatId="tl00000001" severity="3"/>
+        <threat threatName="Malware" threatId="tl00000002" severity="3"/>
+        <threat threatName="DOS" threatId="tl00000003"  severity="3"/>
+        <threat threatName="UnauthorizedAccess" threatId="tl00000004" severity="3"/>
+        <threat threatName="UnauthorizedChange" threatId="tl00000006" severity="3"/>
+        <threat threatName="CodeInjection" threatId="tl00000005" severity="3"/>
+        <threat threatName="Sniffing" threatId="tl00000007" severity="3"/>
+        <threat threatName="Spoofing" threatId="tl00000008" severity="3"/>
     </threatsList>
     
     <threatDefinitions>
-        <threatDefinition id="td00000001">
-            <requirements
-                elementId="el00000002"
-                assetId="al00000001" />
-            <threats>
-                <threat threatId="tl00000001"
-                    severity="3"/>
-            </threats>
-        </threatDefinition>
+        
+        <threatsForElement elementId="el00000001">  <!-- Browser -->
+            
+            <threatDefinition id="td00000011" assetId="al00000001">
+                <confidentialityThreats>
+                    <threat threatId="tl00000001"/>
+                </confidentialityThreats>
+                <integrityThreats></integrityThreats>
+                <availabilityThreats></availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000001" assetId="al00000002">
+                <confidentialityThreats>
+                    <threat threatId="tl00000001"/>
+                </confidentialityThreats>
+                <integrityThreats></integrityThreats>
+                <availabilityThreats></availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000007" assetId="al00000003">
+                <confidentialityThreats>
+                    <threat threatId="tl00000005"/>
+                    <threat threatId="tl00000002"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000002"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000002"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000021" assetId="al00000004">
+                <confidentialityThreats>
+                    <threat threatId="tl00000002"/>
+                    <threat threatId="tl00000004"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000002"/>
+                    <threat threatId="tl00000006"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000002"/>
+                    <threat threatId="tl00000003"/>
+                    <threat threatId="tl00000006"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+        </threatsForElement>
+        
+        
+        <threatsForElement elementId="el00000002">  <!-- Web Server -->
+            
+            <threatDefinition id="td00000012" assetId="al00000001">
+                <confidentialityThreats>
+                    <threat threatId="tl00000002"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000002"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000002"/>
+                    <threat threatId="tl00000003"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000002" assetId="al00000002">
+                <confidentialityThreats>
+                    <threat threatId="tl00000002"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000002"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000002"/>
+                    <threat threatId="tl00000003"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000022" assetId="al00000004">
+                <confidentialityThreats>
+                    <threat threatId="tl00000002"/>
+                    <threat threatId="tl00000004"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000002"/>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000002"/>
+                    <threat threatId="tl00000003"/>
+                    <threat threatId="tl00000005"/>
+                    <threat threatId="tl00000006"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+        </threatsForElement>
+            
+            
+        <threatsForElement elementId="el00000003">  <!-- Web Service -->
+            
+            <threatDefinition id="td00000013" assetId="al00000001">
+                <confidentialityThreats>
+                    <threat threatId="tl00000004"/>
+                    <threat threatId="tl00000005"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000003" assetId="al00000002">
+                <confidentialityThreats>
+                    <threat threatId="tl00000004"/>
+                    <threat threatId="tl00000005"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000008" assetId="al00000003">
+                <confidentialityThreats>
+                    <threat threatId="tl00000005"/>
+                    <threat threatId="tl00000002"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000002"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000002"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000023" assetId="al00000004">
+                <confidentialityThreats>
+                    <threat threatId="tl00000005"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000005"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000005"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+        </threatsForElement>
+                
+                
+        <threatsForElement elementId="el00000004">  <!-- Log File -->
+            
+            <threatDefinition id="td00000014" assetId="al00000001">
+                <confidentialityThreats>
+                    <threat threatId="tl00000004"/>
+                    <threat threatId="tl00000002"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000002"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000002"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000004" assetId="al00000002">
+                <confidentialityThreats>
+                    <threat threatId="tl00000004"/>
+                    <threat threatId="tl00000002"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000002"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000002"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+        </threatsForElement>
+                    
+                    
+        <threatsForElement elementId="el00000005">  <!-- SQL Database -->
+            
+            <threatDefinition id="td00000015" assetId="al00000001">
+                <confidentialityThreats>
+                    <threat threatId="tl00000004"/>
+                    <threat threatId="tl00000005"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </availabilityThreats>
+            </threatDefinition>
+                
+            <threatDefinition id="td00000005" assetId="al00000002">
+                <confidentialityThreats>
+                    <threat threatId="tl00000004"/>
+                    <threat threatId="tl00000005"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000006"/>
+                    <threat threatId="tl00000005"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+        </threatsForElement>
+                        
+                        
+        <threatsForElement elementId="el00000006">  <!-- HTTP Flow -->
+            
+            <threatDefinition id="td00000016" assetId="al00000001">
+                <confidentialityThreats>
+                    <threat threatId="tl00000007"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000008"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000008"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000006" assetId="al00000002">
+                <confidentialityThreats>
+                    <threat threatId="tl00000007"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000008"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000008"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+            <threatDefinition id="td00000009" assetId="al00000003">
+                <confidentialityThreats>
+                    <threat threatId="tl00000007"/>
+                </confidentialityThreats>
+                <integrityThreats>
+                    <threat threatId="tl00000008"/>
+                </integrityThreats>
+                <availabilityThreats>
+                    <threat threatId="tl00000008"/>
+                </availabilityThreats>
+            </threatDefinition>
+            
+        </threatsForElement>
+        
+        
     </threatDefinitions>
 </definitions>
