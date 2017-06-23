@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vulnerabilitiesDefinitions xmlns="https://www.tas.org/tas-schemas"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/vulnerabilities/VulnerabilitiesSchema.xsd">
+    
+    <vulnerabilityDefinition
+        vulnerabilityId="vd00000001" 
+        vulnerabilityTitle="Injection">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000002" 
+        vulnerabilityTitle="Identity Spoofing">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000003" 
+        vulnerabilityTitle="Program Spoofing">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
+</vulnerabilitiesDefinitions>

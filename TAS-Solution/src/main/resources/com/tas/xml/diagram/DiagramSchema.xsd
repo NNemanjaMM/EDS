@@ -3,6 +3,7 @@
     targetNamespace="https://www.tas.org/tas-schemas" vc:minVersion="1.1"
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
     xmlns:ts="https://www.tas.org/tas-schemas">
+    <xs:include id="as" schemaLocation="../assets/AssetSchema.xsd"/>
     <xs:simpleType final="" name="typeId">
         <xs:restriction base="xs:ID">
             <xs:pattern value="[\i-[:]][\c-[:]]*"/>
@@ -15,26 +16,26 @@
     </xs:simpleType>
     <xs:complexType name="assets">
         <xs:sequence>
-            <xs:element maxOccurs="unbounded" name="asset">
+            <xs:element maxOccurs="unbounded" name="asset" minOccurs="0">
                 <xs:complexType>
                     <xs:attribute name="assetId" type="xs:string" use="required"/>
-                    <xs:attribute default="false" name="protectConfidentiality" type="xs:boolean"
-                        use="optional"/>
-                    <xs:attribute default="false" name="protectIntegrity " type="xs:boolean"
-                        use="optional"/>
-                    <xs:attribute default="false" name="protectAvailability" type="xs:boolean"
-                        use="optional"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="threats">
+    <xs:complexType name="vulnerabilities">
         <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="threat">
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="vulnerability">
                 <xs:complexType>
-                    <xs:attribute name="threatName" type="xs:string"/>
+                    <xs:attribute name="vulnerabilityId" type="xs:string" use="required"/>
                 </xs:complexType>
             </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="importAssets">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="importAsset"
+                type="ts:assetDefinition"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType abstract="true" name="base">
@@ -45,8 +46,9 @@
         <xs:complexContent>
             <xs:extension base="ts:base">
                 <xs:sequence minOccurs="0">
-                    <xs:element form="qualified" maxOccurs="1" minOccurs="1" name="threats"
-                        type="ts:threats"/>
+                    <xs:element minOccurs="0" name="importAssets" type="ts:importAssets"/>
+                    <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="vulnerabilities"
+                        type="ts:vulnerabilities"/>
                 </xs:sequence>
                 <xs:attribute default="false" name="outOfScope" type="xs:boolean"/>
                 <xs:attribute name="outOfScopeReason" type="xs:string"/>

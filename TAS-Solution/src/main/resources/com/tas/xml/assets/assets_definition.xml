@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assetDefinitions xmlns="https://www.tas.org/tas-schemas"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/assets/AssetSchema.xsd">
+    
+    <assetDefinition assetId="as00000001" 
+        assetTitle="Administrator Password"
+        protectConfidentiality="true"
+        protectIntegrity="false"
+        protectAvailability="false"
+        impactConfidentiality="5" 
+        impactIntegrity="5" 
+        impactAvailability="5" />
+    
+    
+</assetDefinitions>

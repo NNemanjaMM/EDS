@@ -9,9 +9,7 @@
             outOfScope="true"
             outOfScopeReason="Not in our jurisdiction" >
             <assets>                
-                <asset 
-                    assetId=""
-                    protectConfidentiality="true"  />
+                <asset assetId="" />
             </assets>      
         </browser>
         
@@ -20,9 +18,7 @@
             section="ds1000005"
             outOfScope="false" >
             <assets>     
-                <asset 
-                    assetId=""
-                    protectAvailability="true" />
+                <asset assetId="" />
             </assets>      
         </webApplication>
         
@@ -43,11 +39,7 @@
                 <boundaryCross boundary="db1000010"/>
             </boundariesCrossed>
             <assets>     
-                <asset 
-                    assetId=""
-                    protectConfidentiality="false" 
-                    protectIntegrity="true" 
-                    protectAvailability="true" />
+                <asset assetId="" />
             </assets>      
         </http>    
         
@@ -74,10 +66,7 @@
             destination="de1000002" 
             name="Database Response" >
             <assets>     
-                <asset 
-                    assetId=""
-                    protectConfidentiality="false" 
-                    protectIntegrity="false"  />
+                <asset assetId="" />
             </assets>      
         </http>
     </flows>

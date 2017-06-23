@@ -3,21 +3,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/diagram/ComponentsSchema.xsd">
     
-    <elements>        
+    <elements>
+        
         <browser id="de1000001" 
             name="Firefox Browser" />
         
         <webServer id="de1000002"  
             name="Server"  />
         
-        <webService id="de1000003"   
+        <webService id="de1000003"
             name="Database Server" />   
         
         <logFile id="de1000004"  
             name="Log store" />  
         
         <sqlDatabase id="de1000005" 
-            name="Main Database" />    
+            name="Main Database" />
+            
     </elements>
     
     <flows>   
