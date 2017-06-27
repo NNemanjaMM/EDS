@@ -89,7 +89,7 @@ public class Decomposer {
 		
 		String elementId = sourceElement.getId();
 		List<Flow> flowsList = new ArrayList<Flow>();
-		List<JAXBElement<? extends Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
+		List<JAXBElement<Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
 		for (JAXBElement<? extends Flow> flow : diagramFlows) {
 			if (((BlockElement)flow.getValue().getSource()).getId().equals(elementId)) {
@@ -107,7 +107,7 @@ public class Decomposer {
 		
 		String elementId = destinationElement.getId();
 		List<Flow> flowsList = new ArrayList<Flow>();
-		List<JAXBElement<? extends Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
+		List<JAXBElement<Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
 		for (JAXBElement<? extends Flow> flow : diagramFlows) {
 			if (((BlockElement)flow.getValue().getDestination()).getId().equals(elementId)) {
@@ -127,7 +127,7 @@ public class Decomposer {
 		String secondId = secondElement.getId();
 		
 		List<Flow> flowsList = new ArrayList<Flow>();
-		List<JAXBElement<? extends Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
+		List<JAXBElement<Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
 		for (JAXBElement<? extends Flow> flow : diagramFlows) {
 			

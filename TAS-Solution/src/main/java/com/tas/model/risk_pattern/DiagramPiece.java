@@ -9,7 +9,6 @@ import com.tas.model.diagram.Flow;
 public class DiagramPiece {
 	
 	private Flow coreFlow;
-	Object o;
 	private BlockElement coreSource;
 	private BlockElement coreDestination;
 	
@@ -20,7 +19,7 @@ public class DiagramPiece {
 	private List<Flow> coreSourceFlowsIn;
 	private List<Flow> coreSourceFlowsOut;
 	
-	private List<Integer> threats;
+	private List<String> vulnerabilities;
 	
 	
 	public DiagramPiece(Flow coreFlow) {
@@ -34,7 +33,7 @@ public class DiagramPiece {
 		coreSourceFlowsIn = new ArrayList<Flow>();
 		coreSourceFlowsOut = new ArrayList<Flow>();
 		
-		threats = new ArrayList<Integer>();
+		vulnerabilities = new ArrayList<String>();
 	}
 	
 	
@@ -70,8 +69,8 @@ public class DiagramPiece {
 		return coreSourceFlowsOut;
 	}
 	
-	public List<Integer> getThreats() {
-		return threats;
+	public List<String> getVulnerabilities() {
+		return vulnerabilities;
 	}
 	
 	
@@ -107,8 +106,8 @@ public class DiagramPiece {
 		this.coreSourceFlowsOut = coreSourceFlows;
 	}
 	
-	public void setThreats(List<Integer> threats) {
-		this.threats = threats;
+	public void setVulnerabilities(List<String> vulnerabilities) {
+		this.vulnerabilities = vulnerabilities;
 	}
 		
 	
@@ -132,8 +131,8 @@ public class DiagramPiece {
 		this.coreSourceFlowsOut.add(coreSourceFlowOut);
 	}
 	
-	public void addThreat(Integer threatId) {
-		this.threats.add(threatId);
+	public void addVulnerability(String vulnerabilityId) {
+		this.vulnerabilities.add(vulnerabilityId);
 	}
 	
 	public String toString() {

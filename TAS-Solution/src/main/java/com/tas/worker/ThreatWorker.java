@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,8 +15,10 @@ import org.drools.core.WorkingMemory;
 import org.xml.sax.SAXException;
 
 import com.tas.gui.WorkingDialog;
+import com.tas.model.assets.AssetDefinitions;
 import com.tas.model.diagram.Diagram;
 import com.tas.model.risk_pattern.DiagramPiece;
+import com.tas.model.vulnerabilities.VulnerabilitiesDefinitions;
 import com.tas.utils.Decomposer;
 import com.tas.utils.Marshaller;
 import com.tas.utils.RulesBase;
@@ -28,12 +29,19 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	private WorkingDialog dialog;
 
 	private File diagramFile;
+	private File assetsFile;
+	private File vulnerabilitiesFile;
 	private File reportFile;
 	private boolean analyseComponents;
-	private Diagram diagram;
 	
-	public ThreatWorker(File diagram, File report, boolean analyseComponents) {
+	private Diagram diagram;
+	private AssetDefinitions assetDefinitions;
+	private VulnerabilitiesDefinitions vulnerabilityDefinitions;
+	
+	public ThreatWorker(File diagram, File assets, File vulnerabilities, File report, boolean analyseComponents) {
 		this.diagramFile = diagram;
+		this.assetsFile = assets;
+		this.vulnerabilitiesFile = vulnerabilities;
 		this.reportFile = report;
 		this.analyseComponents = analyseComponents;
 	}
@@ -46,18 +54,45 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(1);
 		
-		/* **********	VALIDATING XML FILE			**********	- DONE */
+		/* **********	VALIDATING XML DIAGRAM			**********	- DONE */
 		if (!validateDiagram()) {
+			return false;
+		}		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false;
+		}
+		setProgress(10);
+
+		/* **********	VALIDATING XML ASSETS			**********	- DONE */
+		if (!validateAssetDefinitions()) {
+			return false;
+		}		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false;
+		}
+		setProgress(10);
+
+		/* **********	VALIDATING XML VULNERABILITIES	**********	- DONE */
+		if (!validateVulnerabilityDefinitions()) {
+			return false;
+		}		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false;
+		}
+		setProgress(10);
+
+		/* **********	READING XML DIAGRAM TO MEMORY	**********	- DONE */
+		if (!readDiagram()) {
 			return false;
 		}
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(10);
+		setProgress(20);
 
-		/* **********	READING XML FILE TO MEMORY	**********	- DONE */
-		if (!readDiagram()) {
+		/* **********	READING XML ASSETS TO MEMORY	**********	- DONE */
+		if (!readAssetDefinitions()) {
 			return false;
 		}
 		
@@ -123,8 +158,8 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		for (DiagramPiece diagramPiece : pieces) {						
 			System.out.println("*******************\nThreats between " + 
 					diagramPiece.getCoreSource().getName() + " and " + diagramPiece.getCoreDestination().getName());
-			for (Integer threat : diagramPiece.getThreats()) {
-				System.out.println("Threat id: " + threat);
+			for (String vulnerability : diagramPiece.getVulnerabilities()) {
+				System.out.println("Threat id: " + vulnerability);
 			}
 		}
 		
@@ -140,17 +175,14 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			
 		} catch (ParserConfigurationException e) {
 			message = "Parser could not be initialized!\nPlease try again.";
-			//JOptionPane.showMessageDialog(dialog, message, "Parser Initialization Error", JOptionPane.ERROR_MESSAGE);
 			dialog.setErrorMessage(message);
 			return false;
 		} catch (SAXException e) {
 			message = "XML Diagram is not well formed!\nXML Diagram contains syntax errors. Please choose another diagram or fix current.";
-			//JOptionPane.showMessageDialog(dialog, message, "Diagram Error", JOptionPane.ERROR_MESSAGE);
 			dialog.setErrorMessage(message);
 			return false;
 		} catch (IOException e) {
-			message = "File could not be read!\nPlease load file again and then try.";
-			//JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			message = "File could not be read!\nPlease load file again and try again.";
 			dialog.setErrorMessage(message);
 			return false;
 		}
@@ -158,16 +190,92 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		try {
 			
-			Validator.checkValidity(diagramFile);
+			Validator.checkDiagramValidity(diagramFile);
 			
 		} catch (SAXException e) {
 			message = "XML Diagram is not valid!\nXML Diagram contains semantic errors. Please choose another diagram or fix current.";
-			//JOptionPane.showMessageDialog(dialog, message, "Diagram Error", JOptionPane.ERROR_MESSAGE);
 			dialog.setErrorMessage(message);
 			return false;
 		} catch (IOException e) {
-			message = "File could not be read!\nPlease load file again and then try.";
-			//JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
+			message = "File could not be read!\nPlease load file again and try again.";
+			dialog.setErrorMessage(message);
+			return false;
+		} 
+		
+		return true;
+	}
+	
+	private boolean validateAssetDefinitions() {
+		String message;
+		
+		try {
+			
+			Validator.checkWellFormness(assetsFile);
+			
+		} catch (ParserConfigurationException e) {
+			message = "Parser could not be initialized!\nPlease try again.";
+			dialog.setErrorMessage(message);
+			return false;
+		} catch (SAXException e) {
+			message = "Asset Definitions XML file is not well formed!\nXML File contains syntax errors. Please choose another file or fix current.";
+			dialog.setErrorMessage(message);
+			return false;
+		} catch (IOException e) {
+			message = "File could not be read!\nPlease load file again and try again.";
+			dialog.setErrorMessage(message);
+			return false;
+		}
+		
+		
+		try {
+			
+			Validator.checkAssetDefinitionsValidity(assetsFile);
+			
+		} catch (SAXException e) {
+			message = "Asset Definitions XML file is not valid!\nXML File contains semantic errors. Please choose another file or fix current.";
+			dialog.setErrorMessage(message);
+			return false;
+		} catch (IOException e) {
+			message = "File could not be read!\nPlease load file again and try again.";
+			dialog.setErrorMessage(message);
+			return false;
+		} 
+		
+		return true;
+	}
+	
+	private boolean validateVulnerabilityDefinitions() {
+		String message;
+		
+		try {
+			
+			Validator.checkWellFormness(assetsFile);
+			
+		} catch (ParserConfigurationException e) {
+			message = "Parser could not be initialized!\nPlease try again.";
+			dialog.setErrorMessage(message);
+			return false;
+		} catch (SAXException e) {
+			message = "Vulnerability Definitions XML file is not well formed!\nXML File has been unauthorizedly modified and contains syntax errors. Please contact the support.";
+			dialog.setErrorMessage(message);
+			return false;
+		} catch (IOException e) {
+			message = "File could not be read!\nPlease load file again and try again.";
+			dialog.setErrorMessage(message);
+			return false;
+		}
+		
+		
+		try {
+			
+			Validator.checkVulnerabilityDefinitionsValidity(vulnerabilitiesFile);
+			
+		} catch (SAXException e) {
+			message = "Vulnerability Definitions XML file is not valid!\nXML File has been unauthorizedly modified and contains semantic errors. Please contact the support.";
+			dialog.setErrorMessage(message);
+			return false;
+		} catch (IOException e) {
+			message = "File could not be read!\nPlease load file again and try again.";
 			dialog.setErrorMessage(message);
 			return false;
 		} 
@@ -183,7 +291,36 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			
 		} catch (JAXBException e) {
 			String message = "Parser could not be initialized!\nPlease try again.";
-			//JOptionPane.showMessageDialog(dialog, message, "Parser Initialization Error", JOptionPane.ERROR_MESSAGE);
+			dialog.setErrorMessage(message);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean readAssetDefinitions() {
+
+		try {
+			
+			assetDefinitions = Marshaller.readXMLAssets(assetsFile);
+			
+		} catch (JAXBException e) {
+			String message = "Parser could not be initialized!\nPlease try again.";
+			dialog.setErrorMessage(message);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean readVulnerabilityDefinitions() {
+
+		try {
+			
+			vulnerabilityDefinitions = Marshaller.readXMLVulnerabilities(vulnerabilitiesFile);
+			
+		} catch (JAXBException e) {
+			String message = "Parser could not be initialized!\nPlease try again.";
 			dialog.setErrorMessage(message);
 			return false;
 		}
@@ -199,12 +336,10 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			ruleBase = RulesBase.createBase();
 		} catch (DroolsParserException e) {
 			message = "Defined rules could not be initialized!\n.Check rules definitions or contact supervisors.";
-			//JOptionPane.showMessageDialog(dialog, message, "Rules Initialization Error", JOptionPane.ERROR_MESSAGE);
 			dialog.setErrorMessage(message);
 			return false;
 		} catch (IOException e) {
 			message = "File could not be read!\nPlease load file again and then try.";
-			//JOptionPane.showMessageDialog(dialog, message, "File Read Error", JOptionPane.ERROR_MESSAGE);
 			dialog.setErrorMessage(message);
 			return false;
 		}		
@@ -218,7 +353,6 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			workingMemory.fireAllRules();	
 		} catch (FactException e) {
 			message = "Defined rules could not be applied!\n.Check your diagram or contact supervisors.";
-			//JOptionPane.showMessageDialog(dialog, message, "Rules Applying Error", JOptionPane.ERROR_MESSAGE);
 			dialog.setErrorMessage(message);
 			return false;
 		}			

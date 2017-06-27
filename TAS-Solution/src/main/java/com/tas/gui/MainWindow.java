@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import com.tas.controls.BrowseAssetAction;
 import com.tas.controls.BrowseDiagramAction;
 import com.tas.controls.BrowseReportAction;
 import com.tas.controls.StartAnalysisAction;
@@ -26,6 +27,7 @@ public class MainWindow extends JFrame {
 	private static MainWindow instance = null;
 	
 	private JTextField contentDiagram;
+	private JTextField contentAssets;
 	private JTextField contentReport;
 	private JCheckBox checkboxComponentsThreats;
 	
@@ -39,7 +41,7 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void initializeWindow() {
-		setSize(550,230);
+		setSize(550,260);
 		setTitle("Threat Analysis System");
 		setResizable(false);
 		
@@ -55,18 +57,23 @@ public class MainWindow extends JFrame {
 	private void initializeContent() {
 		setLayout(new GridBagLayout());
 		contentDiagram = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\diagram\\test_diagram_1.xml"); // TODO AFTER remove default diagram
+		contentAssets = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\assets\\assets_definition.xml"); // TODO AFTER remove default assets
 		contentReport = new JTextField();
 		JLabel labelBrowse = new JLabel("Source diagram location: ");
+		JLabel labelAssets = new JLabel("Assets definition location: ");
 		JLabel labelReport = new JLabel("Save report location: ");
 		checkboxComponentsThreats = new JCheckBox("Analyse components vulnerabilities");
 		
 		JButton buttonBrowse = new JButton(new BrowseDiagramAction("..."));
+		JButton buttonAssets = new JButton(new BrowseAssetAction("..."));
 		JButton buttonReport = new JButton(new BrowseReportAction("..."));
 		JButton buttonStart = new JButton(new StartAnalysisAction("Analyze diagram and Create report"));
 		
-		buttonBrowse.setPreferredSize(new Dimension(20, 25));
-		contentDiagram.setPreferredSize(new Dimension(350, 25));		
+		buttonBrowse.setPreferredSize(new Dimension(20, 25));	
 		buttonReport.setPreferredSize(new Dimension(20, 25));
+		buttonAssets.setPreferredSize(new Dimension(20, 25));
+		contentDiagram.setPreferredSize(new Dimension(350, 25));	
+		contentAssets.setPreferredSize(new Dimension(350, 25));
 		contentReport.setPreferredSize(new Dimension(350, 25));
 		checkboxComponentsThreats.setPreferredSize(new Dimension(250, 25));
 		buttonStart.setPreferredSize(new Dimension(200, 25));
@@ -74,15 +81,22 @@ public class MainWindow extends JFrame {
 		add(labelBrowse, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));
 		add(contentDiagram, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
 		add(buttonBrowse, new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
-		add(labelReport, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));
-		add(contentReport, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
-		add(buttonReport, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
-		add(checkboxComponentsThreats, new GridBagConstraints(1, 2, 2, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
-		add(buttonStart, new GridBagConstraints(1, 3, 2, 1, 0, 0, GridBagConstraints.LINE_END, GridBagConstraints.NONE, new Insets(15,0,0,0), 5, 5));
+		add(labelAssets, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));
+		add(contentAssets, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
+		add(buttonAssets, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
+		add(labelReport, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));
+		add(contentReport, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
+		add(buttonReport, new GridBagConstraints(2, 2, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
+		add(checkboxComponentsThreats, new GridBagConstraints(1, 3, 2, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
+		add(buttonStart, new GridBagConstraints(1, 4, 2, 1, 0, 0, GridBagConstraints.LINE_END, GridBagConstraints.NONE, new Insets(15,0,0,0), 5, 5));
 	}
 	
 	public void setReportLocation(String location) {
 		contentReport.setText(location);
+	}
+	
+	public void setAssetsLocation(String location) {
+		contentAssets.setText(location);
 	}
 	
 	public void setDiagramLocation(String location) {
@@ -98,6 +112,10 @@ public class MainWindow extends JFrame {
 	
 	public String getReportLocation() {
 		return contentReport.getText();
+	}
+	
+	public String getAssetLocation() {
+		return contentAssets.getText();
 	}
 	
 	public String getDiagramLocation() {
