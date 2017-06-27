@@ -14,6 +14,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.WorkingMemory;
 import org.xml.sax.SAXException;
 
+import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
 import com.tas.model.assets.AssetDefinitions;
 import com.tas.model.diagram.Diagram;
@@ -52,7 +53,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(1);
+		setProgress(ProgressCode.STARTED);
 		
 		/* **********	VALIDATING XML DIAGRAM			**********	- DONE */
 		if (!validateDiagram()) {
@@ -61,7 +62,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(10);
+		setProgress(ProgressCode.VALIDATED_DIAGRAM);
 
 		/* **********	VALIDATING XML ASSETS			**********	- DONE */
 		if (!validateAssetDefinitions()) {
@@ -70,7 +71,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(10);
+		setProgress(ProgressCode.VALIDATED_ASSETS);
 
 		/* **********	VALIDATING XML VULNERABILITIES	**********	- DONE */
 		if (!validateVulnerabilityDefinitions()) {
@@ -79,7 +80,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(10);
+		setProgress(ProgressCode.VALIDATED_VULNERABILITIES);
 
 		/* **********	READING XML DIAGRAM TO MEMORY	**********	- DONE */
 		if (!readDiagram()) {
@@ -89,7 +90,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(20);
+		setProgress(ProgressCode.READED_DIAGRAM);
 
 		/* **********	READING XML ASSETS TO MEMORY	**********	- DONE */
 		if (!readAssetDefinitions()) {
@@ -99,61 +100,90 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(20);
+		setProgress(ProgressCode.READED_ASSETS);
 
-		/* **********	DECOMPOSING XML DIAGRAM		**********	- DONE */
+		/* **********	MERGING DIAGRAM	AND ASSETS		**********	-  */
+		//if (!readAssetDefinitions()) {
+		//	return false;
+		//}
+		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false;
+		}
+		setProgress(ProgressCode.MERGED_DIAGRAM_ASSETS);
+
+
+		/* **********	DECOMPOSING XML DIAGRAM			**********	- DONE */
 		Decomposer decomposer = new Decomposer(diagram);
-		List<DiagramPiece> pieces = decomposer.decomposeAllPiecesComplex();
+		List<DiagramPiece> pieces = decomposer.decomposeAllPieces();
+		
+		if (pieces.size() == 0) {
+			return false;
+		}
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(45);
+		setProgress(ProgressCode.DECOMPOSED_DIAGRAM);
 		
 
-		/* **********	ANALYZING DECOMPOSED DATA	**********	- DONE */
-		
+		/* **********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE */		
 		if (!createAndFireRules(pieces)) {
 			return false;
-		}		
-		
-		
-		if(Thread.currentThread().isInterrupted()) {
-			 return false; 
-		}
-		setProgress(70);
-		
-
-		/* **********	ANALYZING COMPONENTS 		********** */
-		
-		if (analyseComponents) {
-			if (!analyseComponentsThreats()) {
-				return false;
-			}
-		}		
-		
+		}				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(70);
+		setProgress(ProgressCode.RULES_ANALYZED);	
 		
 
-		/* **********	CREATING XML REPORT			********** */
+		/* **********	READING VULNERABILITIES 		**********	- DONE  */		
+		if (!readVulnerabilityDefinitions()) {
+			return false;
+		}				
 		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false; 
+		}
+		setProgress(ProgressCode.READED_VULNERABILITIES);	
+		
+		
+		/* **********	MERGING VULNERAB AND DIAGRAMS	**********	-  */		
+		//if () {
+		//	return false;
+		//}				
+		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false; 
+		}
+		setProgress(ProgressCode.MERGED_DIAGRAM_VULNERABILITIES);	
+		
+
+		/* **********	CREATING XML REPORT				**********	-  */	
+		//if () {
+		//	return false;
+		//}				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			return false;
 		}
-		setProgress(90);
+		setProgress(ProgressCode.GENERATED_REPORT);
 		
 
-		/* **********	SAVING XML REPORT			********** */
-		
+		/* **********	SAVING XML REPORT				**********	-  */	
+		//if () {
+		//	return false;
+		//}				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			return false;
 		}
+		setProgress(ProgressCode.SAVED_REPORT);
+
+		
+		/* ******************************************************* */	
+
 		
 		for (DiagramPiece diagramPiece : pieces) {						
 			System.out.println("*******************\nThreats between " + 
@@ -358,12 +388,6 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		}			
 		
 		workingMemory.dispose();
-		
-		return true;
-	}
-	
-	private boolean analyseComponentsThreats() {
-		
 		
 		return true;
 	}

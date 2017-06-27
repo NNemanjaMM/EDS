@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import com.tas.worker.ThreatWorker;
+import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
 
 public class CancelAnalysisAction extends AbstractAction {
@@ -22,7 +23,7 @@ public class CancelAnalysisAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		dialog.setProgressBarValue(111);
+		dialog.setProgressBarValue(ProgressCode.CANCELED);
 		backgroundProcess.cancel(true);
 	}
 

@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import javax.swing.SwingWorker.StateValue;
 
+import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
 
 public class WorkerChangeListener implements PropertyChangeListener {
@@ -33,7 +34,7 @@ public class WorkerChangeListener implements PropertyChangeListener {
 						dialog.setVisible(true);
 						break;
 					case DONE:
-						dialog.setProgressBarValue(100);
+						dialog.setProgressBarValue(ProgressCode.DONE);
 						try {
 							@SuppressWarnings("rawtypes")
 							boolean result = (boolean) ((SwingWorker)event.getSource()).get();

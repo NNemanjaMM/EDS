@@ -5,7 +5,7 @@ package com.tas.rules
 import com.tas.model.risk_pattern.DiagramPiece;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
-import com.tas.utils.ThreatCode;
+import com.tas.codes.ThreatCode;
 import java.util.List;
 
 //declare any global variables here

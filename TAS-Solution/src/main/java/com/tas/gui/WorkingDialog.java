@@ -22,6 +22,7 @@ import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import com.tas.codes.ProgressCode;
 import com.tas.controls.CancelAnalysisAction;
 import com.tas.controls.CloseAnalysisAction;
 import com.tas.controls.OpenAnalysisAction;
@@ -145,6 +146,8 @@ public class WorkingDialog extends JDialog {
 
 	private void setPhase(int progressValue) {
 		progressBar.setIndeterminate(false);
+		
+		
 		switch (progressValue) {
 			case 0: 
 				progressBar.setIndeterminate(true);
@@ -153,34 +156,38 @@ public class WorkingDialog extends JDialog {
 				break;
 			case 1: 
 				progressBar.setIndeterminate(false);
-				labelNumber.setText("Phase: 1 of 6");
+				labelNumber.setText("Phase: 1 of 7");
 				labelPhase.setText("Validating diagram");
 				break;
-			case 10: 
-				labelNumber.setText("Phase: 2 of 6");
+			case 2: 
+				labelNumber.setText("Phase: 2 of 7");
 				labelPhase.setText("Importing diagram");
 				break;
-			case 20: 
-				labelNumber.setText("Phase: 3 of 6");
+			case 3: 
+				labelNumber.setText("Phase: 3 of 7");
+				labelPhase.setText("Merging diagram and assets");
+				break;
+			case 4: 
+				labelNumber.setText("Phase: 4 of 7");
 				labelPhase.setText("Decomposing diagram");
 				break;
-			case 45: 
-				labelNumber.setText("Phase: 4 of 6");
-				labelPhase.setText("Analyzing components");
+			case 5: 
+				labelNumber.setText("Phase: 5 of 7");
+				labelPhase.setText("Analyzing diagram components");
 				break;
-			case 70: 
-				labelNumber.setText("Phase: 5 of 6");
+			case 6: 
+				labelNumber.setText("Phase: 6 of 7");
+				labelPhase.setText("Applying vulnerabilities");
+				break;
+			case 7: 
+				labelNumber.setText("Phase: 7 of 7");
 				labelPhase.setText("Creating report");
 				break;
-			case 90: 
-				labelNumber.setText("Phase: 6 of 6");
-				labelPhase.setText("Saving report");
-				break;
-			case 100: 
+			case 10: 
 				progressBar.setIndeterminate(false);
 				buttonCancel.setVisible(false);
 				break;
-			case 111:
+			case 11:
 				progressBar.setIndeterminate(true);
 				buttonCancel.setEnabled(false);
 				labelNumber.setText("Canceling");
@@ -201,7 +208,29 @@ public class WorkingDialog extends JDialog {
 	
 	public void setProgressBarValue(int value) {
 		progressBar.setValue(value);
-		setPhase(value);
+		int phase = 0;
+		if (value == ProgressCode.INITIALIZED) {
+			phase = 0;
+		} else if (ProgressCode.STARTED <= value && value < ProgressCode.READED_DIAGRAM) {
+			phase = 1;
+		} else if (ProgressCode.READED_DIAGRAM <= value && value < ProgressCode.MERGED_DIAGRAM_ASSETS) {
+			phase = 2;
+		} else if (ProgressCode.MERGED_DIAGRAM_ASSETS <= value && value < ProgressCode.DECOMPOSED_DIAGRAM) {
+			phase = 3;
+		} else if (ProgressCode.DECOMPOSED_DIAGRAM <= value && value < ProgressCode.RULES_ANALYZED) {
+			phase = 4;
+		} else if (ProgressCode.RULES_ANALYZED <= value && value < ProgressCode.READED_VULNERABILITIES) {
+			phase = 5;
+		} else if (ProgressCode.READED_VULNERABILITIES <= value && value < ProgressCode.GENERATED_REPORT) {
+			phase = 6;
+		} else if (ProgressCode.GENERATED_REPORT <= value && value < ProgressCode.DONE) {
+			phase = 7;
+		} else if (value == ProgressCode.DONE) {
+			phase = 10;
+		} else if (value == ProgressCode.CANCELED) {
+			phase = 11;
+		}
+		setPhase(phase);
 	}
 	
 	public void setErrorMessage(String error) {
