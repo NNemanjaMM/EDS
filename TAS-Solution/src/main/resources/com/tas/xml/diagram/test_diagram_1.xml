@@ -9,7 +9,8 @@
             outOfScope="true"
             outOfScopeReason="Not in our jurisdiction" >
             <assets>                
-                <asset assetId="" />
+                <asset assetId="as00000002" />
+                <asset assetId="as00000003" />
             </assets>      
         </browser>
         
@@ -17,14 +18,21 @@
             name="SEP Server" 
             section="ds1000005"
             outOfScope="false" >
-            <assets>     
-                <asset assetId="" />
+            <assets>
+                <asset assetId="as00000002" />
+                <asset assetId="as00000003" />
+                <asset assetId="as00000004" />
             </assets>      
         </webApplication>
         
         <sqlDatabase id="de1000003" 
             name="Main Database"
             section="ds1000005" >
+            <assets>
+                <asset assetId="as00000001" />
+                <asset assetId="as00000003" />
+                <asset assetId="as00000004" />
+            </assets>      
         </sqlDatabase>        
     </elements>
     
@@ -38,8 +46,9 @@
             <boundariesCrossed>
                 <boundaryCross boundary="db1000010"/>
             </boundariesCrossed>
-            <assets>     
-                <asset assetId="" />
+            <assets>                
+                <asset assetId="as00000002" />
+                <asset assetId="as00000003" />
             </assets>      
         </http>    
         
@@ -52,6 +61,10 @@
             <boundariesCrossed>
                 <boundaryCross boundary="db1000010"/>
             </boundariesCrossed>
+            <assets>              
+                <asset assetId="as00000001" />  
+                <asset assetId="as00000003" />
+            </assets>      
         </http>
         
         <http id="df1000008" 
@@ -59,15 +72,20 @@
             destination="de1000003" 
             name="Database Request"
             outOfScope="false" >
+            <assets>              
+                <asset assetId="as00000001" />  
+                <asset assetId="as00000003" />
+            </assets>       
         </http>
         
         <http id="df1000009" 
             source="de1000003" 
             destination="de1000002" 
             name="Database Response" >
-            <assets>     
-                <asset assetId="" />
-            </assets>      
+            <assets>              
+                <asset assetId="as00000001" />  
+                <asset assetId="as00000003" />
+            </assets>     
         </http>
     </flows>
     
