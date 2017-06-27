@@ -6,9 +6,36 @@
     <assetDefinition assetId="as00000001" 
         assetTitle="Administrator Password"
         protectConfidentiality="true"
-        protectIntegrity="false"
+        protectIntegrity="true"
         protectAvailability="false"
         impactConfidentiality="5" 
+        impactIntegrity="5" 
+        impactAvailability="4" />
+    
+    <assetDefinition assetId="as00000002" 
+        assetTitle="Session Cookie"
+        protectConfidentiality="true"
+        protectIntegrity="false"
+        protectAvailability="false"
+        impactConfidentiality="4" 
+        impactIntegrity="3" 
+        impactAvailability="2" />
+    
+    <assetDefinition assetId="as00000003" 
+        assetTitle="Personal Identifiable Information"
+        protectConfidentiality="true"
+        protectIntegrity="true"
+        protectAvailability="true"
+        impactConfidentiality="4" 
+        impactIntegrity="4" 
+        impactAvailability="3" />
+    
+    <assetDefinition assetId="as00000004" 
+        assetTitle="Work Station"
+        protectConfidentiality="false"
+        protectIntegrity="true"
+        protectAvailability="true"
+        impactConfidentiality="2" 
         impactIntegrity="5" 
         impactAvailability="5" />
     

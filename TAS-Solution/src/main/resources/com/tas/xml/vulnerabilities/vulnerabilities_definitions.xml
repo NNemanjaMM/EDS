@@ -24,4 +24,46 @@
         <countermeasures></countermeasures>
     </vulnerabilityDefinition>
     
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000004" 
+        vulnerabilityTitle="Memory Safety">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000005" 
+        vulnerabilityTitle="Race Conditions">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000006" 
+        vulnerabilityTitle="Side-Channel Atack">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000007" 
+        vulnerabilityTitle="Privilege Escalation">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000008" 
+        vulnerabilityTitle="Privilege-Confusion">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000009" 
+        vulnerabilityTitle="User Interface">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
 </vulnerabilitiesDefinitions>
