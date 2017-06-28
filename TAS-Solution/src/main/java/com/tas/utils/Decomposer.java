@@ -23,7 +23,7 @@ public class Decomposer {
 	
 	public DiagramPiece decomposeSinglePiece(int position) {
 		
-		Flow flow = diagram.getFlows().getOrBinaryOrHttpOrHttps().get(position).getValue();
+		JAXBElement<Flow> flow = diagram.getFlows().getOrBinaryOrHttpOrHttps().get(position);
 		
 		DiagramPiece pieces = new DiagramPiece(flow);		
 		
@@ -44,21 +44,21 @@ public class Decomposer {
 	
 	public DiagramPiece decomposeSinglePieceComplex(int position) {
 		
-		Flow flow = diagram.getFlows().getOrBinaryOrHttpOrHttps().get(position).getValue();
+		JAXBElement<Flow> flow = diagram.getFlows().getOrBinaryOrHttpOrHttps().get(position);
 		
 		hashedFlows = new HashSet<String>();
-		hashedFlows.add(flow.getId());
+		hashedFlows.add(flow.getValue().getId());
 		
 		DiagramPiece pieces = new DiagramPiece(flow);	
 		
 		BlockElement sourceElement = pieces.getCoreSource();
 		BlockElement destinationElement = pieces.getCoreDestination();
 		
-		List<Flow> coreReturnFlows = findRecurringFlowsForElements(sourceElement, destinationElement);		
-		List<Flow> coreDestinationFlowsIn = findFlowsForDestinationElement(destinationElement);
-		List<Flow> coreDestinationFlowsOut = findFlowsForSourceElement(destinationElement);
-		List<Flow> coreSourceFlowsIn = findFlowsForDestinationElement(sourceElement);
-		List<Flow> coreSourceFlowsOut = findFlowsForSourceElement(sourceElement);
+		List<JAXBElement<Flow>> coreReturnFlows = findRecurringFlowsForElements(sourceElement, destinationElement);		
+		List<JAXBElement<Flow>> coreDestinationFlowsIn = findFlowsForDestinationElement(destinationElement);
+		List<JAXBElement<Flow>> coreDestinationFlowsOut = findFlowsForSourceElement(destinationElement);
+		List<JAXBElement<Flow>> coreSourceFlowsIn = findFlowsForDestinationElement(sourceElement);
+		List<JAXBElement<Flow>> coreSourceFlowsOut = findFlowsForSourceElement(sourceElement);
 		
 		pieces.setCoreReturnFlows(coreReturnFlows);
 		pieces.setCoreDestinationFlowsIn(coreDestinationFlowsIn);
@@ -85,17 +85,17 @@ public class Decomposer {
 		return diagram.getFlows().getOrBinaryOrHttpOrHttps().size();
 	}
 	
-	private List<Flow> findFlowsForSourceElement(BlockElement sourceElement) {
+	private List<JAXBElement<Flow>> findFlowsForSourceElement(BlockElement sourceElement) {
 		
 		String elementId = sourceElement.getId();
-		List<Flow> flowsList = new ArrayList<Flow>();
+		List<JAXBElement<Flow>> flowsList = new ArrayList<JAXBElement<Flow>>();
 		List<JAXBElement<Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
-		for (JAXBElement<? extends Flow> flow : diagramFlows) {
+		for (JAXBElement<Flow> flow : diagramFlows) {
 			if (((BlockElement)flow.getValue().getSource()).getId().equals(elementId)) {
 				if (!hashedFlows.contains(flow.getValue().getId())) {
 					hashedFlows.add(flow.getValue().getId());
-					flowsList.add(flow.getValue());
+					flowsList.add(flow);
 				}
 			}
 		}
@@ -103,17 +103,17 @@ public class Decomposer {
 		return flowsList;
 	}
 	
-	private List<Flow> findFlowsForDestinationElement(BlockElement destinationElement) {
+	private List<JAXBElement<Flow>> findFlowsForDestinationElement(BlockElement destinationElement) {
 		
 		String elementId = destinationElement.getId();
-		List<Flow> flowsList = new ArrayList<Flow>();
+		List<JAXBElement<Flow>> flowsList = new ArrayList<JAXBElement<Flow>>();
 		List<JAXBElement<Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
-		for (JAXBElement<? extends Flow> flow : diagramFlows) {
+		for (JAXBElement<Flow> flow : diagramFlows) {
 			if (((BlockElement)flow.getValue().getDestination()).getId().equals(elementId)) {
 				if (!hashedFlows.contains(flow.getValue().getId())) {
 					hashedFlows.add(flow.getValue().getId());
-					flowsList.add(flow.getValue());
+					flowsList.add(flow);
 				}
 			}
 		}
@@ -121,15 +121,15 @@ public class Decomposer {
 		return flowsList;
 	}
 	
-	private List<Flow> findRecurringFlowsForElements(BlockElement firstElement, BlockElement secondElement) {
+	private List<JAXBElement<Flow>> findRecurringFlowsForElements(BlockElement firstElement, BlockElement secondElement) {
 
 		String firstId = firstElement.getId();
 		String secondId = secondElement.getId();
 		
-		List<Flow> flowsList = new ArrayList<Flow>();
+		List<JAXBElement<Flow>> flowsList = new ArrayList<JAXBElement<Flow>>();
 		List<JAXBElement<Flow>> diagramFlows = diagram.getFlows().getOrBinaryOrHttpOrHttps();
 		
-		for (JAXBElement<? extends Flow> flow : diagramFlows) {
+		for (JAXBElement<Flow> flow : diagramFlows) {
 			
 			if ((((BlockElement)flow.getValue().getDestination()).getId().equals(secondId) && 
 					((BlockElement)flow.getValue().getSource()).getId().equals(firstId)) ||
@@ -138,7 +138,7 @@ public class Decomposer {
 				
 				if (!hashedFlows.contains(flow.getValue().getId())) {
 					hashedFlows.add(flow.getValue().getId());
-					flowsList.add(flow.getValue());
+					flowsList.add(flow);
 				}
 				
 			}

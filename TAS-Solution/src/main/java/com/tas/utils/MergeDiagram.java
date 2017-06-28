@@ -1,0 +1,127 @@
+package com.tas.utils;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.xml.bind.JAXBElement;
+
+import com.tas.model.diagram.AssetDefinition;
+import com.tas.model.diagram.AssetDefinitions;
+import com.tas.model.diagram.Assets.Asset;
+import com.tas.model.diagram.BlockElement;
+import com.tas.model.diagram.Diagram;
+import com.tas.model.diagram.Flow;
+import com.tas.model.diagram.ImportAssets;
+import com.tas.model.diagram.ImportVulnerabilities;
+import com.tas.model.diagram.Vulnerabilities.Vulnerability;
+import com.tas.model.diagram.VulnerabilitiesDefinitions;
+import com.tas.model.diagram.VulnerabilityDefinition;
+import com.tas.model.risk_pattern.DiagramPiece;
+
+public class MergeDiagram {
+	
+	private Diagram diagram;
+	private AssetDefinitions assetDefinitions;
+	private List<DiagramPiece> diagramPieces;
+	private VulnerabilitiesDefinitions vulnerabilityDefinitions;
+
+	public MergeDiagram(Diagram diagram, VulnerabilitiesDefinitions vulnerabilityDefinitions) {
+		this.diagram = diagram;
+		this.vulnerabilityDefinitions = vulnerabilityDefinitions;
+		this.assetDefinitions = null;
+	}
+
+	public MergeDiagram(Diagram diagram, AssetDefinitions assetDefinitions) {
+		this.diagram = diagram;
+		this.assetDefinitions = assetDefinitions;
+		this.vulnerabilityDefinitions = null;
+	}
+
+	public MergeDiagram(List<DiagramPiece> diagramPieces, VulnerabilitiesDefinitions vulnerabilityDefinitions) {
+		this.diagramPieces = diagramPieces;
+		this.vulnerabilityDefinitions = vulnerabilityDefinitions;
+		this.assetDefinitions = null;
+		this.diagram = null;
+	}
+	
+	public Diagram mergeAssetsToDiagram() {
+		HashMap<String, AssetDefinition> assetsMap = makeAssetsMap();
+		
+		List<JAXBElement<? extends BlockElement>> elements = diagram.getElements().getOrWebApplicationOrWebServiceOrWebServer();
+		for (JAXBElement<? extends BlockElement> element : elements) {
+			element.getValue().setImportAssets(new ImportAssets());
+			for (Asset asset : element.getValue().getAssets().getAsset()) {
+				AssetDefinition add = assetsMap.get(asset.getAssetId());
+				element.getValue().getImportAssets().getImportAsset().add(add);
+			}
+		}
+		
+		List<JAXBElement<Flow>> flows = diagram.getFlows().getOrBinaryOrHttpOrHttps();	
+		for (JAXBElement<Flow> flow : flows) {
+			flow.getValue().setImportAssets(new ImportAssets());
+			for (Asset asset : flow.getValue().getAssets().getAsset()) {
+				AssetDefinition add = assetsMap.get(asset.getAssetId());
+				flow.getValue().getImportAssets().getImportAsset().add(add);
+			}
+		}
+		
+		return this.diagram;
+	}
+	
+	public Diagram mergeVulnerabilitiesToDiagram() {
+		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = makeVulnerabilitiesMap();
+		
+		List<JAXBElement<? extends BlockElement>> elements = diagram.getElements().getOrWebApplicationOrWebServiceOrWebServer();
+		for (JAXBElement<? extends BlockElement> element : elements) {
+			element.getValue().setImportVulnerabilities(new ImportVulnerabilities());
+			for (Vulnerability vulnerability : element.getValue().getVulnerabilities().getVulnerability()) {
+				VulnerabilityDefinition add = vulnerabilitiesMap.get(vulnerability.getVulnerabilityId());
+				element.getValue().getImportVulnerabilities().getImportVulnerability().add(add);
+			}
+		}
+		
+		List<JAXBElement<Flow>> flows = diagram.getFlows().getOrBinaryOrHttpOrHttps();		
+		for (JAXBElement<Flow> flow : flows) {
+			flow.getValue().setImportVulnerabilities(new ImportVulnerabilities());
+			for (Vulnerability vulnerability : flow.getValue().getVulnerabilities().getVulnerability()) {
+				VulnerabilityDefinition add = vulnerabilitiesMap.get(vulnerability.getVulnerabilityId());
+				flow.getValue().getImportVulnerabilities().getImportVulnerability().add(add);
+			}
+		}
+
+		return this.diagram;
+	}
+	
+	public List<DiagramPiece> mergeVulnerabilitiesToDiagramPieces() {
+		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = makeVulnerabilitiesMap();
+		
+		for (DiagramPiece piece : diagramPieces) {
+			for (String vulnerability : piece.getVulnerabilities()) {
+				piece.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
+			}
+		}
+		
+		return diagramPieces;
+	}
+	
+	private HashMap<String, AssetDefinition> makeAssetsMap() {
+		HashMap<String, AssetDefinition> assetsMap = new HashMap<>();
+
+		for (AssetDefinition asset : assetDefinitions.getAssetDefinition()) {
+			assetsMap.put(asset.getAssetId(), asset);
+		}
+		
+		return assetsMap;
+	}
+	
+	private HashMap<String, VulnerabilityDefinition> makeVulnerabilitiesMap() {
+		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = new HashMap<>();
+		
+		for (VulnerabilityDefinition vulnerability : vulnerabilityDefinitions.getVulnerabilityDefinition()) {
+			vulnerabilitiesMap.put(vulnerability.getVulnerabilityId(), vulnerability);
+		}
+		
+		return vulnerabilitiesMap;
+	}
+	
+}

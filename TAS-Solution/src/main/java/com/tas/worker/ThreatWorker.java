@@ -16,12 +16,14 @@ import org.xml.sax.SAXException;
 
 import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
-import com.tas.model.assets.AssetDefinitions;
+import com.tas.model.diagram.AssetDefinitions;
 import com.tas.model.diagram.Diagram;
+import com.tas.model.diagram.VulnerabilitiesDefinitions;
+import com.tas.model.diagram.VulnerabilityDefinition;
 import com.tas.model.risk_pattern.DiagramPiece;
-import com.tas.model.vulnerabilities.VulnerabilitiesDefinitions;
 import com.tas.utils.Decomposer;
 import com.tas.utils.Marshaller;
+import com.tas.utils.MergeDiagram;
 import com.tas.utils.RulesBase;
 import com.tas.utils.Validator;
 
@@ -55,7 +57,8 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(ProgressCode.STARTED);
 		
-		/* **********	VALIDATING XML DIAGRAM			**********	- DONE */
+		
+		/* 1 ********	VALIDATING XML DIAGRAM			**********	- DONE	*/
 		if (!validateDiagram()) {
 			return false;
 		}		
@@ -63,8 +66,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			 return false;
 		}
 		setProgress(ProgressCode.VALIDATED_DIAGRAM);
+		
 
-		/* **********	VALIDATING XML ASSETS			**********	- DONE */
+		/* 1 ********	VALIDATING XML ASSETS			**********	- DONE	*/
 		if (!validateAssetDefinitions()) {
 			return false;
 		}		
@@ -72,8 +76,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			 return false;
 		}
 		setProgress(ProgressCode.VALIDATED_ASSETS);
+		
 
-		/* **********	VALIDATING XML VULNERABILITIES	**********	- DONE */
+		/* 1 ********	VALIDATING XML VULNERABILITIES	**********	- DONE	*/
 		if (!validateVulnerabilityDefinitions()) {
 			return false;
 		}		
@@ -81,8 +86,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			 return false;
 		}
 		setProgress(ProgressCode.VALIDATED_VULNERABILITIES);
+		
 
-		/* **********	READING XML DIAGRAM TO MEMORY	**********	- DONE */
+		/* 2 ********	READING XML DIAGRAM TO MEMORY	**********	- DONE	*/
 		if (!readDiagram()) {
 			return false;
 		}
@@ -91,8 +97,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			 return false;
 		}
 		setProgress(ProgressCode.READED_DIAGRAM);
+		
 
-		/* **********	READING XML ASSETS TO MEMORY	**********	- DONE */
+		/* 2 ********	READING XML ASSETS TO MEMORY	**********	- DONE	*/
 		if (!readAssetDefinitions()) {
 			return false;
 		}
@@ -101,11 +108,11 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			 return false;
 		}
 		setProgress(ProgressCode.READED_ASSETS);
+		
 
-		/* **********	MERGING DIAGRAM	AND ASSETS		**********	-  */
-		//if (!readAssetDefinitions()) {
-		//	return false;
-		//}
+		/* 3 ********	MERGING DIAGRAM	AND ASSETS		**********	- DONE	*/
+		MergeDiagram mergeAssets = new MergeDiagram(diagram, assetDefinitions);
+		diagram = mergeAssets.mergeAssetsToDiagram();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
@@ -113,7 +120,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(ProgressCode.MERGED_DIAGRAM_ASSETS);
 
 
-		/* **********	DECOMPOSING XML DIAGRAM			**********	- DONE */
+		/* 4 ********	DECOMPOSING XML DIAGRAM			**********	- DONE	*/
 		Decomposer decomposer = new Decomposer(diagram);
 		List<DiagramPiece> pieces = decomposer.decomposeAllPieces();
 		
@@ -127,7 +134,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(ProgressCode.DECOMPOSED_DIAGRAM);
 		
 
-		/* **********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE */		
+		/* 5 ********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE	*/		
 		if (!createAndFireRules(pieces)) {
 			return false;
 		}				
@@ -138,7 +145,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(ProgressCode.RULES_ANALYZED);	
 		
 
-		/* **********	READING VULNERABILITIES 		**********	- DONE  */		
+		/* 6 ********	READING VULNERABILITIES 		**********	- DONE  */		
 		if (!readVulnerabilityDefinitions()) {
 			return false;
 		}				
@@ -149,10 +156,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(ProgressCode.READED_VULNERABILITIES);	
 		
 		
-		/* **********	MERGING VULNERAB AND DIAGRAMS	**********	-  */		
-		//if () {
-		//	return false;
-		//}				
+		/* 6 ********	MERGING VULNERAB. AND DIAGRAMS	**********	- DONE	*/	
+		MergeDiagram mergeVulnerabilities = new MergeDiagram(pieces, vulnerabilityDefinitions);
+		pieces = mergeVulnerabilities.mergeVulnerabilitiesToDiagramPieces();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -160,7 +166,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(ProgressCode.MERGED_DIAGRAM_VULNERABILITIES);	
 		
 
-		/* **********	CREATING XML REPORT				**********	-  */	
+		/* 7 ********	CREATING XML REPORT				**********	-  */	
 		//if () {
 		//	return false;
 		//}				
@@ -171,7 +177,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(ProgressCode.GENERATED_REPORT);
 		
 
-		/* **********	SAVING XML REPORT				**********	-  */	
+		/* 7 ********	SAVING XML REPORT				**********	-  */	
 		//if () {
 		//	return false;
 		//}				
@@ -186,10 +192,10 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		
 		for (DiagramPiece diagramPiece : pieces) {						
-			System.out.println("*******************\nThreats between " + 
+			System.out.println("*******************\nVulnerabilities between " + 
 					diagramPiece.getCoreSource().getName() + " and " + diagramPiece.getCoreDestination().getName());
-			for (String vulnerability : diagramPiece.getVulnerabilities()) {
-				System.out.println("Threat id: " + vulnerability);
+			for (VulnerabilityDefinition vulnerability : diagramPiece.getVulnerabilityValues()) {
+				System.out.println("Vulnerability name: " + vulnerability.getVulnerabilityTitle());
 			}
 		}
 		

@@ -5,7 +5,7 @@ package com.tas.rules
 import com.tas.model.risk_pattern.DiagramPiece;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
-import com.tas.codes.ThreatCode;
+import com.tas.codes.VulnerabilityCode;
 import java.util.List;
 
 //declare any global variables here
@@ -16,7 +16,7 @@ rule "Cross Site Request Forgery"
         component: DiagramPiece(coreSource instanceof ExternalEntity,
         						coreDestination instanceof Process)                    
     then
-        component.addThreat(ThreatCode.CSRF);
+        component.addVulnerability(VulnerabilityCode.INJECTION);
 end
 
 
@@ -25,7 +25,7 @@ rule "Replay Attack"
         component: DiagramPiece(coreSource instanceof Process, 
         						coreDestination instanceof ExternalEntity)                    
     then
-        component.addThreat(ThreatCode.REPLAY_ATTACK);
+        component.addVulnerability(VulnerabilityCode.IDENTITY_SPOOOFING);
 end
 
 
@@ -34,7 +34,7 @@ rule "Weak Credentials Storage"
         component: DiagramPiece(coreSource instanceof Process, 
         						coreDestination instanceof DataStore)                    
     then
-        component.addThreat(ThreatCode.WEAK_CREDENTIALS_STORAGE);
+        component.addVulnerability(VulnerabilityCode.PROGRAM_SPOOFING);
 end
 
 
@@ -43,7 +43,7 @@ rule "Weak Access Control For A Resource"
         component: DiagramPiece(coreSource instanceof DataStore, 
         						coreDestination instanceof Process)                    
     then
-        component.addThreat(ThreatCode.WEAK_ACCESS_CONTROL_FOR_A_RESOURCE);
+        component.addVulnerability(VulnerabilityCode.MEMORY_SAFETY);
 end
 
 
@@ -53,5 +53,5 @@ rule "Iteration test rule"
      	$value : Flow() from $list  
      	Boolean(booleanValue == true) from $value.source instanceof DataStore
     then
-        component.addThreat(ThreatCode.GO_GET_IT);
+        component.addVulnerability(VulnerabilityCode.RACE_CONDITIONS);
 end

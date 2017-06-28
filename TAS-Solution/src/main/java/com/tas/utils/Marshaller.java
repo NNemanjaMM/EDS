@@ -6,9 +6,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import com.tas.model.assets.AssetDefinitions;
+import com.tas.model.diagram.AssetDefinitions;
 import com.tas.model.diagram.Diagram;
-import com.tas.model.vulnerabilities.VulnerabilitiesDefinitions;
+import com.tas.model.diagram.VulnerabilitiesDefinitions;
 
 public class Marshaller {
 
