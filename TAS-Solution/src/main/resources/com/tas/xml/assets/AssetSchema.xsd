@@ -28,11 +28,11 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="protectConfidentiality" type="xs:boolean" use="required"/>
-        <xs:attribute name="protectIntegrity" type="xs:boolean" use="required"/>
-        <xs:attribute name="protectAvailability" type="xs:boolean" use="required"/>
-        <xs:attribute name="impactConfidentiality" type="ts:impactType" use="required"/>
-        <xs:attribute name="impactIntegrity" type="ts:impactType" use="required"/>
-        <xs:attribute name="impactAvailability" type="ts:impactType" use="required"/>
+        <xs:attribute name="protectConfidentiality" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="protectIntegrity" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="protectAvailability" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="impactConfidentiality" type="ts:impactType" use="optional"/>
+        <xs:attribute name="impactIntegrity" type="ts:impactType" use="optional"/>
+        <xs:attribute name="impactAvailability" type="ts:impactType" use="optional"/>
     </xs:complexType>
 </xs:schema>

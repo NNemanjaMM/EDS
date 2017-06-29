@@ -9,17 +9,14 @@
         protectIntegrity="true"
         protectAvailability="false"
         impactConfidentiality="5" 
-        impactIntegrity="5" 
-        impactAvailability="4" />
+        impactIntegrity="5"  />
     
     <assetDefinition assetId="as00000002" 
         assetTitle="Session Cookie"
         protectConfidentiality="true"
         protectIntegrity="false"
         protectAvailability="false"
-        impactConfidentiality="4" 
-        impactIntegrity="3" 
-        impactAvailability="2" />
+        impactConfidentiality="4" />
     
     <assetDefinition assetId="as00000003" 
         assetTitle="Personal Identifiable Information"
@@ -35,7 +32,6 @@
         protectConfidentiality="false"
         protectIntegrity="true"
         protectAvailability="true"
-        impactConfidentiality="2" 
         impactIntegrity="5" 
         impactAvailability="5" />
     
