@@ -2,56 +2,70 @@
 package com.tas.rules
 
 //list any import classes here.
+import com.tas.codes.AssetCode;
+import com.tas.codes.VulnerabilityCode;
 import com.tas.model.risk_pattern.DiagramPiece;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
-import com.tas.codes.VulnerabilityCode;
 import java.util.List;
 
 //declare any global variables here
 
 
-rule "Cross Site Request Forgery"
+rule "Cookie:_Cross"
+    when
+        component: DiagramPiece(coreDestination instanceof DataStore)                    
+    then
+        drools.setFocus("asset_cookie");
+end
+
+
+rule "Cookie:_Forgery"
+	agenda-group "asset_cookie"
     when
         component: DiagramPiece(coreSource instanceof ExternalEntity,
         						coreDestination instanceof Process)                    
     then
-        component.addVulnerability(VulnerabilityCode.INJECTION);
+        component.addVulnerability(VulnerabilityCode.PRIVILEGE_CONFUSION);
 end
 
 
-rule "Replay Attack"
+rule "Cookie:_Attack"
+	agenda-group "asset_cookie"
     when
         component: DiagramPiece(coreSource instanceof Process, 
         						coreDestination instanceof ExternalEntity)                    
     then
-        component.addVulnerability(VulnerabilityCode.IDENTITY_SPOOOFING);
+        component.addVulnerability(VulnerabilityCode.PRIVILEGE_CONFUSION);
 end
 
 
-rule "Weak Credentials Storage"
+rule "Cookie:_Storage"
+	agenda-group "asset_cookie"
     when
         component: DiagramPiece(coreSource instanceof Process, 
         						coreDestination instanceof DataStore)                    
     then
-        component.addVulnerability(VulnerabilityCode.PROGRAM_SPOOFING);
+        component.addVulnerability(VulnerabilityCode.SIDE_CHANNEL_ATACK);	// ovo ispise
 end
 
 
-rule "Weak Access Control For A Resource"
+rule "Cookie:_Resource"
+	agenda-group "asset_cookie"
     when
         component: DiagramPiece(coreSource instanceof DataStore, 
         						coreDestination instanceof Process)                    
     then
-        component.addVulnerability(VulnerabilityCode.MEMORY_SAFETY);
+        component.addVulnerability(VulnerabilityCode.PRIVILEGE_CONFUSION);
 end
 
 
-rule "Iteration test rule"
+rule "Cookie:_rule"
+	agenda-group "asset_cookie"
     when    
      	component : DiagramPiece($list : coreDestinationFlowsIn)  
      	$value : Flow() from $list  
      	Boolean(booleanValue == true) from $value.source instanceof DataStore
     then
-        component.addVulnerability(VulnerabilityCode.RACE_CONDITIONS);
+        component.addVulnerability(VulnerabilityCode.PRIVILEGE_CONFUSION);
 end

@@ -8,10 +8,7 @@ import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.core.FactException;
-import org.drools.core.RuleBase;
-import org.drools.core.WorkingMemory;
+import org.kie.api.runtime.StatelessKieSession;
 import org.xml.sax.SAXException;
 
 import com.tas.codes.ProgressCode;
@@ -22,9 +19,9 @@ import com.tas.model.diagram.VulnerabilitiesDefinitions;
 import com.tas.model.diagram.VulnerabilityDefinition;
 import com.tas.model.risk_pattern.DiagramPiece;
 import com.tas.utils.Decomposer;
+import com.tas.utils.KieRulesBase;
 import com.tas.utils.Marshaller;
 import com.tas.utils.MergeDiagram;
-import com.tas.utils.RulesBase;
 import com.tas.utils.Validator;
 
 public class ThreatWorker extends SwingWorker<Boolean, Object> {
@@ -135,9 +132,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 
 		/* 5 ********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE	*/		
-		if (!createAndFireRules(pieces)) {
-			return false;
-		}				
+		createAndFireRules(pieces);				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -364,38 +359,13 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		return true;
 	}
 	
-	private boolean createAndFireRules(List<DiagramPiece> diagramParts) {		
-		String message;		
+	private void createAndFireRules(List<DiagramPiece> diagramParts) {
 		
-		RuleBase ruleBase = null;
-		try {
-			ruleBase = RulesBase.createBase();
-		} catch (DroolsParserException e) {
-			message = "Defined rules could not be initialized!\n.Check rules definitions or contact supervisors.";
-			dialog.setErrorMessage(message);
-			return false;
-		} catch (IOException e) {
-			message = "File could not be read!\nPlease load file again and then try.";
-			dialog.setErrorMessage(message);
-			return false;
-		}		
+		StatelessKieSession session = KieRulesBase.createStatelessSession();
 		
-		WorkingMemory workingMemory = ruleBase.newStatefulSession();
-		for (DiagramPiece diagramPiece : diagramParts) {
-			workingMemory.insert(diagramPiece);
-		}
-
-		try {
-			workingMemory.fireAllRules();	
-		} catch (FactException e) {
-			message = "Defined rules could not be applied!\n.Check your diagram or contact supervisors.";
-			dialog.setErrorMessage(message);
-			return false;
-		}			
-		
-		workingMemory.dispose();
-		
-		return true;
+		 for (DiagramPiece diagramPiece : diagramParts) {
+			 session.execute(diagramPiece);				
+		 }
 	}
 	
 	public void setDialog(WorkingDialog dialog) {
