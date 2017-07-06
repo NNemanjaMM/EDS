@@ -63,6 +63,7 @@
             </boundariesCrossed>
             <assets>              
                 <asset assetId="as00000001" />  
+                <asset assetId="as00000002" />
                 <asset assetId="as00000003" />
             </assets>      
         </http>

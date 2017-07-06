@@ -180,12 +180,33 @@
     </xs:complexType>
     <xs:complexType name="process">
         <xs:complexContent>
-            <xs:extension base="ts:blockElement"> </xs:extension>
+            <xs:extension base="ts:blockElement">
+                <xs:attribute default="false" name="sanitizeInput" type="xs:boolean"/>
+                <xs:attribute default="false" name="sanitizeOutput" type="xs:boolean"/>
+                <xs:attribute default="false" name="isThreadSafe" type="xs:boolean"/>
+                <xs:attribute default="false" name="hasForgeryProtection" type="xs:boolean"/>
+                <xs:attribute name="runLevel">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="SANDBOX"/>
+                            <xs:enumeration value="LOW_PRIVILEGE"/>
+                            <xs:enumeration value="HIGH_PRIVILEGE"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute default="false" name="requiresAuthentication" type="xs:boolean"/>
+                <xs:attribute default="false" name="requiresAuthorization" type="xs:boolean"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="dataStore">
         <xs:complexContent>
-            <xs:extension base="ts:blockElement"> </xs:extension>
+            <xs:extension base="ts:blockElement">
+                <xs:attribute default="false" name="dataIsEncrypted" type="xs:boolean"/>
+                <xs:attribute default="false" name="dataIsSigned" type="xs:boolean"/>
+                <xs:attribute default="false" name="storesCredentials" type="xs:boolean"/>
+                <xs:attribute default="false" name="hasBackup" type="xs:boolean"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="externalEntity">
