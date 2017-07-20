@@ -3,7 +3,6 @@ package com.tas.worker;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBException;
@@ -15,13 +14,11 @@ import org.xml.sax.SAXException;
 import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
 import com.tas.model.diagram.AssetDefinitions;
-import com.tas.model.diagram.BlockElement;
 import com.tas.model.diagram.Diagram;
 import com.tas.model.diagram.Element;
 import com.tas.model.diagram.VulnerabilitiesDefinitions;
 import com.tas.model.diagram.VulnerabilityDefinition;
 import com.tas.model.risk_pattern.DiagramPattern;
-import com.tas.model.risk_pattern.ElementTrace;
 import com.tas.utils.Decomposer;
 import com.tas.utils.KieRulesBase;
 import com.tas.utils.Marshaller;
@@ -127,9 +124,14 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		if (patterns.size() == 0) {
 			return false;
-		}
+		}		
+		
+		
 		
 		//printDiagramPatterns(patterns);
+		//if (patterns.size() > 0) return true;
+				
+		
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -191,8 +193,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		/* ******************************************************* */	
 
-		printVulnerabilitiesForDiagramPatterns(patterns);
-		
+		printVulnerabilitiesForDiagramPatterns(patterns);		
 		
 		return true;
 	}
@@ -370,13 +371,10 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	
 	@SuppressWarnings("unused")
 	private void printDiagramPatterns(List<DiagramPattern> diagramPatterns) {
-		for (DiagramPattern diagramPattern : diagramPatterns) {
-			System.out.println("\n********* Pattern for " + diagramPattern.getDestination().getName());
-			for (ElementTrace trace : diagramPattern.getTraces()) {
-				System.out.println("Trace for " + trace.getSourceElement().getName() + ":");
-				for (Element element : trace.getTrace()) {
-					System.out.println("\t " + element.getName());
-				}
+		for (DiagramPattern pattern : diagramPatterns) {
+			System.out.println("\n********* Pattern for " + pattern.getElement().getName() + "\n- Trace for " + pattern.getTraceStart().getName() + ":");
+			for (Element element : pattern.getTrace()) {
+				System.out.println("\t " + element.getName());
 			}
 		}	
 	}
@@ -384,17 +382,15 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	@SuppressWarnings("unused")
 	private void printVulnerabilitiesForDiagramPatterns(List<DiagramPattern> diagramPatterns) {
 		for (DiagramPattern pattern : diagramPatterns) {			
-			System.out.println("*******************\nVulnerabilities on element " + pattern.getDestination().getName() + ":");
-			for (ElementTrace trace : pattern.getTraces()) {
-				System.out.println("\t- Vulnerabilities from "  + trace.getSourceElement().getName() + ":");
-				for (VulnerabilityDefinition vulnerability : trace.getVulnerabilityValues()) {
+			System.out.println("*******************\nVulnerabilities on element " + pattern.getElement().getName() + "\n- Trace for "  + pattern.getTraceStart().getName() + ":");
+			for (VulnerabilityDefinition vulnerability : pattern.getVulnerabilityValues()) {
+				if (vulnerability != null) {
 					System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
 				}
-				
 			}
 		}
 	}
-	
+
 	public void setDialog(WorkingDialog dialog) {
 		this.dialog = dialog;
 	}

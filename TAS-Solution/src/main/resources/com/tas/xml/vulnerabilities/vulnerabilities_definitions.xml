@@ -45,4 +45,11 @@
         <countermeasures></countermeasures>
     </vulnerabilityDefinition>
     
+    <vulnerabilityDefinition 
+        vulnerabilityId="vd00000007" 
+        vulnerabilityTitle="Unauthorized Access">
+        <description></description>
+        <countermeasures></countermeasures>
+    </vulnerabilityDefinition>
+    
 </vulnerabilitiesDefinitions>

@@ -1,6 +1,5 @@
 package com.tas.utils;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,7 +15,6 @@ import com.tas.model.diagram.Diagram;
 import com.tas.model.diagram.Element;
 import com.tas.model.diagram.Flow;
 import com.tas.model.risk_pattern.DiagramPattern;
-import com.tas.model.risk_pattern.ElementTrace;
 
 public class Decomposer {
 	
@@ -34,28 +32,27 @@ public class Decomposer {
 		ArrayList<DiagramPattern> patterns = new ArrayList<DiagramPattern>();
 
 		for (JAXBElement<? extends BlockElement> blockElement : diagramElements) {
-			patterns.add(decomposePattern(blockElement.getValue()));
+			patterns.addAll(decomposePattern(blockElement.getValue()));
 		}
 		
 		return patterns;
 	}
 	
-	public DiagramPattern decomposeSinglePatterns(BlockElement blockElement) {
+	public List<DiagramPattern> decomposeSinglePatterns(BlockElement blockElement) {
 		return decomposePattern(blockElement);
 	}
-	
-	private DiagramPattern decomposePattern(BlockElement blockElement) {
 
-		List<Assets.Asset> assets = blockElement.getAssets().getAsset();
-		List<ElementTrace> traces = getTracesForElement(blockElement);		
-		
-		DiagramPattern pattern = new DiagramPattern(blockElement, assets, traces);	
+	private List<DiagramPattern> decomposePattern(BlockElement blockElement) {
+
+		//List<DiagramPattern> traces = getPatternsForElement(blockElement);	
+		//List<DiagramPattern> patterns = getPatternsForElement(blockElement);	
+			
 	
-		return pattern;
+		return getPatternsForElement(blockElement);
 	}
 	
-	private List<ElementTrace> getTracesForElement(BlockElement baseAnalyzeElement) {
-		List<ElementTrace> traces = new ArrayList<ElementTrace>();
+	private List<DiagramPattern> getPatternsForElement(BlockElement baseAnalyzeElement) {
+		List<DiagramPattern> patterns = new ArrayList<DiagramPattern>();
 		
 		HashSet<String> analyzedElements = new HashSet<>();
 		HashSet<String> addedElements = new HashSet<>();
@@ -96,8 +93,8 @@ public class Decomposer {
 				if (traceList.get(0) instanceof Flow) {
 					traceList.remove(0);
 				}
-				ElementTrace trace = new ElementTrace(analyzeElement, traceList);
-				traces.add(trace);
+				DiagramPattern pattern = new DiagramPattern(baseAnalyzeElement, analyzeElement, traceList);
+				patterns.add(pattern);
 				addedElements.add(((BlockElement)traceList.get(0)).getId());
 			}
 
@@ -114,7 +111,7 @@ public class Decomposer {
 		
 		}	
 		
-		return traces;
+		return patterns;
 	}
 	
 }

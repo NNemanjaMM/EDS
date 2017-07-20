@@ -6,6 +6,7 @@ import com.tas.codes.AssetCode;
 import com.tas.codes.VulnerabilityCode;
 import com.tas.model.risk_pattern.*;
 import com.tas.model.diagram.Process;
+import com.tas.model.diagram.Element;
 import com.tas.model.diagram.*;
 import java.util.List;
 
@@ -25,7 +26,7 @@ end
 rule "SC:_Check_process"
 	agenda-group "sc_check_destination"
     when
-        component: DiagramPattern(destination instanceof Process)                    
+        component: DiagramPattern(element instanceof Process)                    
     then
         drools.setFocus("sc_process");
 end
@@ -34,7 +35,7 @@ end
 rule "SC:_Check_external"
 	agenda-group "sc_check_destination"
     when
-        component: DiagramPattern(destination instanceof ExternalEntity)                    
+        component: DiagramPattern(element instanceof ExternalEntity)                    
     then
         drools.setFocus("sc_external");
 end
@@ -43,18 +44,30 @@ end
 rule "SC:_Check_datastore"
 	agenda-group "sc_check_destination"
     when
-        component: DiagramPattern(destination instanceof DataStore)                    
+        component: DiagramPattern(element instanceof DataStore)                    
     then
         drools.setFocus("sc_datastore");
 end
 
 
-rule "SC_Process:_External"
-	agenda-group "sc_process"
-    when
-     	DiagramPattern($list : traces)
-     	traceElement : ElementTrace() from $list
-     	Boolean(booleanValue == true) from traceElement.sourceElement instanceof ExternalEntity         
+rule "SC_External:_Process"
+	agenda-group "sc_external"
+    when    
+        DiagramPattern(traceStart instanceof Process)      
     then
-        traceElement.addVulnerability(VulnerabilityCode.XSS);
+        drools.setFocus("sc_external_from_process");
 end
+
+
+rule "SC_External_from_Process:_XSS_1"
+	agenda-group "sc_external_from_process"
+    when
+     	pattern : DiagramPattern(traceStart instanceof Process)
+     	DiagramPattern($list : trace)
+     	elementInTrace : Element() from $list
+     	Boolean(booleanValue == true) from elementInTrace instanceof Process  
+     	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == false
+    then
+        pattern.addVulnerability(VulnerabilityCode.XSS);
+end
+

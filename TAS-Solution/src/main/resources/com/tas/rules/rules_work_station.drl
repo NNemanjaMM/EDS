@@ -25,16 +25,16 @@ end
 rule "WS:_Check_process"
 	agenda-group "ws_check_destination"
     when
-        component: DiagramPattern(destination instanceof Process)                    
+        DiagramPattern(element instanceof Process)                    
     then
-        drools.setFocus("ws_process");
+       	drools.setFocus("ws_process");
 end
 
 
 rule "WS:_Check_external"
 	agenda-group "ws_check_destination"
     when
-        component: DiagramPattern(destination instanceof ExternalEntity)                    
+        DiagramPattern(element instanceof ExternalEntity)                    
     then
         drools.setFocus("ws_external");
 end
@@ -43,7 +43,7 @@ end
 rule "WS:_Check_datastore"
 	agenda-group "ws_check_destination"
     when
-        component: DiagramPattern(destination instanceof DataStore)                    
+        DiagramPattern(element instanceof DataStore)                    
     then
         drools.setFocus("ws_datastore");
 end
@@ -52,9 +52,7 @@ end
 rule "WS_Process:_Resource"
 	agenda-group "ws_process"
     when
-     	DiagramPattern($list : traces)
-     	traceElement : ElementTrace() from $list
-     	Boolean(booleanValue == true) from traceElement.sourceElement instanceof ExternalEntity                 
+        traceElement: DiagramPattern(traceStart instanceof ExternalEntity)                  
     then
-        traceElement.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
+        traceElement.addVulnerability(VulnerabilityCode.NONE);
 end

@@ -17,7 +17,6 @@ import com.tas.model.diagram.Vulnerabilities.Vulnerability;
 import com.tas.model.diagram.VulnerabilitiesDefinitions;
 import com.tas.model.diagram.VulnerabilityDefinition;
 import com.tas.model.risk_pattern.DiagramPattern;
-import com.tas.model.risk_pattern.ElementTrace;
 
 public class MergeDiagram {
 	
@@ -105,12 +104,19 @@ public class MergeDiagram {
 		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = makeVulnerabilitiesMap();
 		
 		for (DiagramPattern pattern : diagramPatterns) {
+			for (String vulnerability : pattern.getVulnerabilities()) {
+				pattern.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
+			}
+		}
+		/*
+		for (DiagramPattern pattern : diagramPatterns) {
 			for (ElementTrace trace : pattern.getTraces()) {
 				for (String vulnerability : trace.getVulnerabilities()) {
 					trace.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
 				}
 			}
 		}
+		*/
 		
 		return diagramPatterns;
 	}
