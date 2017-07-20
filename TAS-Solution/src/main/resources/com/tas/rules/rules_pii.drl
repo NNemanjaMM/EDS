@@ -5,7 +5,7 @@ package com.tas.rules
 import javax.xml.bind.JAXBElement;
 import com.tas.codes.AssetCode;
 import com.tas.codes.VulnerabilityCode;
-import com.tas.model.risk_pattern.DiagramPattern;
+import com.tas.model.risk_pattern.*;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 
 rule "Asset:_PII"
     when    
-     	DiagramPattern($list : coreDestination.getAssets().getAsset())
+     	DiagramPattern($list : assets)
      	$value : Assets.Asset() from $list  
      	Boolean(booleanValue == true) from $value.assetId == AssetCode.PII 
     then
@@ -26,7 +26,7 @@ end
 rule "PII:_Check_process"
 	agenda-group "pii_check_destination"
     when
-        component: DiagramPattern(coreDestination instanceof Process)                    
+        component: DiagramPattern(destination instanceof Process)                    
     then
         drools.setFocus("pii_process");
 end
@@ -35,7 +35,7 @@ end
 rule "PII:_Check_external"
 	agenda-group "pii_check_destination"
     when
-        component: DiagramPattern(coreDestination instanceof ExternalEntity)                    
+        component: DiagramPattern(destination instanceof ExternalEntity)                    
     then
         drools.setFocus("pii_external");
 end
@@ -44,7 +44,7 @@ end
 rule "PII:_Check_datastore"
 	agenda-group "pii_check_destination"
     when
-        component: DiagramPattern(coreDestination instanceof DataStore)                    
+        component: DiagramPattern(destination instanceof DataStore)                    
     then
         drools.setFocus("pii_datastore");
 end
@@ -53,7 +53,9 @@ end
 rule "PII_Process:_External"
 	agenda-group "pii_process"
     when
-        component: DiagramPattern(coreSource instanceof ExternalEntity)                    
+     	DiagramPattern($list : traces)
+     	traceElement : ElementTrace() from $list
+     	Boolean(booleanValue == true) from traceElement.sourceElement instanceof ExternalEntity             
     then
-        component.addVulnerability(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE);
+        traceElement.addVulnerability(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE);
 end

@@ -125,25 +125,11 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		Decomposer decomposer = new Decomposer(diagram);
 		List<DiagramPattern> patterns = decomposer.decomposeAllPatterns();
 		
-		for (DiagramPattern diagramPattern : patterns) {
-			System.out.println("\n********* Pattern for " + diagramPattern.getDestination().getName());
-			for (Map.Entry<BlockElement, ElementTrace> trace : diagramPattern.getTraces().entrySet()) {
-				System.out.println("Trace for " + trace.getValue().getSourceElement().getName() + ":");
-				for (Element element : trace.getValue().getTrace()) {
-					System.out.println("\t " + element.getName());
-				}
-			}
-		}
-		
-		if (patterns.size() > 0) {
-			return true;
-		}
-		
-		
-		
 		if (patterns.size() == 0) {
 			return false;
 		}
+		
+		//printDiagramPatterns(patterns);
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -205,17 +191,8 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		/* ******************************************************* */	
 
+		printVulnerabilitiesForDiagramPatterns(patterns);
 		
-		for (DiagramPattern pattern : patterns) {			
-			System.out.println("*******************\nVulnerabilities on element " + pattern.getDestination().getName() + ":");
-			for (Map.Entry<BlockElement, ElementTrace> trace : pattern.getTraces().entrySet()) {
-				System.out.println("\t- Vulnerabilities from "  + trace.getValue().getSourceElement().getName() + ":");
-				for (VulnerabilityDefinition vulnerability : trace.getValue().getVulnerabilityValues()) {
-					System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
-				}
-				
-			}
-		}
 		
 		return true;
 	}
@@ -389,6 +366,33 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		 for (DiagramPattern diagramPattern : diagramPatterns) {
 			 session.execute(diagramPattern);				
 		 }
+	}
+	
+	@SuppressWarnings("unused")
+	private void printDiagramPatterns(List<DiagramPattern> diagramPatterns) {
+		for (DiagramPattern diagramPattern : diagramPatterns) {
+			System.out.println("\n********* Pattern for " + diagramPattern.getDestination().getName());
+			for (ElementTrace trace : diagramPattern.getTraces()) {
+				System.out.println("Trace for " + trace.getSourceElement().getName() + ":");
+				for (Element element : trace.getTrace()) {
+					System.out.println("\t " + element.getName());
+				}
+			}
+		}	
+	}
+
+	@SuppressWarnings("unused")
+	private void printVulnerabilitiesForDiagramPatterns(List<DiagramPattern> diagramPatterns) {
+		for (DiagramPattern pattern : diagramPatterns) {			
+			System.out.println("*******************\nVulnerabilities on element " + pattern.getDestination().getName() + ":");
+			for (ElementTrace trace : pattern.getTraces()) {
+				System.out.println("\t- Vulnerabilities from "  + trace.getSourceElement().getName() + ":");
+				for (VulnerabilityDefinition vulnerability : trace.getVulnerabilityValues()) {
+					System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
+				}
+				
+			}
+		}
 	}
 	
 	public void setDialog(WorkingDialog dialog) {

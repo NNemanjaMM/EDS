@@ -2,10 +2,9 @@ package com.tas.utils;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -48,17 +47,18 @@ public class Decomposer {
 	private DiagramPattern decomposePattern(BlockElement blockElement) {
 
 		List<Assets.Asset> assets = blockElement.getAssets().getAsset();
-		Map<BlockElement, ElementTrace> traces = getTracesForElement(blockElement);		
+		List<ElementTrace> traces = getTracesForElement(blockElement);		
 		
 		DiagramPattern pattern = new DiagramPattern(blockElement, assets, traces);	
 	
 		return pattern;
 	}
 	
-	private Map<BlockElement, ElementTrace> getTracesForElement(BlockElement baseAnalyzeElement) {
-		Map<BlockElement, ElementTrace> traces = new HashMap<BlockElement, ElementTrace>();
+	private List<ElementTrace> getTracesForElement(BlockElement baseAnalyzeElement) {
+		List<ElementTrace> traces = new ArrayList<ElementTrace>();
 		
 		HashSet<String> analyzedElements = new HashSet<>();
+		HashSet<String> addedElements = new HashSet<>();
 		Stack<BlockElement> toAnalyzeElements = new Stack<BlockElement>();
 		Stack<Element> analyzingRow = new Stack<Element>();
 		
@@ -81,17 +81,24 @@ public class Decomposer {
 					analyzedElements.add(((BlockElement) flow.getValue().getSource()).getId());
 					break;
 				}
-			} 
+			}
 
 			analyzingRow.push(analyzeElement);	
 			if (linkingFlow != null) {
 				analyzingRow.push(linkingFlow);
 			}
 			
-			if (baseAnalyzeElement.getId() != analyzeElement.getId()) {
+			if (baseAnalyzeElement.getId() != analyzeElement.getId() && !addedElements.contains(analyzeElement.getId())) {
 				@SuppressWarnings({ "unchecked", "rawtypes" })
-				ElementTrace trace = new ElementTrace(analyzeElement, new ArrayList(analyzingRow));
-				traces.put(analyzeElement, trace);
+				List<Element> traceList = new ArrayList(analyzingRow);
+				traceList.remove(0);	//	uklanja se element do kog vodi trace (onaj koji se analizira)
+				Collections.reverse(traceList);
+				if (traceList.get(0) instanceof Flow) {
+					traceList.remove(0);
+				}
+				ElementTrace trace = new ElementTrace(analyzeElement, traceList);
+				traces.add(trace);
+				addedElements.add(((BlockElement)traceList.get(0)).getId());
 			}
 
 			if (!discoveredNew && !analyzingRow.isEmpty()) {
@@ -99,9 +106,9 @@ public class Decomposer {
 				analyzingRow.pop();	
 				if (!analyzingRow.isEmpty()) {
 					analyzingRow.pop();
-				}
-				if (!analyzingRow.isEmpty()) {
-					analyzingRow.pop();
+					if (!analyzingRow.isEmpty()) {
+						analyzingRow.pop();
+					}
 				}
 			}
 		

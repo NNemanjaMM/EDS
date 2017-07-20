@@ -2,7 +2,6 @@ package com.tas.utils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
 
@@ -106,9 +105,9 @@ public class MergeDiagram {
 		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = makeVulnerabilitiesMap();
 		
 		for (DiagramPattern pattern : diagramPatterns) {
-			for (Map.Entry<BlockElement, ElementTrace> trace : pattern.getTraces().entrySet()) {
-				for (String vulnerability : trace.getValue().getVulnerabilities()) {
-					trace.getValue().addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
+			for (ElementTrace trace : pattern.getTraces()) {
+				for (String vulnerability : trace.getVulnerabilities()) {
+					trace.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
 				}
 			}
 		}

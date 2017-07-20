@@ -4,7 +4,7 @@ package com.tas.rules
 //list any import classes here.
 import com.tas.codes.AssetCode;
 import com.tas.codes.VulnerabilityCode;
-import com.tas.model.risk_pattern.DiagramPattern;
+import com.tas.model.risk_pattern.*;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 
 rule "Asset:_Work_station"
     when
-     	DiagramPattern($list : coreDestination.getAssets().getAsset())  
+     	DiagramPattern($list : assets)  
      	$value : Assets.Asset() from $list  
      	Boolean(booleanValue == true) from $value.assetId == AssetCode.WORK_STATION               
     then
@@ -25,7 +25,7 @@ end
 rule "WS:_Check_process"
 	agenda-group "ws_check_destination"
     when
-        component: DiagramPattern(coreDestination instanceof Process)                    
+        component: DiagramPattern(destination instanceof Process)                    
     then
         drools.setFocus("ws_process");
 end
@@ -34,7 +34,7 @@ end
 rule "WS:_Check_external"
 	agenda-group "ws_check_destination"
     when
-        component: DiagramPattern(coreDestination instanceof ExternalEntity)                    
+        component: DiagramPattern(destination instanceof ExternalEntity)                    
     then
         drools.setFocus("ws_external");
 end
@@ -43,7 +43,7 @@ end
 rule "WS:_Check_datastore"
 	agenda-group "ws_check_destination"
     when
-        component: DiagramPattern(coreDestination instanceof DataStore)                    
+        component: DiagramPattern(destination instanceof DataStore)                    
     then
         drools.setFocus("ws_datastore");
 end
@@ -52,8 +52,9 @@ end
 rule "WS_Process:_Resource"
 	agenda-group "ws_process"
     when
-        component: DiagramPattern(coreSource instanceof ExternalEntity)                    
+     	DiagramPattern($list : traces)
+     	traceElement : ElementTrace() from $list
+     	Boolean(booleanValue == true) from traceElement.sourceElement instanceof ExternalEntity                 
     then
-        component.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
+        traceElement.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
 end
-

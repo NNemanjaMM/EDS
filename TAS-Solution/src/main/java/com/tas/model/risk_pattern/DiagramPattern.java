@@ -1,7 +1,6 @@
 package com.tas.model.risk_pattern;
 
 import java.util.List;
-import java.util.Map;
 
 import com.tas.model.diagram.Assets;
 import com.tas.model.diagram.BlockElement;
@@ -10,10 +9,10 @@ public class DiagramPattern {
 	
 	private BlockElement destination;
 	private List<Assets.Asset> assets;
-	private Map<BlockElement, ElementTrace> traces;
+	private List<ElementTrace> traces;
 	
 	
-	public DiagramPattern(BlockElement destination, List<Assets.Asset> assets, Map<BlockElement, ElementTrace> traces) {
+	public DiagramPattern(BlockElement destination, List<Assets.Asset> assets, List<ElementTrace> traces) {
 		this.destination = destination;
 		this.assets = assets;
 		this.traces = traces;
@@ -28,7 +27,7 @@ public class DiagramPattern {
 		return assets;
 	}
 
-	public Map<BlockElement, ElementTrace> getTraces() {
+	public List<ElementTrace> getTraces() {
 		return traces;
 	}
 
@@ -40,7 +39,7 @@ public class DiagramPattern {
 		this.assets = assets;
 	}
 
-	public void setTraces(Map<BlockElement, ElementTrace> traces) {
+	public void setTraces(List<ElementTrace> traces) {
 		this.traces = traces;
 	}
 	
