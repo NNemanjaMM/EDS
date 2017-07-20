@@ -12,48 +12,48 @@ import java.util.List;
 //declare any global variables here
 
 
-rule "Asset:_Session_Cookie"
+rule "Asset:_Work_station"
     when
      	DiagramPattern($list : coreDestination.getAssets().getAsset())  
      	$value : Assets.Asset() from $list  
-     	Boolean(booleanValue == true) from $value.assetId == AssetCode.SESSION_COOKIE               
+     	Boolean(booleanValue == true) from $value.assetId == AssetCode.WORK_STATION               
     then
-        drools.setFocus("sc_check_destination");
+        drools.setFocus("ws_check_destination");
 end
 
 
-rule "SC:_Check_process"
-	agenda-group "sc_check_destination"
+rule "WS:_Check_process"
+	agenda-group "ws_check_destination"
     when
         component: DiagramPattern(coreDestination instanceof Process)                    
     then
-        drools.setFocus("sc_process");
+        drools.setFocus("ws_process");
 end
 
 
-rule "SC:_Check_external"
-	agenda-group "sc_check_destination"
+rule "WS:_Check_external"
+	agenda-group "ws_check_destination"
     when
         component: DiagramPattern(coreDestination instanceof ExternalEntity)                    
     then
-        drools.setFocus("sc_external");
+        drools.setFocus("ws_external");
 end
 
 
-rule "SC:_Check_datastore"
-	agenda-group "sc_check_destination"
+rule "WS:_Check_datastore"
+	agenda-group "ws_check_destination"
     when
         component: DiagramPattern(coreDestination instanceof DataStore)                    
     then
-        drools.setFocus("sc_datastore");
+        drools.setFocus("ws_datastore");
 end
 
 
-rule "SC_Process:_External"
-	agenda-group "sc_process"
+rule "WS_Process:_Resource"
+	agenda-group "ws_process"
     when
         component: DiagramPattern(coreSource instanceof ExternalEntity)                    
     then
-        component.addVulnerability(VulnerabilityCode.XSS);
+        component.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
 end
 

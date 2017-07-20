@@ -5,7 +5,7 @@
     
     <elements>
         
-        <browser id="de1000001" 
+        <browser id="de1000001"            
             name="Firefox Browser">
             <assets>                
                 <asset assetId="as00000001" />

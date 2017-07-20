@@ -5,63 +5,42 @@
     
     <vulnerabilityDefinition
         vulnerabilityId="vd00000001" 
-        vulnerabilityTitle="Injection">
+        vulnerabilityTitle="SQL Injection">
         <description></description>
         <countermeasures></countermeasures>
     </vulnerabilityDefinition>
     
     <vulnerabilityDefinition 
         vulnerabilityId="vd00000002" 
-        vulnerabilityTitle="Identity Spoofing">
+        vulnerabilityTitle="XML Injection">
         <description></description>
         <countermeasures></countermeasures>
     </vulnerabilityDefinition>
     
     <vulnerabilityDefinition 
         vulnerabilityId="vd00000003" 
-        vulnerabilityTitle="Program Spoofing">
+        vulnerabilityTitle="Cross-Site Scripting">
         <description></description>
         <countermeasures></countermeasures>
     </vulnerabilityDefinition>
     
     <vulnerabilityDefinition 
         vulnerabilityId="vd00000004" 
-        vulnerabilityTitle="Memory Safety">
+        vulnerabilityTitle="Cross-Site Request Forgey">
         <description></description>
         <countermeasures></countermeasures>
     </vulnerabilityDefinition>
     
     <vulnerabilityDefinition 
         vulnerabilityId="vd00000005" 
-        vulnerabilityTitle="Race Conditions">
+        vulnerabilityTitle="Sensitive Data Exposure">
         <description></description>
         <countermeasures></countermeasures>
     </vulnerabilityDefinition>
     
     <vulnerabilityDefinition 
         vulnerabilityId="vd00000006" 
-        vulnerabilityTitle="Side-Channel Atack">
-        <description></description>
-        <countermeasures></countermeasures>
-    </vulnerabilityDefinition>
-    
-    <vulnerabilityDefinition 
-        vulnerabilityId="vd00000007" 
-        vulnerabilityTitle="Privilege Escalation">
-        <description></description>
-        <countermeasures></countermeasures>
-    </vulnerabilityDefinition>
-    
-    <vulnerabilityDefinition 
-        vulnerabilityId="vd00000008" 
-        vulnerabilityTitle="Privilege-Confusion">
-        <description></description>
-        <countermeasures></countermeasures>
-    </vulnerabilityDefinition>
-    
-    <vulnerabilityDefinition 
-        vulnerabilityId="vd00000009" 
-        vulnerabilityTitle="User Interface">
+        vulnerabilityTitle="Session Hijack">
         <description></description>
         <countermeasures></countermeasures>
     </vulnerabilityDefinition>

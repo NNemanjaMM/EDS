@@ -3,6 +3,7 @@ package com.tas.worker;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBException;
@@ -14,10 +15,13 @@ import org.xml.sax.SAXException;
 import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
 import com.tas.model.diagram.AssetDefinitions;
+import com.tas.model.diagram.BlockElement;
 import com.tas.model.diagram.Diagram;
+import com.tas.model.diagram.Element;
 import com.tas.model.diagram.VulnerabilitiesDefinitions;
 import com.tas.model.diagram.VulnerabilityDefinition;
-import com.tas.model.risk_pattern.DiagramPiece;
+import com.tas.model.risk_pattern.DiagramPattern;
+import com.tas.model.risk_pattern.ElementTrace;
 import com.tas.utils.Decomposer;
 import com.tas.utils.KieRulesBase;
 import com.tas.utils.Marshaller;
@@ -119,9 +123,25 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		/* 4 ********	DECOMPOSING XML DIAGRAM			**********	- DONE	*/
 		Decomposer decomposer = new Decomposer(diagram);
-		List<DiagramPiece> pieces = decomposer.decomposeAllPieces();
+		List<DiagramPattern> patterns = decomposer.decomposeAllPatterns();
 		
-		if (pieces.size() == 0) {
+		for (DiagramPattern diagramPattern : patterns) {
+			System.out.println("\n********* Pattern for " + diagramPattern.getDestination().getName());
+			for (Map.Entry<BlockElement, ElementTrace> trace : diagramPattern.getTraces().entrySet()) {
+				System.out.println("Trace for " + trace.getValue().getSourceElement().getName() + ":");
+				for (Element element : trace.getValue().getTrace()) {
+					System.out.println("\t " + element.getName());
+				}
+			}
+		}
+		
+		if (patterns.size() > 0) {
+			return true;
+		}
+		
+		
+		
+		if (patterns.size() == 0) {
 			return false;
 		}
 		
@@ -132,7 +152,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 
 		/* 5 ********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE	*/		
-		createAndFireRules(pieces);				
+		createAndFireRules(patterns);				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -152,8 +172,8 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		
 		/* 6 ********	MERGING VULNERAB. AND DIAGRAMS	**********	- DONE	*/	
-		MergeDiagram mergeVulnerabilities = new MergeDiagram(pieces, vulnerabilityDefinitions);
-		pieces = mergeVulnerabilities.mergeVulnerabilitiesToDiagramPieces();
+		MergeDiagram mergeVulnerabilities = new MergeDiagram(patterns, vulnerabilityDefinitions);
+		patterns = mergeVulnerabilities.mergeVulnerabilitiesToDiagramPieces();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -186,11 +206,14 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		/* ******************************************************* */	
 
 		
-		for (DiagramPiece diagramPiece : pieces) {						
-			System.out.println("*******************\nVulnerabilities between " + 
-					diagramPiece.getCoreSource().getName() + " and " + diagramPiece.getCoreDestination().getName());
-			for (VulnerabilityDefinition vulnerability : diagramPiece.getVulnerabilityValues()) {
-				System.out.println("Vulnerability name: " + vulnerability.getVulnerabilityTitle());
+		for (DiagramPattern pattern : patterns) {			
+			System.out.println("*******************\nVulnerabilities on element " + pattern.getDestination().getName() + ":");
+			for (Map.Entry<BlockElement, ElementTrace> trace : pattern.getTraces().entrySet()) {
+				System.out.println("\t- Vulnerabilities from "  + trace.getValue().getSourceElement().getName() + ":");
+				for (VulnerabilityDefinition vulnerability : trace.getValue().getVulnerabilityValues()) {
+					System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
+				}
+				
 			}
 		}
 		
@@ -359,12 +382,12 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		return true;
 	}
 	
-	private void createAndFireRules(List<DiagramPiece> diagramParts) {
+	private void createAndFireRules(List<DiagramPattern> diagramPatterns) {
 		
 		StatelessKieSession session = KieRulesBase.createStatelessSession();
 		
-		 for (DiagramPiece diagramPiece : diagramParts) {
-			 session.execute(diagramPiece);				
+		 for (DiagramPattern diagramPattern : diagramPatterns) {
+			 session.execute(diagramPattern);				
 		 }
 	}
 	
