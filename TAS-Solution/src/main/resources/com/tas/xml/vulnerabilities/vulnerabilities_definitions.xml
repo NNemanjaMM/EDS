@@ -13,8 +13,8 @@
     <vulnerabilityDefinition 
         vulnerabilityId="vd00000002" 
         vulnerabilityTitle="XML Injection">
-        <description></description>
-        <countermeasures></countermeasures>
+        <description>Some description for XML Injection</description>
+        <countermeasures>There are a lots of them...</countermeasures>
     </vulnerabilityDefinition>
     
     <vulnerabilityDefinition 

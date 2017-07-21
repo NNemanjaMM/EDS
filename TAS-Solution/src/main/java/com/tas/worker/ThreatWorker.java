@@ -2,6 +2,7 @@ package com.tas.worker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.SwingWorker;
@@ -18,10 +19,12 @@ import com.tas.model.diagram.Diagram;
 import com.tas.model.diagram.Element;
 import com.tas.model.diagram.VulnerabilitiesDefinitions;
 import com.tas.model.diagram.VulnerabilityDefinition;
+import com.tas.model.report.ReportClass;
+import com.tas.model.report.ReportPattern;
 import com.tas.model.risk_pattern.DiagramPattern;
 import com.tas.utils.Decomposer;
 import com.tas.utils.KieRulesBase;
-import com.tas.utils.Marshaller;
+import com.tas.utils.XMLLinker;
 import com.tas.utils.MergeDiagram;
 import com.tas.utils.Validator;
 
@@ -38,6 +41,11 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	private Diagram diagram;
 	private AssetDefinitions assetDefinitions;
 	private VulnerabilitiesDefinitions vulnerabilityDefinitions;
+	
+	private List<DiagramPattern> patterns;
+	private ReportClass report;
+	
+	
 	
 	public ThreatWorker(File diagram, File assets, File vulnerabilities, File report, boolean analyseComponents) {
 		this.diagramFile = diagram;
@@ -120,7 +128,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		/* 4 ********	DECOMPOSING XML DIAGRAM			**********	- DONE	*/
 		Decomposer decomposer = new Decomposer(diagram);
-		List<DiagramPattern> patterns = decomposer.decomposeAllPatterns();
+		patterns = decomposer.decomposeAllPatterns();
 		
 		if (patterns.size() == 0) {
 			return false;
@@ -140,7 +148,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 
 		/* 5 ********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE	*/		
-		createAndFireRules(patterns);				
+		createAndFireRules();				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -169,26 +177,24 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(ProgressCode.MERGED_DIAGRAM_VULNERABILITIES);	
 		
 
+		/* 7 ********	CREATING REPORT	PATTERN			**********	-  */	
+		report = createReportPatternsFromDiagramPatterns();				
+		
+		if(Thread.currentThread().isInterrupted()) {
+			return false;
+		}
+		setProgress(ProgressCode.GENERATIED_REPORT_PATTERNS);
+		
+
 		/* 7 ********	CREATING XML REPORT				**********	-  */	
-		//if () {
-		//	return false;
-		//}				
+		if (!createXMLReportFile()) {
+			return false;
+		}				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			return false;
 		}
 		setProgress(ProgressCode.GENERATED_REPORT);
-		
-
-		/* 7 ********	SAVING XML REPORT				**********	-  */	
-		//if () {
-		//	return false;
-		//}				
-		
-		if(Thread.currentThread().isInterrupted()) {
-			return false;
-		}
-		setProgress(ProgressCode.SAVED_REPORT);
 
 		
 		/* ******************************************************* */	
@@ -197,7 +203,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		return true;
 	}
-	
+
 	private boolean validateDiagram() {
 		String message;
 		
@@ -319,7 +325,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		try {
 			
-			diagram = Marshaller.readXMLDiagram(diagramFile);
+			diagram = XMLLinker.readXMLDiagram(diagramFile);
 			
 		} catch (JAXBException e) {
 			String message = "Parser could not be initialized!\nPlease try again.";
@@ -334,7 +340,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		try {
 			
-			assetDefinitions = Marshaller.readXMLAssets(assetsFile);
+			assetDefinitions = XMLLinker.readXMLAssets(assetsFile);
 			
 		} catch (JAXBException e) {
 			String message = "Parser could not be initialized!\nPlease try again.";
@@ -349,7 +355,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		try {
 			
-			vulnerabilityDefinitions = Marshaller.readXMLVulnerabilities(vulnerabilitiesFile);
+			vulnerabilityDefinitions = XMLLinker.readXMLVulnerabilities(vulnerabilitiesFile);
 			
 		} catch (JAXBException e) {
 			String message = "Parser could not be initialized!\nPlease try again.";
@@ -360,13 +366,38 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		return true;
 	}
 	
-	private void createAndFireRules(List<DiagramPattern> diagramPatterns) {
+	private void createAndFireRules() {
 		
 		StatelessKieSession session = KieRulesBase.createStatelessSession();
 		
-		 for (DiagramPattern diagramPattern : diagramPatterns) {
+		 for (DiagramPattern diagramPattern : patterns) {
 			 session.execute(diagramPattern);				
 		 }
+	}
+	
+	private ReportClass createReportPatternsFromDiagramPatterns() {
+		List<ReportPattern> reports = new ArrayList<>();
+		
+		for (DiagramPattern diagramPattern : patterns) {
+			reports.add(new ReportPattern(diagramPattern));
+		}
+		
+		ReportClass report = new ReportClass(reports);
+		
+		return report;
+	}
+	
+	private boolean createXMLReportFile() {
+		
+		try {
+			XMLLinker.writeXMLReportFile(report, reportFile);
+		} catch (JAXBException e) {
+			String message = "Report File could not be written!\nPlease try again.";
+			dialog.setErrorMessage(message);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	@SuppressWarnings("unused")

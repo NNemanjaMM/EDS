@@ -6,9 +6,9 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import com.tas.worker.ThreatWorker;
 import com.tas.gui.MainWindow;
 import com.tas.gui.WorkingDialog;
+import com.tas.worker.ThreatWorker;
 
 public class StartAnalysisAction extends AbstractAction {
 

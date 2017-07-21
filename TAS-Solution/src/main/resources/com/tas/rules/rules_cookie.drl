@@ -152,4 +152,3 @@ rule "SC_Process:_Session_Timeout1"	// ako se sesija ne tajmautuje, moguce je po
         pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
 end
 
-

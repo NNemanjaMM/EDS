@@ -221,9 +221,9 @@ public class WorkingDialog extends JDialog {
 			phase = 4;
 		} else if (ProgressCode.RULES_ANALYZED <= value && value < ProgressCode.READED_VULNERABILITIES) {
 			phase = 5;
-		} else if (ProgressCode.READED_VULNERABILITIES <= value && value < ProgressCode.GENERATED_REPORT) {
+		} else if (ProgressCode.READED_VULNERABILITIES <= value && value < ProgressCode.GENERATIED_REPORT_PATTERNS) {
 			phase = 6;
-		} else if (ProgressCode.GENERATED_REPORT <= value && value < ProgressCode.DONE) {
+		} else if (ProgressCode.GENERATIED_REPORT_PATTERNS <= value && value < ProgressCode.DONE) {
 			phase = 7;
 		} else if (value == ProgressCode.DONE) {
 			phase = 10;

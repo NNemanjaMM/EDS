@@ -114,7 +114,7 @@ public class MainWindow extends JFrame {
 	public void setReportDefaultLocation() {
 		DateFormat dateFormat = new SimpleDateFormat("MMdd_HHmmss");
 		Date date = new Date();		
-		contentReport.setText("D:\\Master\\temp\\ThreatReport_" + dateFormat.format(date));
+		contentReport.setText("D:\\Master\\temp\\ThreatReport_" + dateFormat.format(date) + ".xml");
 	}	
 	
 	

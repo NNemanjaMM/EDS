@@ -4,13 +4,15 @@ import java.io.File;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.tas.model.diagram.AssetDefinitions;
 import com.tas.model.diagram.Diagram;
 import com.tas.model.diagram.VulnerabilitiesDefinitions;
+import com.tas.model.report.ReportClass;
 
-public class Marshaller {
+public class XMLLinker {
 
 	public static Diagram readXMLDiagram(File diagramFile) throws JAXBException {
 		
@@ -37,5 +39,14 @@ public class Marshaller {
 		VulnerabilitiesDefinitions vulnerabilities = (VulnerabilitiesDefinitions) jaxbUnmarshaller.unmarshal(vulnerabilitiesFile);
 		
 		return vulnerabilities;
+	}
+	
+	public static void writeXMLReportFile(ReportClass report, File reportFile) throws JAXBException {
+		
+        JAXBContext jaxbContext = JAXBContext.newInstance(ReportClass.class);
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        jaxbMarshaller.marshal(report, reportFile);		
+		
 	}
 }

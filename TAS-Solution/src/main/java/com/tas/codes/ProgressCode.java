@@ -28,8 +28,8 @@ public class ProgressCode {
 	public static final int MERGED_DIAGRAM_VULNERABILITIES = 95;
 	
 	// 7- Creating report - 5
-	public static final int GENERATED_REPORT = 98;
-	public static final int SAVED_REPORT = 99;
+	public static final int GENERATIED_REPORT_PATTERNS = 97;
+	public static final int GENERATED_REPORT = 99;
 
 	public static final int DONE = 100;
 	public static final int CANCELED = 111;

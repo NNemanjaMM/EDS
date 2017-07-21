@@ -248,3 +248,4 @@ rule "PII_Process:_From_Browser_CSRF"
     then
         pattern.addVulnerability(VulnerabilityCode.CSRF);
 end
+
