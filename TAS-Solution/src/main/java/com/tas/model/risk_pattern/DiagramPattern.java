@@ -3,7 +3,7 @@ package com.tas.model.risk_pattern;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tas.model.diagram.Assets;
+import com.tas.model.diagram.AssetDefinition;
 import com.tas.model.diagram.BlockElement;
 import com.tas.model.diagram.Element;
 import com.tas.model.diagram.VulnerabilityDefinition;
@@ -11,7 +11,7 @@ import com.tas.model.diagram.VulnerabilityDefinition;
 public class DiagramPattern {
 
 	private BlockElement element;
-	private List<Assets.Asset> assets;
+	private List<AssetDefinition> assets;
 
 	private BlockElement traceStart;
 	private List<Element> trace;	
@@ -21,7 +21,7 @@ public class DiagramPattern {
 	
 	public DiagramPattern(BlockElement element, BlockElement traceStart, List<Element> trace) {
 		this.element = element;
-		this.assets = element.getAssets().getAsset();
+		this.assets = element.getImportAssets().getImportAsset();
 		this.traceStart = traceStart;
 		this.trace = trace;
 		
@@ -34,7 +34,7 @@ public class DiagramPattern {
 		return element;
 	}
 
-	public List<Assets.Asset> getAssets() {
+	public List<AssetDefinition> getAssets() {
 		return assets;
 	}
 
@@ -58,7 +58,7 @@ public class DiagramPattern {
 		this.element = element;
 	}
 
-	public void setAssets(List<Assets.Asset> assets) {
+	public void setAssets(List<AssetDefinition> assets) {
 		this.assets = assets;
 	}
 
@@ -79,11 +79,17 @@ public class DiagramPattern {
 	}
 
 	public void addVulnerability(String vulnerability) {
-		this.vulnerabilities.add(vulnerability);
+		if (!this.vulnerabilities.contains(vulnerability)) {
+			this.vulnerabilities.add(vulnerability);
+		}
 	}
 
 	public void addVulnerabilityValue(VulnerabilityDefinition vulnerabilityDefinition) {
 		this.vulnerabilityValues.add(vulnerabilityDefinition);		
+	}
+
+	public void removeVulnerability(String vulnerability) {
+		this.vulnerabilities.remove(vulnerability);
 	}
 	
 }

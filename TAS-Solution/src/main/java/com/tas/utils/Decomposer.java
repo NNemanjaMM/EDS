@@ -19,7 +19,7 @@ import com.tas.model.risk_pattern.DiagramPattern;
 public class Decomposer {
 	
 	private List<JAXBElement<? extends BlockElement>> diagramElements;
-	private List<JAXBElement<Flow>> diagramFlows;
+	private List<JAXBElement<? extends Flow>> diagramFlows;
 	
 	
 	public Decomposer(Diagram diagram) {
@@ -67,10 +67,10 @@ public class Decomposer {
 			boolean discoveredNew = false;
 			BlockElement analyzeElement = toAnalyzeElements.peek();
 			
-			List<JAXBElement<Flow>> flows = diagramFlows.stream().filter(f -> ((BlockElement)f.getValue().getDestination()).getId().equals(analyzeElement.getId())).collect(Collectors.toList());
+			List<JAXBElement<? extends Flow>> flows = diagramFlows.stream().filter(f -> ((BlockElement)f.getValue().getDestination()).getId().equals(analyzeElement.getId())).collect(Collectors.toList());
 			Flow linkingFlow = null;
 			
-			for (JAXBElement<Flow> flow : flows) {
+			for (JAXBElement<? extends Flow> flow : flows) {
 				if (!analyzedElements.contains(((BlockElement)flow.getValue().getSource()).getId())) {
 					discoveredNew = true;
 					linkingFlow = flow.getValue();

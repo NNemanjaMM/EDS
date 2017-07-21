@@ -8,6 +8,7 @@ import com.tas.model.risk_pattern.*;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.Element;
 import com.tas.model.diagram.*;
+import com.tas.model.diagram.Diagram.Flows.Http;
 import java.util.List;
 
 //declare any global variables here
@@ -16,17 +17,43 @@ import java.util.List;
 rule "Asset:_Session_Cookie"
     when
      	DiagramPattern($list : assets)  
-     	$value : Assets.Asset() from $list  
+     	$value : AssetDefinition() from $list  
      	Boolean(booleanValue == true) from $value.assetId == AssetCode.SESSION_COOKIE               
     then
         drools.setFocus("sc_check_destination");
 end
 
 
+rule "SC:_Check_Confidentiality"
+	agenda-group "sc_check_destination"		// SENSITIVE_DATA_EXPOSURE postoji uvek kada barem jedan element u transportu ne enkriptuje podatke
+    when
+     	pattern : DiagramPattern($list : assets)  
+     	$value : AssetDefinition() from $list  
+     	Boolean(booleanValue == true) from $value.protectConfidentiality == true  
+     	                 
+     	DiagramPattern($list2 : trace)
+     	elementInTrace : Element() from $list2
+     	DiagramPattern(elementInTrace instanceof Http) 
+    then
+        pattern.addVulnerability(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE);
+end
+
+
+rule "SC:_Check_Confidentiality_for_Session_Hijack"
+	agenda-group "sc_check_destination"		// ako je prenos podataka otvoren, mogu se procitati kredencijali ili cookie, pomocu cega se moze ukrasi sesija
+    when									// nije ukljuceno u prethodno pravilo, posto ona zahteva da se stiti confidentality
+     	pattern : DiagramPattern($list : trace)
+     	elementInTrace : Element() from $list
+     	DiagramPattern(elementInTrace instanceof Http) 
+    then
+        pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
+end
+
+
 rule "SC:_Check_process"
 	agenda-group "sc_check_destination"
     when
-        component: DiagramPattern(element instanceof Process)                    
+        DiagramPattern(element instanceof Process)                    
     then
         drools.setFocus("sc_process");
 end
@@ -35,39 +62,57 @@ end
 rule "SC:_Check_external"
 	agenda-group "sc_check_destination"
     when
-        component: DiagramPattern(element instanceof ExternalEntity)                    
+        pattern : DiagramPattern(element instanceof ExternalEntity)                    
     then
-        drools.setFocus("sc_external");
+        pattern.addVulnerability(VulnerabilityCode.XSS);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
+        drools.setFocus("sc_external");						// XSS daje C+I+A td se pojavljuje uvek kada imamo razmatranje cookie-a
 end
 
 
 rule "SC:_Check_datastore"
 	agenda-group "sc_check_destination"
     when
-        component: DiagramPattern(element instanceof DataStore)                    
+        DiagramPattern(element instanceof DataStore)                    
     then
         drools.setFocus("sc_datastore");
 end
 
 
-rule "SC_External:_Process"
+rule "SC_External:_Process_XSS"
 	agenda-group "sc_external"
     when    
-        DiagramPattern(traceStart instanceof Process)      
-    then
-        drools.setFocus("sc_external_from_process");
-end
-
-
-rule "SC_External_from_Process:_XSS_1"
-	agenda-group "sc_external_from_process"
-    when
-     	pattern : DiagramPattern(traceStart instanceof Process)
+        pattern : DiagramPattern(traceStart instanceof Process)      
      	DiagramPattern($list : trace)
      	elementInTrace : Element() from $list
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == false
     then
-        pattern.addVulnerability(VulnerabilityCode.XSS);
+        pattern.removeVulnerability(VulnerabilityCode.XSS);
 end
+
+
+rule "SC_Datastore:_Encrypted"	// ako podaci nisu enkriptovani, moguce je videti kredencijale
+	agenda-group "sc_datastore"	// takodje je moguce pomocu njih iyvrsiti prijavu i ukrasti sesiju
+    when    
+     	pattern : DiagramPattern($list : assets)  
+     	$value : AssetDefinition() from $list  
+     	Boolean(booleanValue == true) from $value.protectConfidentiality == true  
+     	            
+		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
+		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == false
+    then
+        pattern.addVulnerability(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE);
+        pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
+end
+
+
+rule "SC_Process:_Session_Timeout1"	// ako se sesija ne tajmautuje, moguce je pogoditi njen ID pa ga iskoristiti
+	agenda-group "sc_process"
+    when
+     	pattern : DiagramPattern()
+		Boolean(booleanValue == true) from ((Process)pattern.element).sessionHasTimeouts == false
+    then
+        pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
+end
+
 

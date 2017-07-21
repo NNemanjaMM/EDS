@@ -3,7 +3,7 @@
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
     targetNamespace="https://www.tas.org/tas-schemas" elementFormDefault="qualified"
     vc:minVersion="1.1" xmlns:ts="https://www.tas.org/tas-schemas">
-
+    
     <xs:redefine schemaLocation="DiagramSchema.xsd">
         <xs:group name="processes">
             <xs:choice>
@@ -78,9 +78,33 @@
     </xs:redefine>
     <xs:group name="processElements">
         <xs:choice>
-            <xs:element name="webApplication" type="ts:process"/>
-            <xs:element name="webService" type="ts:process"/>
-            <xs:element name="webServer" type="ts:process"/>
+            <xs:element name="webApplication">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:process">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="webService">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:process">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="webServer">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:process">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="managedApplication" type="ts:process"/>
             <xs:element name="thickClient" type="ts:process"/>
             <xs:element name="specialApplication" type="ts:process"/>
@@ -88,19 +112,59 @@
     </xs:group>
     <xs:group name="dataStoreElements">
         <xs:choice>
-            <xs:element name="cloudStorage" type="ts:dataStore"/>
-            <xs:element name="sqlDatabase" type="ts:dataStore"/>
-            <xs:element name="noSqlDatabase" type="ts:dataStore"/>
+            <xs:element name="cloudStorage">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:dataStore">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sqlDatabase">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:dataStore">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="noSqlDatabase">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:dataStore">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="fileSystem" type="ts:dataStore"/>
             <xs:element name="configurationFile" type="ts:dataStore"/>
             <xs:element name="cache" type="ts:dataStore"/>
             <xs:element name="html5LocalStorage" type="ts:dataStore"/>
-            <xs:element name="logFile" type="ts:dataStore"/>
+            <xs:element name="logFile">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:dataStore">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
         </xs:choice>
     </xs:group>
     <xs:group name="externalEntityElements">
         <xs:choice>
-            <xs:element name="browser" type="ts:externalEntity"/>
+            <xs:element name="browser">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:externalEntity">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="externalWebApplication" type="ts:externalEntity"/>
             <xs:element name="externalWebService" type="ts:externalEntity"/>
             <xs:element name="authorizedProvider" type="ts:externalEntity"/>
@@ -111,9 +175,33 @@
     </xs:group>
     <xs:group name="flowElements">
         <xs:choice>
-            <xs:element name="binary" type="ts:flow"/>
-            <xs:element name="http" type="ts:flow"/>
-            <xs:element name="https" type="ts:flow"/>
+            <xs:element name="binary">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:flow">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="http">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:flow">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="https">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ts:flow">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="tcp" type="ts:flow"/>
             <xs:element name="udp" type="ts:flow"/>
             <xs:element name="ipSec" type="ts:flow"/>

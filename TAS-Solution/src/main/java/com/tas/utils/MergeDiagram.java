@@ -58,8 +58,8 @@ public class MergeDiagram {
 			}
 		}
 		
-		List<JAXBElement<Flow>> flows = diagram.getFlows().getOrBinaryOrHttpOrHttps();	
-		for (JAXBElement<Flow> flow : flows) {
+		List<JAXBElement<? extends Flow>> flows = diagram.getFlows().getOrBinaryOrHttpOrHttps();	
+		for (JAXBElement<? extends Flow> flow : flows) {
 			flow.getValue().setImportAssets(new ImportAssets());
 			if (flow.getValue().getAssets() != null) {
 				for (Asset asset : flow.getValue().getAssets().getAsset()) {
@@ -86,8 +86,8 @@ public class MergeDiagram {
 			}
 		}
 		
-		List<JAXBElement<Flow>> flows = diagram.getFlows().getOrBinaryOrHttpOrHttps();		
-		for (JAXBElement<Flow> flow : flows) {
+		List<JAXBElement<? extends Flow>> flows = diagram.getFlows().getOrBinaryOrHttpOrHttps();		
+		for (JAXBElement<? extends Flow> flow : flows) {
 			flow.getValue().setImportVulnerabilities(new ImportVulnerabilities());
 			if (flow.getValue().getVulnerabilities() != null) {
 				for (Vulnerability vulnerability : flow.getValue().getVulnerabilities().getVulnerability()) {

@@ -16,7 +16,7 @@ import java.util.List;
 rule "Asset:_PII"
     when    
      	DiagramPattern($list : assets)
-     	$value : Assets.Asset() from $list  
+     	$value : AssetDefinition() from $list  
      	Boolean(booleanValue == true) from $value.assetId == AssetCode.PII 
     then
         drools.setFocus("pii_check_destination");
