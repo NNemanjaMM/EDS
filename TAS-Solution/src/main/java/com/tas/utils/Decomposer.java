@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
 
-import com.tas.model.diagram.Assets;
 import com.tas.model.diagram.BlockElement;
 import com.tas.model.diagram.Diagram;
 import com.tas.model.diagram.Element;

@@ -152,6 +152,15 @@
                     <xs:element maxOccurs="1" minOccurs="0" name="assets" type="ts:assets"/>
                 </xs:sequence>
                 <xs:attribute name="section" use="optional" type="ts:typeIdRef"/>
+                <xs:attribute name="runLevel" default="HIGH_PRIVILEGE">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="SANDBOX"/>
+                            <xs:enumeration value="LOW_PRIVILEGE"/>
+                            <xs:enumeration value="HIGH_PRIVILEGE"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -184,15 +193,6 @@
                 <xs:attribute default="false" name="sanitizeInput" type="xs:boolean"/>
                 <xs:attribute default="false" name="sanitizeOutput" type="xs:boolean"/>
                 <xs:attribute default="false" name="hasForgeryProtection" type="xs:boolean"/>
-                <xs:attribute name="runLevel">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:string">
-                            <xs:enumeration value="SANDBOX"/>
-                            <xs:enumeration value="LOW_PRIVILEGE"/>
-                            <xs:enumeration value="HIGH_PRIVILEGE"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:attribute>
                 <xs:attribute default="false" name="sessionHasTimeouts" type="xs:boolean"/>
                 <xs:attribute default="false" name="requiresAuthentication" type="xs:boolean"/>
                 <xs:attribute default="false" name="requiresAuthorization" type="xs:boolean"/>
@@ -216,17 +216,6 @@
                 <xs:attribute default="false" name="sanitizeOutput" type="xs:boolean"/>
                 <xs:attribute default="false" name="isThreadSafe" type="xs:boolean"/>
                 <xs:attribute default="false" name="hasForgeryProtection" type="xs:boolean"/>
-                <xs:attribute name="runLevel">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:string">
-                            <xs:enumeration value="SANDBOX"/>
-                            <xs:enumeration value="LOW_PRIVILEGE"/>
-                            <xs:enumeration value="HIGH_PRIVILEGE"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:attribute>
-                <xs:attribute default="false" name="requiresAuthentication" type="xs:boolean"/>
-                <xs:attribute default="false" name="requiresAuthorization" type="xs:boolean"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
