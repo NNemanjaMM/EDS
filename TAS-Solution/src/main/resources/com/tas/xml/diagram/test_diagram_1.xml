@@ -44,6 +44,8 @@
             source="de1000001" 
             destination="de1000002" 
             name="Server Request" 
+            containsCookies="true"
+            containsXML="true"
             outOfScope="true" >
             <boundariesCrossed>
                 <boundaryCross boundary="db1000010"/>

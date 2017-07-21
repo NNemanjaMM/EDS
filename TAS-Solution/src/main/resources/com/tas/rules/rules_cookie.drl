@@ -9,6 +9,7 @@ import com.tas.model.diagram.Process;
 import com.tas.model.diagram.Element;
 import com.tas.model.diagram.*;
 import com.tas.model.diagram.Diagram.Flows.Http;
+import com.tas.model.diagram.Diagram.Elements.Browser;
 import java.util.List;
 
 //declare any global variables here
@@ -69,7 +70,6 @@ rule "SC:_Check_Confidentiality"
         pattern.addVulnerability(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE);
 end
 
-
 rule "SC:_Check_Confidentiality_for_Session_Hijack"
 	agenda-group "sc_check_primary"		// ako je prenos podataka otvoren, mogu se procitati kredencijali ili cookie, pomocu cega se moze ukrasi sesija
     when									// nije ukljuceno u prethodno pravilo, posto ona zahteva da se stiti confidentality
@@ -80,7 +80,6 @@ rule "SC:_Check_Confidentiality_for_Session_Hijack"
         pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
 end
 
-
 rule "SC:_Check_process"
 	agenda-group "sc_check_primary"
     when
@@ -89,13 +88,20 @@ rule "SC:_Check_process"
         drools.setFocus("sc_process");
 end
 
+rule "SC:_Check_external_browser"
+	agenda-group "sc_check_primary"
+    when
+        pattern : DiagramPattern(element instanceof Browser)                             
+    then
+        pattern.addVulnerability(VulnerabilityCode.XSS);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
+        drools.setFocus("sc_external");
+end
 
 rule "SC:_Check_external"
 	agenda-group "sc_check_primary"
     when
         pattern : DiagramPattern(element instanceof ExternalEntity)                    
     then
-        pattern.addVulnerability(VulnerabilityCode.XSS);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
         drools.setFocus("sc_external");
 end
 

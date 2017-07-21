@@ -184,6 +184,8 @@
                 </xs:sequence>
                 <xs:attribute name="source" type="ts:typeIdRef" use="required"/>
                 <xs:attribute name="destination" type="ts:typeIdRef" use="required"/>
+                <xs:attribute default="false" name="containsCookies" type="xs:boolean"/>
+                <xs:attribute default="false" name="containsXML" type="xs:boolean"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

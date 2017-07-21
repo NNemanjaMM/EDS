@@ -4,10 +4,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -43,6 +46,11 @@ public class MainWindow extends JFrame {
 	private void initializeWindow() {
 		setSize(550,260);
 		setTitle("Threat Analysis System");
+		try {
+			setIconImage(new ImageIcon(ImageIO.read(getClass().getResource("icon.png"))).getImage().getScaledInstance(32, 32, java.awt.Image.SCALE_SMOOTH));
+		} catch (IOException e1) {
+			
+		}
 		setResizable(false);
 		
 		try {

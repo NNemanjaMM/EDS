@@ -9,6 +9,7 @@ import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
 import com.tas.model.diagram.Diagram.Elements.SqlDatabase;
 import com.tas.model.diagram.Diagram.Flows.Http;
+import com.tas.model.diagram.Diagram.Elements.Browser;
 import java.util.List;
 
 //declare any global variables here
@@ -66,10 +67,19 @@ rule "WS:_Check_process"
        	drools.setFocus("ws_process");
 end
 
+
 rule "WS:_Check_external"
 	agenda-group "ws_check_primary"
     when
         pattern : DiagramPattern(element instanceof ExternalEntity)                    
+    then
+        drools.setFocus("ws_external");
+end
+
+rule "WS:_Check_external_browser"
+	agenda-group "sc_check_primary"
+    when
+        pattern : DiagramPattern(element instanceof Browser)                             
     then
         pattern.addVulnerability(VulnerabilityCode.XSS);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
         drools.setFocus("ws_external");
@@ -83,9 +93,8 @@ rule "WS:_Check_datastore"
         drools.setFocus("ws_datastore");
 end
 
-
 rule "WS:_Check_Confidentiality_for_Session_Hijack"
-	agenda-group "ws_check_primary"		// ako je prenos podataka otvoren, mogu se procitati kredencijali ili cookie, pomocu cega se moze ukrasi sesija
+	agenda-group "ws_check_primary"			// ako je prenos podataka otvoren, mogu se procitati kredencijali ili cookie, pomocu cega se moze ukrasi sesija
     when									// nije ukljuceno u prethodno pravilo, posto ona zahteva da se stiti confidentality
      	pattern : DiagramPattern($list : trace)
      	elementInTrace : Element() from $list
@@ -100,7 +109,7 @@ rule "WS_Datastore:_SQL_Database"
     when
         pattern: DiagramPattern(element instanceof SqlDatabase)                  
     then
-        pattern.addVulnerability(VulnerabilityCode.INJECTION_XML);	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
+        pattern.addVulnerability(VulnerabilityCode.INJECTION_SQL);	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
         drools.setFocus("ws_datastore_remove_potential_injection");
 end
 
@@ -123,7 +132,7 @@ rule "WS_Datastore:_SQL_Database_Remove_injection"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeInput == false                
     then
-        pattern.removeVulnerability(VulnerabilityCode.INJECTION_XML);
+        pattern.removeVulnerability(VulnerabilityCode.INJECTION_SQL);
 end
 
 
@@ -148,7 +157,6 @@ rule "WS_Process:_Session_Timeout1"	// ako se sesija ne tajmautuje, moguce je po
     then
         pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
 end
-
 
 rule "WS_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce je pogoditi njen ID pa ga iskoristiti
 	agenda-group "ws_process"
