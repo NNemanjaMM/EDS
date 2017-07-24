@@ -403,20 +403,33 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	@SuppressWarnings("unused")
 	private void printDiagramPatterns(List<DiagramPattern> diagramPatterns) {
 		for (DiagramPattern pattern : diagramPatterns) {
-			System.out.println("\n********* Pattern for " + pattern.getElement().getName() + "\n- Trace for " + pattern.getTraceStart().getName() + ":");
-			for (Element element : pattern.getTrace()) {
-				System.out.println("\t " + element.getName());
+			if (pattern.getTraceStart() != null) {
+				System.out.println("\n********* Pattern for " + pattern.getElement().getName() + "\n- Trace for " + pattern.getTraceStart().getName() + ":");
+				for (Element element : pattern.getTrace()) {
+					System.out.println("\t " + element.getName());
+				}
+			} else {
+				System.out.println("\n********* Pattern " + pattern.getElement().getName() + " with no trace");
 			}
 		}	
 	}
 
 	@SuppressWarnings("unused")
 	private void printVulnerabilitiesForDiagramPatterns(List<DiagramPattern> diagramPatterns) {
-		for (DiagramPattern pattern : diagramPatterns) {			
-			System.out.println("*******************\nVulnerabilities on element " + pattern.getElement().getName() + "\n- Trace for "  + pattern.getTraceStart().getName() + ":");
-			for (VulnerabilityDefinition vulnerability : pattern.getVulnerabilityValues()) {
-				if (vulnerability != null) {
-					System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
+		for (DiagramPattern pattern : diagramPatterns) {	
+			if (pattern.getTraceStart() != null) {		
+				System.out.println("*******************\nVulnerabilities on element " + pattern.getElement().getName() + "\n- Trace for "  + pattern.getTraceStart().getName() + ":");
+				for (VulnerabilityDefinition vulnerability : pattern.getVulnerabilityValues()) {
+					if (vulnerability != null) {
+						System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
+					}
+				}
+			} else {
+				System.out.println("*******************\nVulnerabilities on element " + pattern.getElement().getName() + " with no trace:");
+				for (VulnerabilityDefinition vulnerability : pattern.getVulnerabilityValues()) {
+					if (vulnerability != null) {
+						System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
+					}
 				}
 			}
 		}

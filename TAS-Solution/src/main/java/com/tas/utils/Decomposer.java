@@ -42,11 +42,6 @@ public class Decomposer {
 	}
 
 	private List<DiagramPattern> decomposePattern(BlockElement blockElement) {
-
-		//List<DiagramPattern> traces = getPatternsForElement(blockElement);	
-		//List<DiagramPattern> patterns = getPatternsForElement(blockElement);	
-			
-	
 		return getPatternsForElement(blockElement);
 	}
 	
@@ -60,6 +55,9 @@ public class Decomposer {
 		
 		toAnalyzeElements.push(baseAnalyzeElement);	
 		analyzedElements.add(baseAnalyzeElement.getId());
+		
+		DiagramPattern basePattern = new DiagramPattern(baseAnalyzeElement, null, null);
+		patterns.add(basePattern);
 
 		while (!toAnalyzeElements.isEmpty()) {
 			
