@@ -16,7 +16,9 @@ public class DiagramPattern {
 	private BlockElement traceStart;
 	private List<Element> trace;	
 	private List<String> vulnerabilities;
+	private List<String> assetsEndangered;
 	private List<VulnerabilityDefinition> vulnerabilityValues;
+	private List<AssetDefinition> assetValues;
 	
 	
 	public DiagramPattern(BlockElement element, BlockElement traceStart, List<Element> trace) {
@@ -26,7 +28,9 @@ public class DiagramPattern {
 		this.trace = trace;
 		
 		vulnerabilities = new ArrayList<>();
+		assetsEndangered = new ArrayList<>();
 		vulnerabilityValues = new ArrayList<>();
+		assetValues = new ArrayList<>();
 	}
 
 
@@ -76,20 +80,46 @@ public class DiagramPattern {
 
 	public void setVulnerabilityValues(List<VulnerabilityDefinition> vulnerabilityValues) {
 		this.vulnerabilityValues = vulnerabilityValues;
+	}	
+
+	public List<String> getAssetsEndangered() {
+		return assetsEndangered;
 	}
 
-	public void addVulnerability(String vulnerability) {
-		if (!this.vulnerabilities.contains(vulnerability)) {
-			this.vulnerabilities.add(vulnerability);
-		}
+	public List<AssetDefinition> getAssetValues() {
+		return assetValues;
+	}
+
+	public void setAssetsEndangered(List<String> assetsEndangered) {
+		this.assetsEndangered = assetsEndangered;
+	}
+
+	public void setAssetValues(List<AssetDefinition> assetValues) {
+		this.assetValues = assetValues;
 	}
 
 	public void addVulnerabilityValue(VulnerabilityDefinition vulnerabilityDefinition) {
 		this.vulnerabilityValues.add(vulnerabilityDefinition);		
 	}
 
-	public void removeVulnerability(String vulnerability) {
-		this.vulnerabilities.remove(vulnerability);
+	public void addAssetValue(AssetDefinition assetDefinition) {
+		this.assetValues.add(assetDefinition);		
+	}
+
+
+	public void addVulnerabilityAndAsset(String vulnerability, String asset) {
+		if (!this.vulnerabilities.contains(vulnerability)) {
+			this.vulnerabilities.add(vulnerability);
+			this.assetsEndangered.add(asset);
+		}
+	}
+
+	public void removeVulnerabilityAndAsset(String vulnerability) {
+		int index = this.vulnerabilities.indexOf(vulnerability);
+		if (index != -1) {
+			this.vulnerabilities.remove(index);
+			this.assetsEndangered.remove(index);
+		}
 	}
 	
 }

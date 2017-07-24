@@ -2,6 +2,7 @@ package com.tas.utils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
 
@@ -41,6 +42,13 @@ public class MergeDiagram {
 		this.diagramPatterns = diagramPatterns;
 		this.vulnerabilityDefinitions = vulnerabilityDefinitions;
 		this.assetDefinitions = null;
+		this.diagram = null;
+	}
+
+	public MergeDiagram(List<DiagramPattern> diagramPatterns, VulnerabilitiesDefinitions vulnerabilityDefinitions, AssetDefinitions assetDefinitions) {
+		this.diagramPatterns = diagramPatterns;
+		this.vulnerabilityDefinitions = vulnerabilityDefinitions;
+		this.assetDefinitions = assetDefinitions;
 		this.diagram = null;
 	}
 	
@@ -108,15 +116,22 @@ public class MergeDiagram {
 				pattern.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
 			}
 		}
-		/*
+		
+		return diagramPatterns;
+	}
+	
+	public List<DiagramPattern> mergeVulnerabilitiesAndAssetsToDiagramPieces() {
+		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = makeVulnerabilitiesMap();
+		HashMap<String, AssetDefinition> assetsMap = makeAssetsMap();
+		
 		for (DiagramPattern pattern : diagramPatterns) {
-			for (ElementTrace trace : pattern.getTraces()) {
-				for (String vulnerability : trace.getVulnerabilities()) {
-					trace.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
-				}
+			int i = 0;
+			for (String vulnerability : pattern.getVulnerabilities()) {
+				pattern.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
+				pattern.addAssetValue(assetsMap.get(pattern.getAssetsEndangered().get(i)));
+				i++;
 			}
 		}
-		*/
 		
 		return diagramPatterns;
 	}

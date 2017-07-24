@@ -68,7 +68,7 @@ rule "PII:_Check_Confidentiality"
      	elementInTrace : Element() from $list2
      	DiagramPattern(elementInTrace instanceof Http) 
     then
-        pattern.addVulnerability(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE);
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE, AssetCode.PII);
 end
 
 rule "PII:_Check_process"
@@ -76,7 +76,7 @@ rule "PII:_Check_process"
     when
         pattern : DiagramPattern(element instanceof Process)                    
     then
-        pattern.addVulnerability(VulnerabilityCode.UNAUTHORIZED_ACCESS);	// pretpostavimo da ce postojati ukoliko imamo proces
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.UNAUTHORIZED_ACCESS, AssetCode.PII);	// pretpostavimo da ce postojati ukoliko imamo proces
         drools.setFocus("pii_process");
 end
 
@@ -94,7 +94,7 @@ rule "PII:_Check_external_browser"
     when
         pattern : DiagramPattern(element instanceof Browser)                             
     then
-        pattern.addVulnerability(VulnerabilityCode.XSS);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.XSS, AssetCode.PII);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
         drools.setFocus("pii_external");
 end
 
@@ -113,7 +113,7 @@ rule "PII:_Check_Confidentiality_for_Session_Hijack"
      	elementInTrace : Element() from $list
      	DiagramPattern(elementInTrace instanceof Http) 
     then
-        pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.PII);
 end
 
 
@@ -122,7 +122,7 @@ rule "PII_Datastore:_SQL_Database"
     when
         pattern: DiagramPattern(element instanceof SqlDatabase)                  
     then
-        pattern.addVulnerability(VulnerabilityCode.INJECTION_SQL);	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.INJECTION_SQL, AssetCode.PII);	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
         drools.setFocus("pii_datastore_remove_potential_injection");
 end
 
@@ -133,7 +133,7 @@ rule "PII_Datastore:_Encrypting"
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == false                
     then
-        pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.PII);
 end
 
 rule "PII_Datastore:_Encrypted"	// ako podaci nisu enkriptovani, moguce je videti kredencijale
@@ -146,7 +146,7 @@ rule "PII_Datastore:_Encrypted"	// ako podaci nisu enkriptovani, moguce je videt
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == false
     then
-        pattern.addVulnerability(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE);
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE, AssetCode.PII);
 end
 
 rule "PII_Datastore:_SQL_Database_Remove_injection"
@@ -158,7 +158,7 @@ rule "PII_Datastore:_SQL_Database_Remove_injection"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeInput == false                
     then
-        pattern.removeVulnerability(VulnerabilityCode.INJECTION_SQL);
+        pattern.removeVulnerabilityAndAsset(VulnerabilityCode.INJECTION_SQL);
 end
 
 
@@ -171,7 +171,7 @@ rule "PII_External:_Process_XSS"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == false
     then
-        pattern.removeVulnerability(VulnerabilityCode.XSS);
+        pattern.removeVulnerabilityAndAsset(VulnerabilityCode.XSS);
 end
 
 
@@ -201,7 +201,7 @@ rule "PII_Process:_Session_Timeout"	// ako se sesija ne tajmautuje, moguce je po
      	pattern : DiagramPattern()
 		Boolean(booleanValue == true) from ((Process)pattern.element).sessionHasTimeouts == false
     then
-        pattern.addVulnerability(VulnerabilityCode.SESSION_HIJACK);
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.PII);
 end
 
 rule "PII_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce je pogoditi njen ID pa ga iskoristiti
@@ -212,7 +212,7 @@ rule "PII_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce
 		Boolean(booleanValue == true) from ((Process)pattern.element).requiresAuthentication == true
 		Boolean(booleanValue == true) from ((Process)pattern.element).requiresAuthorization == true
     then
-        pattern.removeVulnerability(VulnerabilityCode.UNAUTHORIZED_ACCESS);
+        pattern.removeVulnerabilityAndAsset(VulnerabilityCode.UNAUTHORIZED_ACCESS);
 end
 
 rule "PII_Process:_Receives_XML"
@@ -223,7 +223,7 @@ rule "PII_Process:_Receives_XML"
      	Boolean(booleanValue == true) from flowInTrace instanceof Flow  
      	Boolean(booleanValue == true) from ((Flow)flowInTrace).containsXML == true     	   	
     then
-        pattern.addVulnerability(VulnerabilityCode.INJECTION_XML);
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.INJECTION_XML, AssetCode.PII);
         drools.setFocus("pii_process_injection_xml");
 end
 
@@ -235,7 +235,7 @@ rule "PII_Process:_Check_XML_Injection"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeInput == true  
     then
-        pattern.removeVulnerability(VulnerabilityCode.INJECTION_XML);
+        pattern.removeVulnerabilityAndAsset(VulnerabilityCode.INJECTION_XML);
 end
 
 rule "PII_Process:_From_Browser_CSRF"
@@ -246,6 +246,6 @@ rule "PII_Process:_From_Browser_CSRF"
      	Boolean(booleanValue == true) from ((Flow)flow).containsCookies == true
      	Boolean(booleanValue == true) from ((Process)pattern.element).hasForgeryProtection == false
     then
-        pattern.addVulnerability(VulnerabilityCode.CSRF);
+        pattern.addVulnerabilityAndAsset(VulnerabilityCode.CSRF, AssetCode.PII);
 end
 

@@ -132,14 +132,10 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		if (patterns.size() == 0) {
 			return false;
-		}		
-		
-		
+		}
 		
 		//printDiagramPatterns(patterns);
 		//if (patterns.size() > 0) return true;
-				
-		
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -154,7 +150,15 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			 return false; 
 		}
 		setProgress(ProgressCode.RULES_ANALYZED);	
-		
+
+		/* 5 ********	READING VULNERABILITIES 		**********	- DONE  */	
+		if (analyseComponents) {
+			analyzeVulnerabilitiesForComponentTechnologies();
+		}		
+
+		if(Thread.currentThread().isInterrupted()) {
+			 return false; 
+		}
 
 		/* 6 ********	READING VULNERABILITIES 		**********	- DONE  */		
 		if (!readVulnerabilityDefinitions()) {
@@ -168,8 +172,8 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		
 		/* 6 ********	MERGING VULNERAB. AND DIAGRAMS	**********	- DONE	*/	
-		MergeDiagram mergeVulnerabilities = new MergeDiagram(patterns, vulnerabilityDefinitions);
-		patterns = mergeVulnerabilities.mergeVulnerabilitiesToDiagramPieces();
+		MergeDiagram mergeVulnerabilities = new MergeDiagram(patterns, vulnerabilityDefinitions, assetDefinitions);
+		patterns = mergeVulnerabilities.mergeVulnerabilitiesAndAssetsToDiagramPieces();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -373,6 +377,10 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		 for (DiagramPattern diagramPattern : patterns) {
 			 session.execute(diagramPattern);				
 		 }
+	}
+	
+	private void analyzeVulnerabilitiesForComponentTechnologies() {
+		
 	}
 	
 	private ReportClass createReportPatternsFromDiagramPatterns() {

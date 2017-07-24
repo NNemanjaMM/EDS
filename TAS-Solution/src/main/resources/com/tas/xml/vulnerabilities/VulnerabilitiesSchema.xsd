@@ -3,6 +3,7 @@
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
     targetNamespace="https://www.tas.org/tas-schemas" elementFormDefault="qualified"
     vc:minVersion="1.1">
+    <xs:include schemaLocation="../assets/AssetSchema.xsd"/>
     <xs:element name="vulnerabilitiesDefinitions">
         <xs:complexType>
             <xs:sequence>
@@ -13,6 +14,15 @@
     </xs:element>
     <xs:complexType name="vulnerabilityDefinition">
         <xs:sequence>
+            <xs:element name="description" type="ts:stringAndLink"/>
+            <xs:element name="countermeasures" type="ts:stringAndLink"/>
+        </xs:sequence>
+        <xs:attribute name="vulnerabilityId" type="xs:ID" use="required"/>
+        <xs:attribute name="vulnerabilityTitle" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="vulnerabilityDefinitionReport">
+        <xs:sequence>
+            <xs:element name="endangeredAsset" type="ts:assetDefinition"/>
             <xs:element name="description" type="ts:stringAndLink"/>
             <xs:element name="countermeasures" type="ts:stringAndLink"/>
         </xs:sequence>
