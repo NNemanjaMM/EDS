@@ -134,13 +134,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			return false;
 		}		
 		
-		
-		
 		//printDiagramPatterns(patterns);
 		//if (patterns.size() > 0) return true;
 				
-		
-		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
@@ -155,6 +151,14 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(ProgressCode.RULES_ANALYZED);	
 		
+		/* 5 ********	REQUEST TO NVD FOR VULNERABILITIES*********	- DONE  */	
+		if (analyseComponents) {
+			analyzeVulnerabilitiesForComponentTechnologies();
+		}		
+		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false; 
+		}
 
 		/* 6 ********	READING VULNERABILITIES 		**********	- DONE  */		
 		if (!readVulnerabilityDefinitions()) {
@@ -373,6 +377,10 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		 for (DiagramPattern diagramPattern : patterns) {
 			 session.execute(diagramPattern);				
 		 }
+	}
+	
+	private void analyzeVulnerabilitiesForComponentTechnologies() {
+		
 	}
 	
 	private ReportClass createReportPatternsFromDiagramPatterns() {

@@ -22,7 +22,8 @@ public class StartAnalysisAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		String diagramPath = MainWindow.getInstance().getDiagramLocation();
 		String assetsPath = MainWindow.getInstance().getAssetLocation();
-		String vulnerabilitiesPath = "D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\vulnerabilities\\vulnerabilities_definitions.xml"; // TODO AFTER relocate variable
+		//String vulnerabilitiesPath = "D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\vulnerabilities\\vulnerabilities_definitions.xml"; // TODO AFTER relocate variable
+		String vulnerabilitiesPath = "E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\vulnerabilities\\vulnerabilities_definitions.xml"; // TODO AFTER relocate variable
 		String reportPath = MainWindow.getInstance().getReportLocation();
 		boolean analyseComponents = MainWindow.getInstance().getComponentsThreatsSelected();
 		

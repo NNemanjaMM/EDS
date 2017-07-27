@@ -18,7 +18,7 @@ public class ReportPattern {
 		counter++;
 		this.id = counter;
 		this.destinationElement = new ReportPatternElement(diagramPattern.getElement());
-		this.sourceElement = new ReportPatternElement(diagramPattern.getTraceStart());
+		this.sourceElement = diagramPattern.getTraceStart() == null ? null : new ReportPatternElement(diagramPattern.getTraceStart());
 		this.vulnerabilities = new ReportPatternVulnerabilities(diagramPattern.getVulnerabilityValues());
 	}
 	
