@@ -6,7 +6,7 @@ import java.util.List;
 import com.tas.model.diagram.AssetDefinition;
 import com.tas.model.diagram.BlockElement;
 import com.tas.model.diagram.Element;
-import com.tas.model.diagram.VulnerabilityDefinition;
+import com.tas.model.diagram.ExploitDefinition;
 
 public class DiagramPattern {
 
@@ -15,9 +15,9 @@ public class DiagramPattern {
 
 	private BlockElement traceStart;
 	private List<Element> trace;	
-	private List<String> vulnerabilities;
+	private List<String> exploits;
 	private List<String> assetsEndangered;
-	private List<VulnerabilityDefinition> vulnerabilityValues;
+	private List<ExploitDefinition> exploitValues;
 	private List<AssetDefinition> assetValues;
 	
 	
@@ -27,9 +27,9 @@ public class DiagramPattern {
 		this.traceStart = traceStart;
 		this.trace = trace;
 		
-		vulnerabilities = new ArrayList<>();
+		exploits = new ArrayList<>();
 		assetsEndangered = new ArrayList<>();
-		vulnerabilityValues = new ArrayList<>();
+		exploitValues = new ArrayList<>();
 		assetValues = new ArrayList<>();
 	}
 
@@ -50,12 +50,12 @@ public class DiagramPattern {
 		return trace;
 	}
 
-	public List<String> getVulnerabilities() {
-		return vulnerabilities;
+	public List<String> getExploits() {
+		return exploits;
 	}
 
-	public List<VulnerabilityDefinition> getVulnerabilityValues() {
-		return vulnerabilityValues;
+	public List<ExploitDefinition> getExploitValues() {
+		return exploitValues;
 	}
 
 	public void setElement(BlockElement element) {
@@ -74,12 +74,12 @@ public class DiagramPattern {
 		this.trace = trace;
 	}
 
-	public void setVulnerabilities(List<String> vulnerabilities) {
-		this.vulnerabilities = vulnerabilities;
+	public void setExploits(List<String> exploits) {
+		this.exploits = exploits;
 	}
 
-	public void setVulnerabilityValues(List<VulnerabilityDefinition> vulnerabilityValues) {
-		this.vulnerabilityValues = vulnerabilityValues;
+	public void setExploitValues(List<ExploitDefinition> exploitValues) {
+		this.exploitValues = exploitValues;
 	}	
 
 	public List<String> getAssetsEndangered() {
@@ -98,8 +98,8 @@ public class DiagramPattern {
 		this.assetValues = assetValues;
 	}
 
-	public void addVulnerabilityValue(VulnerabilityDefinition vulnerabilityDefinition) {
-		this.vulnerabilityValues.add(vulnerabilityDefinition);		
+	public void addExploitValue(ExploitDefinition exploitDefinition) {
+		this.exploitValues.add(exploitDefinition);		
 	}
 
 	public void addAssetValue(AssetDefinition assetDefinition) {
@@ -107,17 +107,17 @@ public class DiagramPattern {
 	}
 
 
-	public void addVulnerabilityAndAsset(String vulnerability, String asset) {
-		if (!this.vulnerabilities.contains(vulnerability)) {
-			this.vulnerabilities.add(vulnerability);
+	public void addExploitAndAsset(String exploit, String asset) {
+		if (!this.exploits.contains(exploit)) {
+			this.exploits.add(exploit);
 			this.assetsEndangered.add(asset);
 		}
 	}
 
-	public void removeVulnerabilityAndAsset(String vulnerability) {
-		int index = this.vulnerabilities.indexOf(vulnerability);
+	public void removeExploitAndAsset(String exploit) {
+		int index = this.exploits.indexOf(exploit);
 		if (index != -1) {
-			this.vulnerabilities.remove(index);
+			this.exploits.remove(index);
 			this.assetsEndangered.remove(index);
 		}
 	}

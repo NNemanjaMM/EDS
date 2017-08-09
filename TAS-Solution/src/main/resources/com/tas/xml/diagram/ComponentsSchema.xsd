@@ -3,7 +3,7 @@
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
     targetNamespace="https://www.tas.org/tas-schemas" elementFormDefault="qualified"
     vc:minVersion="1.1" xmlns:ts="https://www.tas.org/tas-schemas">
-    
+
     <xs:redefine schemaLocation="DiagramSchema.xsd">
         <xs:group name="processes">
             <xs:choice>

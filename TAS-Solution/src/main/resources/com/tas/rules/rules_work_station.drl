@@ -3,7 +3,7 @@ package com.tas.rules
 
 //list any import classes here.
 import com.tas.codes.AssetCode;
-import com.tas.codes.VulnerabilityCode;
+import com.tas.codes.ExploitCode;
 import com.tas.model.risk_pattern.*;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
@@ -26,44 +26,26 @@ rule "Asset:_Work_station"
         drools.setFocus("ws_check_request");
 end
 
-rule "WS_Request:_Check_Confidentiality"
+rule "WS_Request:_Check_Resource_Aspects"
 	agenda-group "ws_check_request"
     when
      	 DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectConfidentiality == true  
+     	Boolean(booleanValue == true) from $value.protectConfidentiality == true
+     	or Boolean(booleanValue == true) from $value.protectAvailability == true
+     	or Boolean(booleanValue == true) from $value.protectIntegrity == true
      then
         drools.setFocus("ws_check_primary");
 end
 
-rule "WS_Request:_Check_Availability"
-	agenda-group "ws_check_request"
-    when
-     	DiagramPattern($list : assets)  
-     	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectAvailability == true  
-     then
-        drools.setFocus("ws_check_primary");
-end
-
-rule "WS_Request:_Check_Integrity"
-	agenda-group "ws_check_request"
-    when
-     	DiagramPattern($list : assets)  
-     	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectIntegrity == true  
-     then
-        drools.setFocus("ws_check_primary");
-end
-
-/* *************** CHECK VULNERABILITIES ****************/
+/* *************** CHECK EXPLOITS	 	****************/
 
 rule "WS:_Check_process"
 	agenda-group "ws_check_primary"
     when
         pattern : DiagramPattern(element instanceof Process)                    
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.UNAUTHORIZED_ACCESS, AssetCode.WORK_STATION);	// pretpostavimo da ce postojati ukoliko imamo proces 
+        pattern.addExploitAndAsset(ExploitCode.ELEVATION_OF_PRIVILEGE, AssetCode.WORK_STATION);	// pretpostavimo da ce postojati ukoliko imamo proces 
        	drools.setFocus("ws_process");
 end
 
@@ -81,7 +63,7 @@ rule "WS:_Check_external_browser"
     when
         pattern : DiagramPattern(element instanceof Browser)                             
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.XSS, AssetCode.WORK_STATION);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
+        pattern.addExploitAndAsset(ExploitCode.XSS, AssetCode.WORK_STATION);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
         drools.setFocus("ws_external");
 end
 
@@ -100,7 +82,7 @@ rule "WS:_Check_Confidentiality_for_Session_Hijack"
      	elementInTrace : Element() from $list
      	DiagramPattern(elementInTrace instanceof Http) 
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.WORK_STATION);
+        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.WORK_STATION);
 end
 
 
@@ -109,7 +91,7 @@ rule "WS_Datastore:_SQL_Database"
     when
         pattern: DiagramPattern(element instanceof SqlDatabase)                  
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.INJECTION_SQL, AssetCode.WORK_STATION);	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
+        pattern.addExploitAndAsset(ExploitCode.INJECTION_SQL, AssetCode.WORK_STATION);	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
         drools.setFocus("ws_datastore_remove_potential_injection");
 end
 
@@ -120,7 +102,7 @@ rule "WS_Datastore:_Encrypting"
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == false                
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.WORK_STATION);
+        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.WORK_STATION);
 end
 
 rule "WS_Datastore:_SQL_Database_Remove_injection"
@@ -132,7 +114,7 @@ rule "WS_Datastore:_SQL_Database_Remove_injection"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeInput == false                
     then
-        pattern.removeVulnerabilityAndAsset(VulnerabilityCode.INJECTION_SQL);
+        pattern.removeExploitAndAsset(ExploitCode.INJECTION_SQL);
 end
 
 
@@ -145,7 +127,7 @@ rule "WS_External:_Process_XSS"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == false
     then
-        pattern.removeVulnerabilityAndAsset(VulnerabilityCode.XSS);
+        pattern.removeExploitAndAsset(ExploitCode.XSS);
 end
 
 
@@ -155,7 +137,7 @@ rule "WS_Process:_Session_Timeout1"	// ako se sesija ne tajmautuje, moguce je po
      	pattern : DiagramPattern()
 		Boolean(booleanValue == true) from ((Process)pattern.element).sessionHasTimeouts == false
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.WORK_STATION);
+        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.WORK_STATION);
 end
 
 rule "WS_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce je pogoditi njen ID pa ga iskoristiti
@@ -166,6 +148,5 @@ rule "WS_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce 
 		Boolean(booleanValue == true) from ((Process)pattern.element).requiresAuthentication == true
 		Boolean(booleanValue == true) from ((Process)pattern.element).requiresAuthorization == true
     then
-        pattern.removeVulnerabilityAndAsset(VulnerabilityCode.UNAUTHORIZED_ACCESS);
+        pattern.removeExploitAndAsset(ExploitCode.ELEVATION_OF_PRIVILEGE);
 end
-

@@ -177,7 +177,7 @@ public class WorkingDialog extends JDialog {
 				break;
 			case 6: 
 				labelNumber.setText("Phase: 6 of 7");
-				labelPhase.setText("Applying vulnerabilities");
+				labelPhase.setText("Applying exploits");
 				break;
 			case 7: 
 				labelNumber.setText("Phase: 7 of 7");
@@ -219,9 +219,9 @@ public class WorkingDialog extends JDialog {
 			phase = 3;
 		} else if (ProgressCode.DECOMPOSED_DIAGRAM <= value && value < ProgressCode.RULES_ANALYZED) {
 			phase = 4;
-		} else if (ProgressCode.RULES_ANALYZED <= value && value < ProgressCode.READED_VULNERABILITIES) {
+		} else if (ProgressCode.RULES_ANALYZED <= value && value < ProgressCode.READED_EXPLOITS) {
 			phase = 5;
-		} else if (ProgressCode.READED_VULNERABILITIES <= value && value < ProgressCode.GENERATIED_REPORT_PATTERNS) {
+		} else if (ProgressCode.READED_EXPLOITS <= value && value < ProgressCode.GENERATIED_REPORT_PATTERNS) {
 			phase = 6;
 		} else if (ProgressCode.GENERATIED_REPORT_PATTERNS <= value && value < ProgressCode.DONE) {
 			phase = 7;

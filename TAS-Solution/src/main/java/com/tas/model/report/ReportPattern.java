@@ -8,7 +8,7 @@ public class ReportPattern {
 	private int id;
 	private ReportPatternElement destinationElement;
 	private ReportPatternElement sourceElement;
-	private ReportPatternVulnerabilities vulnerabilities;
+	private ReportPatternExploits exploits;
 	
 	public ReportPattern() {		
 		
@@ -19,7 +19,7 @@ public class ReportPattern {
 		this.id = counter;
 		this.destinationElement = new ReportPatternElement(diagramPattern.getElement());
 		this.sourceElement = diagramPattern.getTraceStart() == null ? null : new ReportPatternElement(diagramPattern.getTraceStart());
-		this.vulnerabilities = new ReportPatternVulnerabilities(diagramPattern.getVulnerabilityValues(), diagramPattern.getAssetValues());
+		this.exploits = new ReportPatternExploits(diagramPattern.getExploitValues(), diagramPattern.getAssetValues());
 	}
 	
 		
@@ -39,8 +39,8 @@ public class ReportPattern {
 		return sourceElement;
 	}
 
-	public ReportPatternVulnerabilities getVulnerabilities() {
-		return vulnerabilities;
+	public ReportPatternExploits getExploits() {
+		return exploits;
 	}
 
 	public static void setCounter(int counter) {
@@ -59,8 +59,8 @@ public class ReportPattern {
 		this.sourceElement = sourceElement;
 	}
 
-	public void setVulnerabilities(ReportPatternVulnerabilities vulnerabilities) {
-		this.vulnerabilities = vulnerabilities;
+	public void setExploits(ReportPatternExploits exploits) {
+		this.exploits = exploits;
 	}
 
 }

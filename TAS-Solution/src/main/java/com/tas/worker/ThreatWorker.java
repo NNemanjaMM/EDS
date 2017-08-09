@@ -17,8 +17,8 @@ import com.tas.gui.WorkingDialog;
 import com.tas.model.diagram.AssetDefinitions;
 import com.tas.model.diagram.Diagram;
 import com.tas.model.diagram.Element;
-import com.tas.model.diagram.VulnerabilitiesDefinitions;
-import com.tas.model.diagram.VulnerabilityDefinition;
+import com.tas.model.diagram.ExploitDefinition;
+import com.tas.model.diagram.ExploitDefinitions;
 import com.tas.model.report.ReportClass;
 import com.tas.model.report.ReportPattern;
 import com.tas.model.risk_pattern.DiagramPattern;
@@ -34,23 +34,23 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 	private File diagramFile;
 	private File assetsFile;
-	private File vulnerabilitiesFile;
+	private File exploitsFile;
 	private File reportFile;
 	private boolean analyseComponents;
 	
 	private Diagram diagram;
 	private AssetDefinitions assetDefinitions;
-	private VulnerabilitiesDefinitions vulnerabilityDefinitions;
+	private ExploitDefinitions exploitDefinitions;
 	
 	private List<DiagramPattern> patterns;
 	private ReportClass report;
 	
 	
 	
-	public ThreatWorker(File diagram, File assets, File vulnerabilities, File report, boolean analyseComponents) {
+	public ThreatWorker(File diagram, File assets, File exploits, File report, boolean analyseComponents) {
 		this.diagramFile = diagram;
 		this.assetsFile = assets;
-		this.vulnerabilitiesFile = vulnerabilities;
+		this.exploitsFile = exploits;
 		this.reportFile = report;
 		this.analyseComponents = analyseComponents;
 	}
@@ -84,14 +84,14 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		setProgress(ProgressCode.VALIDATED_ASSETS);
 		
 
-		/* 1 ********	VALIDATING XML VULNERABILITIES	**********	- DONE	*/
-		if (!validateVulnerabilityDefinitions()) {
+		/* 1 ********	VALIDATING XML EXPLOITS		**********	- DONE	*/
+		if (!validateExploitDefinitions()) {
 			return false;
 		}		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(ProgressCode.VALIDATED_VULNERABILITIES);
+		setProgress(ProgressCode.VALIDATED_EXPLOITS);
 		
 
 		/* 2 ********	READING XML DIAGRAM TO MEMORY	**********	- DONE	*/
@@ -151,7 +151,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		}
 		setProgress(ProgressCode.RULES_ANALYZED);	
 
-		/* 5 ********	READING VULNERABILITIES 		**********	- DONE  */	
+		/* 5 ********	READING EXPLOITS		 		**********	- DONE  */	
 		if (analyseComponents) {
 			analyzeVulnerabilitiesForComponentTechnologies();
 		}		
@@ -160,25 +160,25 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			 return false; 
 		}
 
-		/* 6 ********	READING VULNERABILITIES 		**********	- DONE  */		
-		if (!readVulnerabilityDefinitions()) {
+		/* 6 ********	READING EXPLOITS		 		**********	- DONE  */		
+		if (!readExploitDefinitions()) {
 			return false;
 		}				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(ProgressCode.READED_VULNERABILITIES);	
+		setProgress(ProgressCode.READED_EXPLOITS);	
 		
 		
-		/* 6 ********	MERGING VULNERAB. AND DIAGRAMS	**********	- DONE	*/	
-		MergeDiagram mergeVulnerabilities = new MergeDiagram(patterns, vulnerabilityDefinitions, assetDefinitions);
-		patterns = mergeVulnerabilities.mergeVulnerabilitiesAndAssetsToDiagramPieces();
+		/* 6 ********	MERGING EXPLOITS AND DIAGRAMS	**********	- DONE	*/	
+		MergeDiagram mergeExploits = new MergeDiagram(patterns, exploitDefinitions, assetDefinitions);
+		patterns = mergeExploits.mergeExploitsAndAssetsToDiagramPieces();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(ProgressCode.MERGED_DIAGRAM_VULNERABILITIES);	
+		setProgress(ProgressCode.MERGED_DIAGRAM_EXPLOITS);	
 		
 
 		/* 7 ********	CREATING REPORT	PATTERN			**********	-  */	
@@ -203,7 +203,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		/* ******************************************************* */	
 
-		printVulnerabilitiesForDiagramPatterns(patterns);		
+		printExploitsForDiagramPatterns(patterns);		
 		
 		return true;
 	}
@@ -286,7 +286,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		return true;
 	}
 	
-	private boolean validateVulnerabilityDefinitions() {
+	private boolean validateExploitDefinitions() {
 		String message;
 		
 		try {
@@ -298,7 +298,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			dialog.setErrorMessage(message);
 			return false;
 		} catch (SAXException e) {
-			message = "Vulnerability Definitions XML file is not well formed!\nXML File has been unauthorizedly modified and contains syntax errors. Please contact the support.";
+			message = "Exploit Definitions XML file is not well formed!\nXML File has been unauthorizedly modified and contains syntax errors. Please contact the support.";
 			dialog.setErrorMessage(message);
 			return false;
 		} catch (IOException e) {
@@ -310,10 +310,10 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		try {
 			
-			Validator.checkVulnerabilityDefinitionsValidity(vulnerabilitiesFile);
+			Validator.checkExploitDefinitionsValidity(exploitsFile);
 			
 		} catch (SAXException e) {
-			message = "Vulnerability Definitions XML file is not valid!\nXML File has been unauthorizedly modified and contains semantic errors. Please contact the support.";
+			message = "Exploit Definitions XML file is not valid!\nXML File has been unauthorizedly modified and contains semantic errors. Please contact the support.";
 			dialog.setErrorMessage(message);
 			return false;
 		} catch (IOException e) {
@@ -355,11 +355,11 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		return true;
 	}
 	
-	private boolean readVulnerabilityDefinitions() {
+	private boolean readExploitDefinitions() {
 
 		try {
 			
-			vulnerabilityDefinitions = XMLLinker.readXMLVulnerabilities(vulnerabilitiesFile);
+			exploitDefinitions = XMLLinker.readXMLExploits(exploitsFile);
 			
 		} catch (JAXBException e) {
 			String message = "Parser could not be initialized!\nPlease try again.";
@@ -423,20 +423,20 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	}
 
 	@SuppressWarnings("unused")
-	private void printVulnerabilitiesForDiagramPatterns(List<DiagramPattern> diagramPatterns) {
+	private void printExploitsForDiagramPatterns(List<DiagramPattern> diagramPatterns) {
 		for (DiagramPattern pattern : diagramPatterns) {	
 			if (pattern.getTraceStart() != null) {		
-				System.out.println("*******************\nVulnerabilities on element " + pattern.getElement().getName() + "\n- Trace for "  + pattern.getTraceStart().getName() + ":");
-				for (VulnerabilityDefinition vulnerability : pattern.getVulnerabilityValues()) {
-					if (vulnerability != null) {
-						System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
+				System.out.println("*******************\nExploits on element " + pattern.getElement().getName() + "\n- Trace for "  + pattern.getTraceStart().getName() + ":");
+				for (ExploitDefinition exploit : pattern.getExploitValues()) {
+					if (exploit != null) {
+						System.out.println("\t\t- " + exploit.getExploitTitle());
 					}
 				}
 			} else {
-				System.out.println("*******************\nVulnerabilities on element " + pattern.getElement().getName() + " with no trace:");
-				for (VulnerabilityDefinition vulnerability : pattern.getVulnerabilityValues()) {
-					if (vulnerability != null) {
-						System.out.println("\t\t- " + vulnerability.getVulnerabilityTitle());
+				System.out.println("*******************\nExploits on element " + pattern.getElement().getName() + " with no trace:");
+				for (ExploitDefinition exploit : pattern.getExploitValues()) {
+					if (exploit != null) {
+						System.out.println("\t\t- " + exploit.getExploitTitle());
 					}
 				}
 			}

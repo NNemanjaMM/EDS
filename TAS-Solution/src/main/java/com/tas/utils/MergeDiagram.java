@@ -2,7 +2,6 @@ package com.tas.utils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
 
@@ -11,12 +10,12 @@ import com.tas.model.diagram.AssetDefinitions;
 import com.tas.model.diagram.Assets.Asset;
 import com.tas.model.diagram.BlockElement;
 import com.tas.model.diagram.Diagram;
+import com.tas.model.diagram.ExploitDefinition;
+import com.tas.model.diagram.ExploitDefinitions;
+import com.tas.model.diagram.Exploits.Exploit;
 import com.tas.model.diagram.Flow;
 import com.tas.model.diagram.ImportAssets;
-import com.tas.model.diagram.ImportVulnerabilities;
-import com.tas.model.diagram.Vulnerabilities.Vulnerability;
-import com.tas.model.diagram.VulnerabilitiesDefinitions;
-import com.tas.model.diagram.VulnerabilityDefinition;
+import com.tas.model.diagram.ImportExploits;
 import com.tas.model.risk_pattern.DiagramPattern;
 
 public class MergeDiagram {
@@ -24,30 +23,30 @@ public class MergeDiagram {
 	private Diagram diagram;
 	private AssetDefinitions assetDefinitions;
 	private List<DiagramPattern> diagramPatterns;
-	private VulnerabilitiesDefinitions vulnerabilityDefinitions;
+	private ExploitDefinitions exploitDefinitions;
 
-	public MergeDiagram(Diagram diagram, VulnerabilitiesDefinitions vulnerabilityDefinitions) {
+	public MergeDiagram(Diagram diagram, ExploitDefinitions exploitDefinitions) {
 		this.diagram = diagram;
-		this.vulnerabilityDefinitions = vulnerabilityDefinitions;
+		this.exploitDefinitions = exploitDefinitions;
 		this.assetDefinitions = null;
 	}
 
 	public MergeDiagram(Diagram diagram, AssetDefinitions assetDefinitions) {
 		this.diagram = diagram;
 		this.assetDefinitions = assetDefinitions;
-		this.vulnerabilityDefinitions = null;
+		this.exploitDefinitions = null;
 	}
 
-	public MergeDiagram(List<DiagramPattern> diagramPatterns, VulnerabilitiesDefinitions vulnerabilityDefinitions) {
+	public MergeDiagram(List<DiagramPattern> diagramPatterns, ExploitDefinitions exploitDefinitions) {
 		this.diagramPatterns = diagramPatterns;
-		this.vulnerabilityDefinitions = vulnerabilityDefinitions;
+		this.exploitDefinitions = exploitDefinitions;
 		this.assetDefinitions = null;
 		this.diagram = null;
 	}
 
-	public MergeDiagram(List<DiagramPattern> diagramPatterns, VulnerabilitiesDefinitions vulnerabilityDefinitions, AssetDefinitions assetDefinitions) {
+	public MergeDiagram(List<DiagramPattern> diagramPatterns, ExploitDefinitions exploitDefinitions, AssetDefinitions assetDefinitions) {
 		this.diagramPatterns = diagramPatterns;
-		this.vulnerabilityDefinitions = vulnerabilityDefinitions;
+		this.exploitDefinitions = exploitDefinitions;
 		this.assetDefinitions = assetDefinitions;
 		this.diagram = null;
 	}
@@ -80,27 +79,27 @@ public class MergeDiagram {
 		return this.diagram;
 	}
 	
-	public Diagram mergeVulnerabilitiesToDiagram() {
-		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = makeVulnerabilitiesMap();
+	public Diagram mergeExploitsToDiagram() {
+		HashMap<String, ExploitDefinition> exploitsMap = makeExploitsMap();
 		
 		List<JAXBElement<? extends BlockElement>> elements = diagram.getElements().getOrWebApplicationOrWebServiceOrWebServer();
 		for (JAXBElement<? extends BlockElement> element : elements) {
-			element.getValue().setImportVulnerabilities(new ImportVulnerabilities());
-			if (element.getValue().getVulnerabilities() != null) {
-				for (Vulnerability vulnerability : element.getValue().getVulnerabilities().getVulnerability()) {
-					VulnerabilityDefinition add = vulnerabilitiesMap.get(vulnerability.getVulnerabilityId());
-					element.getValue().getImportVulnerabilities().getImportVulnerability().add(add);
+			element.getValue().setImportExploits(new ImportExploits());
+			if (element.getValue().getExploits() != null) {
+				for (Exploit exploit : element.getValue().getExploits().getExploit()) {
+					ExploitDefinition add = exploitsMap.get(exploit.getExploitId());
+					element.getValue().getImportExploits().getImportExploit().add(add);
 				}
 			}
 		}
 		
 		List<JAXBElement<? extends Flow>> flows = diagram.getFlows().getOrBinaryOrHttpOrHttps();		
 		for (JAXBElement<? extends Flow> flow : flows) {
-			flow.getValue().setImportVulnerabilities(new ImportVulnerabilities());
-			if (flow.getValue().getVulnerabilities() != null) {
-				for (Vulnerability vulnerability : flow.getValue().getVulnerabilities().getVulnerability()) {
-					VulnerabilityDefinition add = vulnerabilitiesMap.get(vulnerability.getVulnerabilityId());
-					flow.getValue().getImportVulnerabilities().getImportVulnerability().add(add);
+			flow.getValue().setImportExploits(new ImportExploits());
+			if (flow.getValue().getExploits() != null) {
+				for (Exploit exploit : flow.getValue().getExploits().getExploit()) {
+					ExploitDefinition add = exploitsMap.get(exploit.getExploitId());
+					flow.getValue().getImportExploits().getImportExploit().add(add);
 				}
 			}
 		}
@@ -108,26 +107,26 @@ public class MergeDiagram {
 		return this.diagram;
 	}
 	
-	public List<DiagramPattern> mergeVulnerabilitiesToDiagramPieces() {
-		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = makeVulnerabilitiesMap();
+	public List<DiagramPattern> mergeExploitsToDiagramPieces() {
+		HashMap<String, ExploitDefinition> exploitsMap = makeExploitsMap();
 		
 		for (DiagramPattern pattern : diagramPatterns) {
-			for (String vulnerability : pattern.getVulnerabilities()) {
-				pattern.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
+			for (String exploit : pattern.getExploits()) {
+				pattern.addExploitValue(exploitsMap.get(exploit));
 			}
 		}
 		
 		return diagramPatterns;
 	}
 	
-	public List<DiagramPattern> mergeVulnerabilitiesAndAssetsToDiagramPieces() {
-		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = makeVulnerabilitiesMap();
+	public List<DiagramPattern> mergeExploitsAndAssetsToDiagramPieces() {
+		HashMap<String, ExploitDefinition> exploitsMap = makeExploitsMap();
 		HashMap<String, AssetDefinition> assetsMap = makeAssetsMap();
 		
 		for (DiagramPattern pattern : diagramPatterns) {
 			int i = 0;
-			for (String vulnerability : pattern.getVulnerabilities()) {
-				pattern.addVulnerabilityValue(vulnerabilitiesMap.get(vulnerability));
+			for (String exploit : pattern.getExploits()) {
+				pattern.addExploitValue(exploitsMap.get(exploit));
 				pattern.addAssetValue(assetsMap.get(pattern.getAssetsEndangered().get(i)));
 				i++;
 			}
@@ -146,14 +145,14 @@ public class MergeDiagram {
 		return assetsMap;
 	}
 	
-	private HashMap<String, VulnerabilityDefinition> makeVulnerabilitiesMap() {
-		HashMap<String, VulnerabilityDefinition> vulnerabilitiesMap = new HashMap<>();
+	private HashMap<String, ExploitDefinition> makeExploitsMap() {
+		HashMap<String, ExploitDefinition> exploitsMap = new HashMap<>();
 		
-		for (VulnerabilityDefinition vulnerability : vulnerabilityDefinitions.getVulnerabilityDefinition()) {
-			vulnerabilitiesMap.put(vulnerability.getVulnerabilityId(), vulnerability);
+		for (ExploitDefinition exploit : exploitDefinitions.getExploitDefinition()) {
+			exploitsMap.put(exploit.getExploitId(), exploit);
 		}
 		
-		return vulnerabilitiesMap;
+		return exploitsMap;
 	}
 	
 }

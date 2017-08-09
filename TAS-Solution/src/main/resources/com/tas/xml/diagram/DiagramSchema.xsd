@@ -4,7 +4,7 @@
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
     xmlns:ts="https://www.tas.org/tas-schemas">
     <xs:include id="as" schemaLocation="../assets/AssetSchema.xsd"/>
-    <xs:include schemaLocation="../vulnerabilities/VulnerabilitiesSchema.xsd"/>
+    <xs:include schemaLocation="../exploits/ExploitsSchema.xsd"/>
     <xs:simpleType final="" name="typeId">
         <xs:restriction base="xs:ID">
             <xs:pattern value="[\i-[:]][\c-[:]]*"/>
@@ -24,11 +24,11 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="vulnerabilities">
+    <xs:complexType name="exploits">
         <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="vulnerability">
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="exploit">
                 <xs:complexType>
-                    <xs:attribute name="vulnerabilityId" type="xs:string" use="required"/>
+                    <xs:attribute name="exploitId" type="xs:string" use="required"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
@@ -39,10 +39,10 @@
                 type="ts:assetDefinition"/>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="importVulnerabilities">
+    <xs:complexType name="importExploits">
         <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="importVulnerability"
-                type="ts:vulnerabilityDefinition"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="importExploit"
+                type="ts:exploitDefinition"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType abstract="true" name="base">
@@ -53,11 +53,10 @@
         <xs:complexContent>
             <xs:extension base="ts:base">
                 <xs:sequence minOccurs="0">
-                    <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="vulnerabilities"
-                        type="ts:vulnerabilities"/>
+                    <xs:element form="qualified" maxOccurs="1" minOccurs="0" name="exploits"
+                        type="ts:exploits"/>
                     <xs:element minOccurs="0" name="importAssets" type="ts:importAssets"/>
-                    <xs:element minOccurs="0" name="importVulnerabilities"
-                        type="ts:importVulnerabilities"/>
+                    <xs:element minOccurs="0" name="importExploits" type="ts:importExploits"/>
                 </xs:sequence>
                 <xs:attribute default="false" name="outOfScope" type="xs:boolean"/>
                 <xs:attribute name="outOfScopeReason" type="xs:string"/>

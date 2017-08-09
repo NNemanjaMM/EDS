@@ -9,7 +9,7 @@ import javax.xml.bind.Unmarshaller;
 
 import com.tas.model.diagram.AssetDefinitions;
 import com.tas.model.diagram.Diagram;
-import com.tas.model.diagram.VulnerabilitiesDefinitions;
+import com.tas.model.diagram.ExploitDefinitions;
 import com.tas.model.report.ReportClass;
 
 public class XMLLinker {
@@ -32,13 +32,13 @@ public class XMLLinker {
 		return assets;
 	}
 
-	public static VulnerabilitiesDefinitions readXMLVulnerabilities(File vulnerabilitiesFile) throws JAXBException {
+	public static ExploitDefinitions readXMLExploits(File exploitsFile) throws JAXBException {
 		
-		JAXBContext jaxbContext = JAXBContext.newInstance(VulnerabilitiesDefinitions.class);
+		JAXBContext jaxbContext = JAXBContext.newInstance(ExploitDefinitions.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		VulnerabilitiesDefinitions vulnerabilities = (VulnerabilitiesDefinitions) jaxbUnmarshaller.unmarshal(vulnerabilitiesFile);
+		ExploitDefinitions exploits = (ExploitDefinitions) jaxbUnmarshaller.unmarshal(exploitsFile);
 		
-		return vulnerabilities;
+		return exploits;
 	}
 	
 	public static void writeXMLReportFile(ReportClass report, File reportFile) throws JAXBException {

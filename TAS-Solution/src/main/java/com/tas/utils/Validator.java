@@ -19,9 +19,7 @@ import org.xml.sax.SAXException;
 
 public class Validator {
 	
-	private static final String DIAGRAM_SCHEMA_PATH = "src\\main\\resources\\com\\tas\\xml\\diagram\\ComponentsSchema.xsd";
-	private static final String ASSETS_SCHEMA_PATH = "src\\main\\resources\\com\\tas\\xml\\diagram\\ComponentsSchema.xsd";
-	private static final String VULNERABILITIES_SCHEMA_PATH = "src\\main\\resources\\com\\tas\\xml\\diagram\\ComponentsSchema.xsd";
+	private static final String SCHEMA_PATH = "src\\main\\resources\\com\\tas\\xml\\diagram\\ComponentsSchema.xsd";
 
 	@SuppressWarnings("unused")
  	public static void checkWellFormness(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
@@ -35,7 +33,7 @@ public class Validator {
  
  	public static void checkDiagramValidity(File xmlFile) throws SAXException, IOException {	
  		
-		Source schemaFile = new StreamSource(new File(DIAGRAM_SCHEMA_PATH));	 		
+		Source schemaFile = new StreamSource(new File(SCHEMA_PATH));	 		
 		Source stream = new StreamSource(xmlFile);
 		
 	    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -47,7 +45,7 @@ public class Validator {
  
  	public static void checkAssetDefinitionsValidity(File xmlFile) throws SAXException, IOException {	
  		
-		Source schemaFile = new StreamSource(new File(ASSETS_SCHEMA_PATH));	 		
+		Source schemaFile = new StreamSource(new File(SCHEMA_PATH));	 		
 		Source stream = new StreamSource(xmlFile);
 		
 	    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -57,9 +55,9 @@ public class Validator {
         validator.validate(stream);
 	 }
  
- 	public static void checkVulnerabilityDefinitionsValidity(File xmlFile) throws SAXException, IOException {	
+ 	public static void checkExploitDefinitionsValidity(File xmlFile) throws SAXException, IOException {	
  		
-		Source schemaFile = new StreamSource(new File(VULNERABILITIES_SCHEMA_PATH));	 		
+		Source schemaFile = new StreamSource(new File(SCHEMA_PATH));	 		
 		Source stream = new StreamSource(xmlFile);
 		
 	    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

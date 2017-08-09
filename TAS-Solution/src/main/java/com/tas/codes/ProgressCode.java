@@ -8,7 +8,7 @@ public class ProgressCode {
 	// 1- Validating diagrams - 10
 	public static final int VALIDATED_DIAGRAM = 4;
 	public static final int VALIDATED_ASSETS = 7;
-	public static final int VALIDATED_VULNERABILITIES = 10;
+	public static final int VALIDATED_EXPLOITS = 10;
 	
 	// 2- Importing diagrams - 15
 	public static final int READED_DIAGRAM = 19;
@@ -23,9 +23,9 @@ public class ProgressCode {
 	// 5- Analyzing diagram components - 25
 	public static final int RULES_ANALYZED = 85;
 	
-	// 6- Applying vulnerabilities - 10
-	public static final int READED_VULNERABILITIES = 88;
-	public static final int MERGED_DIAGRAM_VULNERABILITIES = 95;
+	// 6- Applying exploits - 10
+	public static final int READED_EXPLOITS = 88;
+	public static final int MERGED_DIAGRAM_EXPLOITS = 95;
 	
 	// 7- Creating report - 5
 	public static final int GENERATIED_REPORT_PATTERNS = 97;

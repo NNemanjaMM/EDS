@@ -3,7 +3,7 @@ package com.tas.rules
 
 //list any import classes here.
 import com.tas.codes.AssetCode;
-import com.tas.codes.VulnerabilityCode;
+import com.tas.codes.ExploitCode;
 import com.tas.model.risk_pattern.*;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.Element;
@@ -24,39 +24,21 @@ rule "Asset:_Session_Cookie"
         drools.setFocus("sc_check_request");
 end
 
-rule "SC_Request:_Check_Confidentiality"
+rule "SC_Request:_Check_Resource_Aspects"
 	agenda-group "sc_check_request"
     when
      	 DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectConfidentiality == true  
+     	Boolean(booleanValue == true) from $value.protectConfidentiality == true
+     	or Boolean(booleanValue == true) from $value.protectAvailability == true
+     	or Boolean(booleanValue == true) from $value.protectIntegrity == true
      then
         drools.setFocus("sc_check_primary");
 end
 
-rule "SC_Request:_Check_Availability"
-	agenda-group "sc_check_request"
-    when
-     	DiagramPattern($list : assets)  
-     	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectAvailability == true  
-     then
-        drools.setFocus("sc_check_primary");
-end
-
-rule "SC_Request:_Check_Integrity"
-	agenda-group "sc_check_request"
-    when
-     	DiagramPattern($list : assets)  
-     	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectIntegrity == true  
-     then
-        drools.setFocus("sc_check_primary");
-end
-
-/* *************** CHECK VULNERABILITIES ****************/
+/* *************** CHECK EXPLOITS		 ****************/
 rule "SC:_Check_Confidentiality"
-	agenda-group "sc_check_primary"		// SENSITIVE_DATA_EXPOSURE postoji uvek kada barem jedan element u transportu ne enkriptuje podatke
+	agenda-group "sc_check_primary"		// SNIFFING postoji uvek kada barem jedan element u transportu ne enkriptuje podatke
     when
      	pattern : DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
@@ -66,7 +48,7 @@ rule "SC:_Check_Confidentiality"
      	elementInTrace : Element() from $list2
      	DiagramPattern(elementInTrace instanceof Http) 
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE, AssetCode.SESSION_COOKIE);
+        pattern.addExploitAndAsset(ExploitCode.SNIFFING, AssetCode.SESSION_COOKIE);
 end
 
 rule "SC:_Check_Confidentiality_for_Session_Hijack"
@@ -76,7 +58,7 @@ rule "SC:_Check_Confidentiality_for_Session_Hijack"
      	elementInTrace : Element() from $list
      	DiagramPattern(elementInTrace instanceof Http) 
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
+        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
 end
 
 rule "SC:_Check_process"
@@ -92,7 +74,7 @@ rule "SC:_Check_external_browser"
     when
         pattern : DiagramPattern(element instanceof Browser)                             
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.XSS, AssetCode.SESSION_COOKIE);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
+        pattern.addExploitAndAsset(ExploitCode.XSS, AssetCode.SESSION_COOKIE);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
         drools.setFocus("sc_external");
 end
 
@@ -123,7 +105,7 @@ rule "SC_External:_Process_XSS"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == false
     then
-        pattern.removeVulnerabilityAndAsset(VulnerabilityCode.XSS);
+        pattern.removeExploitAndAsset(ExploitCode.XSS);
 end
 
 
@@ -137,8 +119,8 @@ rule "SC_Datastore:_Encrypted"	// ako podaci nisu enkriptovani, moguce je videti
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == false
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SENSITIVE_DATA_EXPOSURE, AssetCode.SESSION_COOKIE);
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
+        pattern.addExploitAndAsset(ExploitCode.SNIFFING, AssetCode.SESSION_COOKIE);
+        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
 end
 
 
@@ -148,6 +130,6 @@ rule "SC_Process:_Session_Timeout1"	// ako se sesija ne tajmautuje, moguce je po
      	pattern : DiagramPattern()
 		Boolean(booleanValue == true) from ((Process)pattern.element).sessionHasTimeouts == false
     then
-        pattern.addVulnerabilityAndAsset(VulnerabilityCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
+        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
 end
 

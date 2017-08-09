@@ -22,7 +22,7 @@ public class StartAnalysisAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		String diagramPath = MainWindow.getInstance().getDiagramLocation();
 		String assetsPath = MainWindow.getInstance().getAssetLocation();
-		String vulnerabilitiesPath = "D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\vulnerabilities\\vulnerabilities_definitions.xml"; // TODO AFTER relocate variable
+		String exploitsPath = "D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\exploits\\exploits_definitions.xml"; // TODO AFTER relocate variable
 		String reportPath = MainWindow.getInstance().getReportLocation();
 		boolean analyseComponents = MainWindow.getInstance().getComponentsThreatsSelected();
 		
@@ -45,10 +45,10 @@ public class StartAnalysisAction extends AbstractAction {
 
 		File diagram = new File(diagramPath);	
 		File assets = new File(assetsPath);	
-		File vulnerabilities = new File(vulnerabilitiesPath);
+		File exploits = new File(exploitsPath);
 		File report = new File(reportPath);
 				
-		ThreatWorker analyzer = new ThreatWorker(diagram, assets, vulnerabilities, report, analyseComponents);		
+		ThreatWorker analyzer = new ThreatWorker(diagram, assets, exploits, report, analyseComponents);		
 		WorkingDialog dialog = new WorkingDialog(analyzer, diagram.getName(), report.getName(), reportPath);
 		analyzer.setDialog(dialog);
 		analyzer.addPropertyChangeListener(new WorkerChangeListener(dialog));
