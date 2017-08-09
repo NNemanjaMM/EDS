@@ -1,5 +1,5 @@
-# Exploits analysis System
-Exploits analysis System (EAS) is a system that analyzes security exploits for given diagram.
+# Threat analysis System
+Threat analysis System (EAS) is a system that analyzes security exploits for given diagram.
 
 System diagrams created in accordance with given XML schema can be loaded into the EAS. After that, EAS decomposes input diagrams into risk patterns. A set of rules, which is defined in rule-based engine, is applied to every single risk pattern that was found. Rules analyze components, attributes and assets of every pattern. List of exploits discovered for given patterns will be created for user as an XML repport, consisted of detail description and recommended countermeasures.
 
