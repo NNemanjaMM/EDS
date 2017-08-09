@@ -29,7 +29,6 @@ public class KieRulesBase {
 		StatelessKieSession kieSession = kieContainer.newStatelessKieSession();
 
 		return kieSession;
-	}
-	
+	}	
 	
 }
