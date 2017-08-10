@@ -20,7 +20,8 @@ public class BrowseDiagramAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		JFileChooser fileChooser = new JFileChooser("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\diagram");	// TODO AFTER Change or remove default location
+		//JFileChooser fileChooser = new JFileChooser("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\diagram");	// TODO AFTER Change or remove default location
+		JFileChooser fileChooser = new JFileChooser("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\diagram");	// TODO AFTER Change or remove default location
 		FileFilter filter = new FileNameExtensionFilter("XML files (*.xml)", "xml");
 		fileChooser.setFileFilter(filter);
 		fileChooser.setDialogTitle("Choose Diagram File");

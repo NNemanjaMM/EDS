@@ -68,9 +68,14 @@ public class MainWindow extends JFrame {
 	
 	private void initializeContent() {
 		setLayout(new GridBagLayout());
+
 		contentDiagram = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\diagram\\test_diagram_1.xml"); // TODO AFTER remove default diagram
+		//contentDiagram = new JTextField("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\diagram\\test_diagram_1.xml");
 		contentAssets = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\assets\\assets_definition.xml"); // TODO AFTER remove default assets
+		//contentAssets = new JTextField("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\assets\\assets_definition.xml");
 		contentExploits = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\exploits\\exploits_definitions.xml"); // TODO AFTER remove default assets
+		//contentExploits = new JTextField("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\exploits\\exploits_definitions.xml");
+
 		contentReport = new JTextField();
 		JLabel labelBrowse = new JLabel("Source diagram location: ");
 		JLabel labelAssets = new JLabel("Assets definition location: ");
@@ -138,6 +143,7 @@ public class MainWindow extends JFrame {
 		DateFormat dateFormat = new SimpleDateFormat("MMdd_HHmmss");
 		Date date = new Date();		
 		contentReport.setText("D:\\Master\\temp\\ThreatReport_" + dateFormat.format(date) + ".xml");
+		//contentReport.setText("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\temp\\ThreatReport_" + dateFormat.format(date) + ".xml");
 	}	
 	
 	

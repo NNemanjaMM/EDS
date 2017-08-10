@@ -149,7 +149,16 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(ProgressCode.RULES_ANALYZED);	
+		setProgress(ProgressCode.RULES_ANALYZED);
+		
+		/* 5 ********	REQUEST TO NVD FOR VULNERABILITIES*********	- DONE  */	
+		if (analyseComponents) {
+			analyzeVulnerabilitiesForComponentTechnologies();
+		}		
+		
+		if(Thread.currentThread().isInterrupted()) {
+			 return false; 
+		}
 
 		/* 5 ********	READING EXPLOITS		 		**********	- DONE  */	
 		if (analyseComponents) {
