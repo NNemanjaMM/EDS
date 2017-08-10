@@ -1,12 +1,12 @@
-# Threat analysis System
-Threat analysis System (EAS) is a system that analyzes security exploits for given diagram.
+# Exploits Detection System
+Exploits Detection System (EDS) is a system that analyzes given diagram in order to find potential security exploits.
 
-System diagrams created in accordance with given XML schema can be loaded into the EAS. After that, EAS decomposes input diagrams into risk patterns. A set of rules, which is defined in rule-based engine, is applied to every single risk pattern that was found. Rules analyze components, attributes and assets of every pattern. List of exploits discovered for given patterns will be created for user as an XML repport, consisted of detail description and recommended countermeasures.
+System diagrams created in accordance with given XML schema can be loaded into the EDS. After that, EDS decomposes input diagrams into risk patterns. A set of rules, which is defined in rule-based engine, is applied to every single risk pattern that was found. Rules analyze components, attributes and assets of every pattern in order to find potential exploits. List of exploits discovered for given patterns will be created for user as an XML repport, consisted of detail description and recommended countermeasures.
 
 Exploits and assets are defined in separate XML files and can easely be changed. Rules are written using drools.
 
 ## Motivation
-This system is created as master's thesis work. The overal goal is to create useful software for exploits analysis. Moreover, this is a great opportunity for improving knowledge and capabilities in the domain of IT security and rule-based systems.
+This system is created as master's thesis work. The overal goal is to create useful software for detecting security exploits over the given system diagram. Moreover, this is a great opportunity for improving knowledge and capabilities in the domain of IT security and rule-based systems.
 
 ## Contribute
 ### Prerequisites:
