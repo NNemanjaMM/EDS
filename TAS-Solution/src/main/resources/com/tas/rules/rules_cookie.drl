@@ -10,6 +10,7 @@ import com.tas.model.diagram.Element;
 import com.tas.model.diagram.*;
 import com.tas.model.diagram.Diagram.Flows.Http;
 import com.tas.model.diagram.Diagram.Elements.Browser;
+import com.tas.model.risk_pattern.ExploitOfAsset;
 import java.util.List;
 
 //declare any global variables here
@@ -27,7 +28,7 @@ end
 rule "SC_Request:_Check_Resource_Aspects"
 	agenda-group "sc_check_request"
     when
-     	 DiagramPattern($list : assets)  
+     	DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
      	Boolean(booleanValue == true) from $value.protectConfidentiality == true or
      	Boolean(booleanValue == true) from $value.protectAvailability == true or
@@ -42,23 +43,31 @@ rule "SC:_Check_Confidentiality"
     when
      	pattern : DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectConfidentiality == true  
-     	                 
+     	Boolean(booleanValue == true) from $value.protectConfidentiality == true 
+     	
+     	DiagramPattern($list3 : assetsOnTraceStart)  
+     	$value3 : AssetDefinition() from $list3
+     	Boolean(booleanValue == true) from $value3.assetId == AssetCode.SESSION_COOKIE  
+     	    
      	DiagramPattern($list2 : trace)
      	elementInTrace : Element() from $list2
      	DiagramPattern(elementInTrace instanceof Http) 
     then
-        pattern.addExploitAndAsset(ExploitCode.SNIFFING, AssetCode.SESSION_COOKIE);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SNIFFING, AssetCode.SESSION_COOKIE));
 end
 
 rule "SC:_Check_Confidentiality_for_Session_Hijack"
 	agenda-group "sc_check_primary"		// ako je prenos podataka otvoren, mogu se procitati kredencijali ili cookie, pomocu cega se moze ukrasi sesija
-    when									// nije ukljuceno u prethodno pravilo, posto ona zahteva da se stiti confidentality
+    when								// nije ukljuceno u prethodno pravilo, posto ono zahteva da se stiti confidentality
      	pattern : DiagramPattern($list : trace)
      	elementInTrace : Element() from $list
      	DiagramPattern(elementInTrace instanceof Http) 
+     	
+     	DiagramPattern($list3 : assetsOnTraceStart)  
+     	$value3 : AssetDefinition() from $list3
+     	Boolean(booleanValue == true) from $value3.assetId == AssetCode.SESSION_COOKIE  
     then
-        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE));
 end
 
 rule "SC:_Check_process"
@@ -69,15 +78,6 @@ rule "SC:_Check_process"
         drools.setFocus("sc_process");
 end
 
-rule "SC:_Check_external_browser"
-	agenda-group "sc_check_primary"
-    when
-        pattern : DiagramPattern(element instanceof Browser)                             
-    then
-        pattern.addExploitAndAsset(ExploitCode.XSS, AssetCode.SESSION_COOKIE);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
-        drools.setFocus("sc_external");
-end
-
 rule "SC:_Check_external"
 	agenda-group "sc_check_primary"
     when
@@ -85,7 +85,6 @@ rule "SC:_Check_external"
     then
         drools.setFocus("sc_external");
 end
-
 
 rule "SC:_Check_datastore"
 	agenda-group "sc_check_primary"
@@ -95,32 +94,26 @@ rule "SC:_Check_datastore"
         drools.setFocus("sc_datastore");
 end
 
-
-rule "SC_External:_Process_XSS"
-	agenda-group "sc_external"
+rule "SC:_Check_external_browser"
+	agenda-group "sc_check_primary"
     when
-        pattern : DiagramPattern(traceStart instanceof Process)      
-     	DiagramPattern($list : trace)
-     	elementInTrace : Element() from $list
-     	Boolean(booleanValue == true) from elementInTrace instanceof Process  
-     	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == false
+        pattern : DiagramPattern(element instanceof Browser)  
+     	Boolean(booleanValue == true) from pattern.traceStart instanceof Process
     then
-        pattern.removeExploitAndAsset(ExploitCode.XSS);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.XSS, AssetCode.SESSION_COOKIE));	// pretpostavimo da XSS postoji svaki put kada podaci idu od procesa ka Ext.Ent.
+        drools.setFocus("sc_external_check_xss");
 end
 
 
-rule "SC_Datastore:_Encrypted"	// ako podaci nisu enkriptovani, moguce je videti kredencijale
-	agenda-group "sc_datastore"	// takodje je moguce pomocu njih iyvrsiti prijavu i ukrasti sesiju
-    when    
-     	pattern : DiagramPattern($list : assets)  
-     	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectConfidentiality == true  
-     	            
-		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
-		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == false
+rule "SC_External:_Process_XSS"
+	agenda-group "sc_external_check_xss"
+    when
+     	pattern : DiagramPattern($list : trace)
+     	elementInTrace : Element() from $list
+     	Boolean(booleanValue == true) from elementInTrace instanceof Process
+     	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == true
     then
-        pattern.addExploitAndAsset(ExploitCode.SNIFFING, AssetCode.SESSION_COOKIE);
-        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
+        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.XSS, AssetCode.SESSION_COOKIE));
 end
 
 
@@ -129,7 +122,8 @@ rule "SC_Process:_Session_Timeout1"	// ako se sesija ne tajmautuje, moguce je po
     when
      	pattern : DiagramPattern()
 		Boolean(booleanValue == true) from ((Process)pattern.element).sessionHasTimeouts == false
+		Boolean(booleanValue == true) from pattern.traceStart == null
     then
-        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE));
 end
 

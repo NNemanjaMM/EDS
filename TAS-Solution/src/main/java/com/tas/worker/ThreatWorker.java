@@ -22,6 +22,7 @@ import com.tas.model.diagram.ExploitDefinitions;
 import com.tas.model.report.ReportClass;
 import com.tas.model.report.ReportPattern;
 import com.tas.model.risk_pattern.DiagramPattern;
+import com.tas.model.risk_pattern.ExploitOfAsset;
 import com.tas.utils.Decomposer;
 import com.tas.utils.KieRulesBase;
 import com.tas.utils.XMLLinker;
@@ -145,6 +146,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 
 		/* 5 ********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE	*/		
 		createAndFireRules();				
+
+		//printRawExploitsForDiagramPatterns(patterns);
+		//if (patterns.size() > 0) return true;
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
@@ -396,7 +400,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		List<ReportPattern> reports = new ArrayList<>();
 		
 		for (DiagramPattern diagramPattern : patterns) {
-			reports.add(new ReportPattern(diagramPattern));
+			if (diagramPattern.getExploitValues().size() > 0) {
+				reports.add(new ReportPattern(diagramPattern));
+			}
 		}
 		
 		ReportClass report = new ReportClass(reports);
@@ -432,17 +438,40 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	}
 
 	@SuppressWarnings("unused")
-	private void printExploitsForDiagramPatterns(List<DiagramPattern> diagramPatterns) {
+	private void printRawExploitsForDiagramPatterns(List<DiagramPattern> diagramPatterns) {
 		for (DiagramPattern pattern : diagramPatterns) {	
 			if (pattern.getTraceStart() != null) {		
 				System.out.println("*******************\nExploits on element " + pattern.getElement().getName() + "\n- Trace for "  + pattern.getTraceStart().getName() + ":");
+				for (ExploitOfAsset exploit : pattern.getExploitAsset()) {
+					if (exploit != null) {
+						System.out.println("\t\t- " + exploit.getExploit() + " \t asset: " + exploit.getAsset());
+					}
+				}
+			} else {
+				System.out.println("*******************\nExploits on element " + pattern.getElement().getName() + " with no trace:");
+				for (ExploitOfAsset exploit : pattern.getExploitAsset()) {
+					if (exploit != null) {
+						System.out.println("\t\t- " + exploit.getExploit() + " \t asset: " + exploit.getAsset());
+					}
+				}
+			}
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private void printExploitsForDiagramPatterns(List<DiagramPattern> diagramPatterns) {
+		System.out.println("\n*************************************************************************");
+		System.out.println("*************************************************************************\n");
+		for (DiagramPattern pattern : diagramPatterns) {	
+			if (pattern.getTraceStart() != null) {		
+				System.out.println("*******************\n" + pattern.getElement().getName() + " from "  + pattern.getTraceStart().getName() + ":");
 				for (ExploitDefinition exploit : pattern.getExploitValues()) {
 					if (exploit != null) {
 						System.out.println("\t\t- " + exploit.getExploitTitle());
 					}
 				}
 			} else {
-				System.out.println("*******************\nExploits on element " + pattern.getElement().getName() + " with no trace:");
+				System.out.println("*******************\n" + pattern.getElement().getName() + " with no trace:");
 				for (ExploitDefinition exploit : pattern.getExploitValues()) {
 					if (exploit != null) {
 						System.out.println("\t\t- " + exploit.getExploitTitle());

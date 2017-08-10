@@ -17,6 +17,7 @@ import com.tas.model.diagram.Flow;
 import com.tas.model.diagram.ImportAssets;
 import com.tas.model.diagram.ImportExploits;
 import com.tas.model.risk_pattern.DiagramPattern;
+import com.tas.model.risk_pattern.ExploitOfAsset;
 
 public class MergeDiagram {
 	
@@ -111,8 +112,8 @@ public class MergeDiagram {
 		HashMap<String, ExploitDefinition> exploitsMap = makeExploitsMap();
 		
 		for (DiagramPattern pattern : diagramPatterns) {
-			for (String exploit : pattern.getExploits()) {
-				pattern.addExploitValue(exploitsMap.get(exploit));
+			for (ExploitOfAsset exploit : pattern.getExploitAsset()) {
+				pattern.addExploitValue(exploitsMap.get(exploit.getExploit()));
 			}
 		}
 		
@@ -124,11 +125,9 @@ public class MergeDiagram {
 		HashMap<String, AssetDefinition> assetsMap = makeAssetsMap();
 		
 		for (DiagramPattern pattern : diagramPatterns) {
-			int i = 0;
-			for (String exploit : pattern.getExploits()) {
-				pattern.addExploitValue(exploitsMap.get(exploit));
-				pattern.addAssetValue(assetsMap.get(pattern.getAssetsEndangered().get(i)));
-				i++;
+			for (ExploitOfAsset exploitAsset : pattern.getExploitAsset()) {
+				pattern.addExploitValue(exploitsMap.get(exploitAsset.getExploit()));
+				pattern.addAssetValue(assetsMap.get(exploitAsset.getAsset()));
 			}
 		}
 		

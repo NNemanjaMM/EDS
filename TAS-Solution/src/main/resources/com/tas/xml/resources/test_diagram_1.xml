@@ -4,9 +4,10 @@
     xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/schemas/ComponentsSchema.xsd">
     
     <elements>
-        <browser id="de1000001" 
+        <browser id="de1000001"             
             name="Firefox Browser" >
-            <assets>                
+            <assets>           
+                <asset assetId="as00000001" />     
                 <asset assetId="as00000002" />
                 <asset assetId="as00000003" />
                 <asset assetId="as00000004" />
@@ -16,13 +17,14 @@
         <webApplication id="de1000002"   
             name="SEP Server" >
             <assets>
+                <asset assetId="as00000001" />
                 <asset assetId="as00000002" />
                 <asset assetId="as00000003" />
                 <asset assetId="as00000004" />
             </assets>      
         </webApplication>
         
-        <sqlDatabase id="de1000003" 
+        <sqlDatabase id="de1000003"   
             name="Main Database" >
             <assets>
                 <asset assetId="as00000001" />
@@ -36,11 +38,9 @@
     <flows>		
         <http
             id="df1000006"
-            source="de1000001" 
+            source="de1000001"
             destination="de1000002" 
-            name="Server Request" 
-            containsCookies="true"
-            containsXML="true" >   
+            name="Server Request" >   
         </http>    
         
         <http id="df1000007" 

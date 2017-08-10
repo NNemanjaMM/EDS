@@ -14,9 +14,12 @@ public class DiagramPattern {
 	private List<AssetDefinition> assets;
 
 	private BlockElement traceStart;
+	private List<AssetDefinition> assetsOnTraceStart;
+	
 	private List<Element> trace;	
-	private List<String> exploits;
-	private List<String> assetsEndangered;
+	
+	private List<ExploitOfAsset> exploitAsset;
+	
 	private List<ExploitDefinition> exploitValues;
 	private List<AssetDefinition> assetValues;
 	
@@ -26,11 +29,11 @@ public class DiagramPattern {
 		this.assets = element.getImportAssets().getImportAsset();
 		this.traceStart = traceStart;
 		this.trace = trace;
+		this.assetsOnTraceStart = traceStart == null ? new ArrayList<>() : traceStart.getImportAssets().getImportAsset();
 		
-		exploits = new ArrayList<>();
-		assetsEndangered = new ArrayList<>();
 		exploitValues = new ArrayList<>();
 		assetValues = new ArrayList<>();
+		exploitAsset = new ArrayList<>();
 	}
 
 
@@ -42,16 +45,16 @@ public class DiagramPattern {
 		return assets;
 	}
 
+	public List<AssetDefinition> getAssetsOnTraceStart() {
+		return assetsOnTraceStart;
+	}
+
 	public BlockElement getTraceStart() {
 		return traceStart;
 	}
 
 	public List<Element> getTrace() {
 		return trace;
-	}
-
-	public List<String> getExploits() {
-		return exploits;
 	}
 
 	public List<ExploitDefinition> getExploitValues() {
@@ -66,6 +69,10 @@ public class DiagramPattern {
 		this.assets = assets;
 	}
 
+	public void setAssetsOnTraceStart(List<AssetDefinition> assetsOnTraceStart) {
+		this.assetsOnTraceStart = assetsOnTraceStart;
+	}
+
 	public void setTraceStart(BlockElement traceStart) {
 		this.traceStart = traceStart;
 	}
@@ -74,24 +81,16 @@ public class DiagramPattern {
 		this.trace = trace;
 	}
 
-	public void setExploits(List<String> exploits) {
-		this.exploits = exploits;
-	}
-
 	public void setExploitValues(List<ExploitDefinition> exploitValues) {
 		this.exploitValues = exploitValues;
 	}	
-
-	public List<String> getAssetsEndangered() {
-		return assetsEndangered;
-	}
 
 	public List<AssetDefinition> getAssetValues() {
 		return assetValues;
 	}
 
-	public void setAssetsEndangered(List<String> assetsEndangered) {
-		this.assetsEndangered = assetsEndangered;
+	public List<ExploitOfAsset> getExploitAsset() {
+		return exploitAsset;
 	}
 
 	public void setAssetValues(List<AssetDefinition> assetValues) {
@@ -106,20 +105,13 @@ public class DiagramPattern {
 		this.assetValues.add(assetDefinition);		
 	}
 
-
-	public void addExploitAndAsset(String exploit, String asset) {
-		if (!this.exploits.contains(exploit)) {
-			this.exploits.add(exploit);
-			this.assetsEndangered.add(asset);
+	public void addExploitAndAsset(ExploitOfAsset exploitOfAsset) {
+		if (!exploitAsset.contains(exploitOfAsset)) {
+			this.exploitAsset.add(exploitOfAsset);
 		}
 	}
-
-	public void removeExploitAndAsset(String exploit) {
-		int index = this.exploits.indexOf(exploit);
-		if (index != -1) {
-			this.exploits.remove(index);
-			this.assetsEndangered.remove(index);
-		}
+	public void removeExploitAndAsset(ExploitOfAsset exploitOfAsset) {
+		this.exploitAsset.remove(exploitOfAsset);
 	}
 	
 }

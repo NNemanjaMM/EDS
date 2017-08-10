@@ -11,6 +11,7 @@ import com.tas.model.diagram.*;
 import com.tas.model.diagram.Diagram.Elements.SqlDatabase;
 import com.tas.model.diagram.Diagram.Flows.Http;
 import com.tas.model.diagram.Diagram.Elements.Browser;
+import com.tas.model.risk_pattern.ExploitOfAsset;
 import java.util.List;
 
 //declare any global variables here
@@ -45,12 +46,30 @@ rule "PII:_Check_Confidentiality"
      	pattern : DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
      	Boolean(booleanValue == true) from $value.protectConfidentiality == true  
+     	
+     	DiagramPattern($list3 : assetsOnTraceStart)  
+     	$value3 : AssetDefinition() from $list3
+     	Boolean(booleanValue == true) from $value3.assetId == AssetCode.PII
      	                 
      	DiagramPattern($list2 : trace)
      	elementInTrace : Element() from $list2
      	DiagramPattern(elementInTrace instanceof Http) 
     then
-        pattern.addExploitAndAsset(ExploitCode.SNIFFING, AssetCode.PII);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SNIFFING, AssetCode.PII));
+end
+
+rule "PII:_Check_Confidentiality_for_Session_Hijack"
+	agenda-group "pii_check_primary"		// ako je prenos podataka otvoren, mogu se procitati kredencijali ili cookie, pomocu cega se moze ukrasi sesija
+    when									// nije ukljuceno u prethodno pravilo, posto ona zahteva da se stiti confidentality
+     	pattern : DiagramPattern($list : trace)
+     	elementInTrace : Element() from $list
+     	DiagramPattern(elementInTrace instanceof Http) 
+     	
+     	DiagramPattern($list3 : assetsOnTraceStart)  
+     	$value3 : AssetDefinition() from $list3
+     	Boolean(booleanValue == true) from $value3.assetId == AssetCode.PII 
+    then
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.PII));
 end
 
 rule "PII:_Check_process"
@@ -58,25 +77,15 @@ rule "PII:_Check_process"
     when
         pattern : DiagramPattern(element instanceof Process)                    
     then
-        pattern.addExploitAndAsset(ExploitCode.ELEVATION_OF_PRIVILEGE, AssetCode.PII);	// pretpostavimo da ce postojati ukoliko imamo proces
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.ELEVATION_OF_PRIVILEGE, AssetCode.PII));	// pretpostavimo da ce postojati ukoliko imamo proces
         drools.setFocus("pii_process");
 end
-
 
 rule "PII:_Check_external"
 	agenda-group "pii_check_primary"
     when
         DiagramPattern(element instanceof ExternalEntity)                    
     then
-        drools.setFocus("pii_external");
-end
-
-rule "PII:_Check_external_browser"
-	agenda-group "pii_check_primary"
-    when
-        pattern : DiagramPattern(element instanceof Browser)                             
-    then
-        pattern.addExploitAndAsset(ExploitCode.XSS, AssetCode.PII);	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
         drools.setFocus("pii_external");
 end
 
@@ -88,24 +97,25 @@ rule "PII:_Check_datastore"
         drools.setFocus("pii_datastore");
 end
 
-rule "PII:_Check_Confidentiality_for_Session_Hijack"
-	agenda-group "pii_check_primary"		// ako je prenos podataka otvoren, mogu se procitati kredencijali ili cookie, pomocu cega se moze ukrasi sesija
-    when									// nije ukljuceno u prethodno pravilo, posto ona zahteva da se stiti confidentality
-     	pattern : DiagramPattern($list : trace)
-     	elementInTrace : Element() from $list
-     	DiagramPattern(elementInTrace instanceof Http) 
+rule "PII:_Check_external_browser"
+	agenda-group "pii_check_primary"
+    when
+        pattern : DiagramPattern(element instanceof Browser)  
+     	Boolean(booleanValue == true) from pattern.traceStart instanceof Process                           
     then
-        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.PII);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.XSS, AssetCode.PII));	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
+        drools.setFocus("pii_external_check_xss");
 end
 
 
 rule "PII_Datastore:_SQL_Database"
 	agenda-group "pii_datastore"
     when
-        pattern: DiagramPattern(element instanceof SqlDatabase)                  
+        pattern: DiagramPattern(element instanceof SqlDatabase)  
+		Boolean(booleanValue == true) from pattern.traceStart instanceof ExternalEntity                
     then
-        pattern.addExploitAndAsset(ExploitCode.INJECTION_SQL, AssetCode.PII);	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
-        drools.setFocus("pii_datastore_remove_potential_injection");
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.INJECTION_SQL, AssetCode.PII));	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
+        drools.setFocus("pii_datastore_check_injection");
 end
 
 rule "PII_Datastore:_Encrypting"
@@ -113,47 +123,33 @@ rule "PII_Datastore:_Encrypting"
     when
      	pattern : DiagramPattern()  
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
-		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == false                
+		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == true                
     then
-        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.PII);
-end
-
-rule "PII_Datastore:_Encrypted"	// ako podaci nisu enkriptovani, moguce je videti kredencijale
-	agenda-group "pii_datastore"	// takodje je moguce pomocu njih iyvrsiti prijavu i ukrasti sesiju
-    when    
-     	pattern : DiagramPattern($list : assets)  
-     	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectConfidentiality == true  
-     	            
-		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
-		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == false
-    then
-        pattern.addExploitAndAsset(ExploitCode.SNIFFING, AssetCode.PII);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.PII));
 end
 
 rule "PII_Datastore:_SQL_Database_Remove_injection"
-	agenda-group "pii_datastore_remove_potential_injection"
+	agenda-group "pii_datastore_check_injection"
     when
-        pattern : DiagramPattern(traceStart instanceof Process)      
+        pattern : DiagramPattern(traceStart instanceof ExternalEntity)      
      	DiagramPattern($list : trace)
      	elementInTrace : Element() from $list
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
-     	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeInput == false                
+     	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeInput == true                
     then
-        pattern.removeExploitAndAsset(ExploitCode.INJECTION_SQL);
+        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.INJECTION_SQL, AssetCode.PII));
 end
 
 
 rule "PII_External:_Process_XSS"
-	agenda-group "pii_external"
+	agenda-group "pii_external_check_xss"
     when
-        pattern : DiagramPattern(traceStart instanceof Process)      
-     	DiagramPattern($list : trace)
+     	pattern : DiagramPattern($list : trace)
      	elementInTrace : Element() from $list
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
-     	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == false
+     	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == true
     then
-        pattern.removeExploitAndAsset(ExploitCode.XSS);
+        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.XSS, AssetCode.PII));
 end
 
 
@@ -162,16 +158,7 @@ rule "PII_Process:_Asset_Availability_For_CSRF"
     when
      	DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.protectAvailability == true  
-    then
-        drools.setFocus("pii_process_csrf");
-end
-
-rule "PII_Process:_Asset_Integrity_For_CSRF"
-	agenda-group "pii_process"
-    when
-     	DiagramPattern($list : assets)  
-     	$value : AssetDefinition() from $list  
+     	Boolean(booleanValue == true) from $value.protectAvailability == true or  
      	Boolean(booleanValue == true) from $value.protectIntegrity == true  
     then
         drools.setFocus("pii_process_csrf");
@@ -182,8 +169,9 @@ rule "PII_Process:_Session_Timeout"	// ako se sesija ne tajmautuje, moguce je po
     when
      	pattern : DiagramPattern()
 		Boolean(booleanValue == true) from ((Process)pattern.element).sessionHasTimeouts == false
+		Boolean(booleanValue == true) from pattern.traceStart == null
     then
-        pattern.addExploitAndAsset(ExploitCode.SESSION_HIJACK, AssetCode.PII);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.PII));
 end
 
 rule "PII_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce je pogoditi njen ID pa ga iskoristiti
@@ -194,18 +182,19 @@ rule "PII_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce
 		Boolean(booleanValue == true) from ((Process)pattern.element).requiresAuthentication == true
 		Boolean(booleanValue == true) from ((Process)pattern.element).requiresAuthorization == true
     then
-        pattern.removeExploitAndAsset(ExploitCode.ELEVATION_OF_PRIVILEGE);
+        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.ELEVATION_OF_PRIVILEGE, AssetCode.PII));
 end
 
 rule "PII_Process:_Receives_XML"
 	agenda-group "pii_process"
     when
         pattern : DiagramPattern($list : trace)
+     	Boolean(booleanValue == true) from ((Process)pattern.element).sanitizeInput == false 
      	flowInTrace : Element() from $list
      	Boolean(booleanValue == true) from flowInTrace instanceof Flow  
      	Boolean(booleanValue == true) from ((Flow)flowInTrace).containsXML == true     	   	
     then
-        pattern.addExploitAndAsset(ExploitCode.INJECTION_XML, AssetCode.PII);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.INJECTION_XML, AssetCode.PII));
         drools.setFocus("pii_process_injection_xml");
 end
 
@@ -217,7 +206,7 @@ rule "PII_Process:_Check_XML_Injection"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeInput == true  
     then
-        pattern.removeExploitAndAsset(ExploitCode.INJECTION_XML);
+        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.INJECTION_XML, AssetCode.PII));
 end
 
 rule "PII_Process:_From_Browser_CSRF"
@@ -228,6 +217,6 @@ rule "PII_Process:_From_Browser_CSRF"
      	Boolean(booleanValue == true) from ((Flow)flow).containsCookies == true
      	Boolean(booleanValue == true) from ((Process)pattern.element).hasForgeryProtection == false
     then
-        pattern.addExploitAndAsset(ExploitCode.CSRF, AssetCode.PII);
+        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.CSRF, AssetCode.PII));
 end
 

@@ -216,7 +216,6 @@
                 <xs:attribute default="false" name="sanitizeInput" type="xs:boolean"/>
                 <xs:attribute default="false" name="sanitizeOutput" type="xs:boolean"/>
                 <xs:attribute default="false" name="isThreadSafe" type="xs:boolean"/>
-                <xs:attribute default="false" name="hasForgeryProtection" type="xs:boolean"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
