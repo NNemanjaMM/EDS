@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <diagram xmlns="https://www.tas.org/tas-schemas"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/diagram/ComponentsSchema.xsd">
+    xsi:schemaLocation="https://www.tas.org/tas-schemas file:/D:/Master/work/TAS/TAS-Solution/src/main/resources/com/tas/xml/schemas/ComponentsSchema.xsd">
     
     <elements>
         

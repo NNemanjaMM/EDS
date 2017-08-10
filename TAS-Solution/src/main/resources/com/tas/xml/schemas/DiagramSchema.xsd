@@ -3,8 +3,8 @@
     targetNamespace="https://www.tas.org/tas-schemas" vc:minVersion="1.1"
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
     xmlns:ts="https://www.tas.org/tas-schemas">
-    <xs:include id="as" schemaLocation="../assets/AssetSchema.xsd"/>
-    <xs:include schemaLocation="../exploits/ExploitsSchema.xsd"/>
+    <xs:include id="as" schemaLocation="AssetSchema.xsd"/>
+    <xs:include schemaLocation="ExploitsSchema.xsd"/>
     <xs:simpleType final="" name="typeId">
         <xs:restriction base="xs:ID">
             <xs:pattern value="[\i-[:]][\c-[:]]*"/>
