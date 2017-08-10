@@ -22,7 +22,7 @@ public class StartAnalysisAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		String diagramPath = MainWindow.getInstance().getDiagramLocation();
 		String assetsPath = MainWindow.getInstance().getAssetLocation();
-		String exploitsPath = "D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\exploits\\exploits_definitions.xml"; // TODO AFTER relocate variable
+		String exploitsPath = MainWindow.getInstance().getExploitLocation();
 		String reportPath = MainWindow.getInstance().getReportLocation();
 		boolean analyseComponents = MainWindow.getInstance().getComponentsThreatsSelected();
 		
@@ -38,9 +38,18 @@ public class StartAnalysisAction extends AbstractAction {
 			return;
 		}
 		
+		if (exploitsPath.equals("")) {
+			String message = "Exploit definitions file name can not be empty!\nPlease locate the exploit definitions file.";
+			JOptionPane.showMessageDialog(MainWindow.getInstance(), message, "Wrong Exploit Definitios File", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		if (reportPath.equals("")) {	// TODO AFTER Remove or change report default location
 			MainWindow.getInstance().setReportDefaultLocation();
 			reportPath = MainWindow.getInstance().getReportLocation();
+			//String message = "Save report location can not be empty!\nPlease set location for the report file.";
+			//JOptionPane.showMessageDialog(MainWindow.getInstance(), message, "Wrong Report Location", JOptionPane.ERROR_MESSAGE);
+			//return;
 		}
 
 		File diagram = new File(diagramPath);	
