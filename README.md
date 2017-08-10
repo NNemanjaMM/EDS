@@ -14,6 +14,7 @@ This system is created as master's thesis work. The overal goal is to create use
 - Installed Maven
 
 ### Building and Running:
+- Clone or download project
 - Open project with your Java IDE (Eclipse, InteliJ, or some other)
 - Build project (Maven will automatically download required libraries)
 - Run application
