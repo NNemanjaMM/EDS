@@ -2,8 +2,6 @@
 package com.tas.rules
 
 //list any import classes here.
-import com.tas.codes.AssetCode;
-import com.tas.codes.ExploitCode;
 import com.tas.model.risk_pattern.*;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.*;
@@ -20,7 +18,7 @@ rule "Asset:_Work_station"
     when
      	pattern : DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.assetId == AssetCode.WORK_STATION
+     	Boolean(booleanValue == true) from $value.assetId == "as_workstation"
      	
      	Boolean(booleanValue == true) from pattern.element.runLevel == "HIGH_PRIVILEGE"  
     then
@@ -46,7 +44,7 @@ rule "WS:_Check_process"
     when
         pattern : DiagramPattern(element instanceof Process)                    
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.ELEVATION_OF_PRIVILEGE, AssetCode.WORK_STATION));	// pretpostavimo da ce postojati ukoliko imamo proces 
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_elevationprivilege", "as_workstation"));	// pretpostavimo da ce postojati ukoliko imamo proces 
        	drools.setFocus("ws_process");
 end
 
@@ -73,7 +71,7 @@ rule "WS:_Check_external_browser"
         pattern : DiagramPattern(element instanceof Browser)       
      	Boolean(booleanValue == true) from pattern.traceStart instanceof Process                      
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.XSS, AssetCode.WORK_STATION));	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_xss", "as_workstation"));	// pretpostavimo da XSS postoji svaki put kada podaci idu ka Ext.Ent.
         drools.setFocus("ws_external");
 end
 
@@ -85,7 +83,7 @@ rule "WS:_Check_Confidentiality_for_Session_Hijack"
      	DiagramPattern(elementInTrace instanceof Http) 
 		Boolean(booleanValue == true) from ((Http)elementInTrace).containsCookies == true
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.WORK_STATION));
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_sessionhijack", "as_workstation"));
 end
 
 
@@ -95,7 +93,7 @@ rule "WS_Datastore:_SQL_Database"
         pattern: DiagramPattern(element instanceof SqlDatabase)  
 		Boolean(booleanValue == true) from pattern.traceStart instanceof ExternalEntity
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.INJECTION_SQL, AssetCode.WORK_STATION));	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_injectionsql", "as_workstation"));	// pretpostavimo da XML Injection postoji svaki put kada podaci idu ka SQL bazi
         drools.setFocus("ws_datastore_remove_potential_injection");
 end
 
@@ -106,7 +104,7 @@ rule "WS_Datastore:_Encrypting"
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).dataIsEncrypted == false
 		Boolean(booleanValue == true) from ((DataStore)pattern.element).storeCredentials == true                
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.WORK_STATION));
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_sessionhijack", "as_workstation"));
 end
 
 rule "WS_Datastore:_SQL_Database_Remove_injection"
@@ -118,7 +116,7 @@ rule "WS_Datastore:_SQL_Database_Remove_injection"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeInput == true                
     then
-        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.INJECTION_SQL, AssetCode.WORK_STATION));
+        pattern.removeExploitAndAsset(new ExploitOfAsset("ed_injectionsql", "as_workstation"));
 end
 
 
@@ -130,7 +128,7 @@ rule "WS_External:_Process_XSS"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process  
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == true
     then
-        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.XSS, AssetCode.WORK_STATION));
+        pattern.removeExploitAndAsset(new ExploitOfAsset("ed_xss", "as_workstation"));
 end
 
 
@@ -141,7 +139,7 @@ rule "WS_Process:_Session_Timeout1"	// ako se sesija ne tajmautuje, moguce je po
 		Boolean(booleanValue == true) from ((Process)pattern.element).sessionHasTimeouts == false
 		Boolean(booleanValue == true) from pattern.traceStart == null
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.WORK_STATION));
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_sessionhijack", "as_workstation"));
 end
 
 rule "WS_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce je pogoditi njen ID pa ga iskoristiti
@@ -152,5 +150,5 @@ rule "WS_Process:_Check_Access_Controll"	// ako se sesija ne tajmautuje, moguce 
 		Boolean(booleanValue == true) from ((Process)pattern.element).requiresAuthentication == true
 		Boolean(booleanValue == true) from ((Process)pattern.element).requiresAuthorization == true
     then
-        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.ELEVATION_OF_PRIVILEGE, AssetCode.WORK_STATION));
+        pattern.removeExploitAndAsset(new ExploitOfAsset("ed_elevationprivilege", "as_workstation"));
 end

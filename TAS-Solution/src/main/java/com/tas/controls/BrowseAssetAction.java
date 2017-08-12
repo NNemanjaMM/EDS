@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.tas.gui.MainWindow;
+import com.tas.utils.ResourcesLocation;
 
 public class BrowseAssetAction extends AbstractAction {
 
@@ -23,8 +24,9 @@ public class BrowseAssetAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		//JFileChooser fileChooser = new JFileChooser("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\assets");	// TODO AFTER Change or remove default location
-		JFileChooser fileChooser = new JFileChooser("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\assets");	// TODO AFTER Change or remove default location
+		String folderLocation = ResourcesLocation.getInstance().getAssetLocationFolder();
+		
+		JFileChooser fileChooser = new JFileChooser(folderLocation);
 		FileFilter filter = new FileNameExtensionFilter("XML files (*.xml)", "xml");
 		fileChooser.setFileFilter(filter);
 		fileChooser.setDialogTitle("Choose Asset Definitions File");
@@ -35,6 +37,12 @@ public class BrowseAssetAction extends AbstractAction {
 		if (result == JFileChooser.APPROVE_OPTION) {
 			String fileLocation = fileChooser.getSelectedFile().getAbsolutePath();
 			MainWindow.getInstance().setAssetsLocation(fileLocation);
+
+		    int index = fileLocation.lastIndexOf('\\');		
+		    if (index == -1) {
+			    index = fileLocation.lastIndexOf('/');	
+		    }
+			ResourcesLocation.getInstance().setAssetLocationFolder(fileLocation.substring(0,index));
 		}		
 	}
 }

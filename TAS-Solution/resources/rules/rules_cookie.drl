@@ -2,8 +2,6 @@
 package com.tas.rules
 
 //list any import classes here.
-import com.tas.codes.AssetCode;
-import com.tas.codes.ExploitCode;
 import com.tas.model.risk_pattern.*;
 import com.tas.model.diagram.Process;
 import com.tas.model.diagram.Element;
@@ -20,7 +18,7 @@ rule "Asset:_Session_Cookie"
     when
      	DiagramPattern($list : assets)  
      	$value : AssetDefinition() from $list  
-     	Boolean(booleanValue == true) from $value.assetId == AssetCode.SESSION_COOKIE               
+     	Boolean(booleanValue == true) from $value.assetId == "as_sessioncookie"               
     then
         drools.setFocus("sc_check_request");
 end
@@ -47,13 +45,13 @@ rule "SC:_Check_Confidentiality"
      	
      	DiagramPattern($list3 : assetsOnTraceStart)  
      	$value3 : AssetDefinition() from $list3
-     	Boolean(booleanValue == true) from $value3.assetId == AssetCode.SESSION_COOKIE  
+     	Boolean(booleanValue == true) from $value3.assetId == "as_sessioncookie"  
      	    
      	DiagramPattern($list2 : trace)
      	elementInTrace : Element() from $list2
      	DiagramPattern(elementInTrace instanceof Http) 
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SNIFFING, AssetCode.SESSION_COOKIE));
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_sniffing", "as_sessioncookie"));
 end
 
 rule "SC:_Check_Confidentiality_for_Session_Hijack"
@@ -65,9 +63,9 @@ rule "SC:_Check_Confidentiality_for_Session_Hijack"
      	
      	DiagramPattern($list3 : assetsOnTraceStart)  
      	$value3 : AssetDefinition() from $list3
-     	Boolean(booleanValue == true) from $value3.assetId == AssetCode.SESSION_COOKIE  
+     	Boolean(booleanValue == true) from $value3.assetId == "as_sessioncookie"  
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE));
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_sessionhijack", "as_sessioncookie"));
 end
 
 rule "SC:_Check_process"
@@ -100,7 +98,7 @@ rule "SC:_Check_external_browser"
         pattern : DiagramPattern(element instanceof Browser)  
      	Boolean(booleanValue == true) from pattern.traceStart instanceof Process
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.XSS, AssetCode.SESSION_COOKIE));	// pretpostavimo da XSS postoji svaki put kada podaci idu od procesa ka Ext.Ent.
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_xss", "as_sessioncookie"));	// pretpostavimo da XSS postoji svaki put kada podaci idu od procesa ka Ext.Ent.
         drools.setFocus("sc_external_check_xss");
 end
 
@@ -113,7 +111,7 @@ rule "SC_External:_Process_XSS"
      	Boolean(booleanValue == true) from elementInTrace instanceof Process
      	Boolean(booleanValue == true) from ((Process)elementInTrace).sanitizeOutput == true
     then
-        pattern.removeExploitAndAsset(new ExploitOfAsset(ExploitCode.XSS, AssetCode.SESSION_COOKIE));
+        pattern.removeExploitAndAsset(new ExploitOfAsset("ed_xss", "as_sessioncookie"));
 end
 
 
@@ -124,6 +122,6 @@ rule "SC_Process:_Session_Timeout1"	// ako se sesija ne tajmautuje, moguce je po
 		Boolean(booleanValue == true) from ((Process)pattern.element).sessionHasTimeouts == false
 		Boolean(booleanValue == true) from pattern.traceStart == null
     then
-        pattern.addExploitAndAsset(new ExploitOfAsset(ExploitCode.SESSION_HIJACK, AssetCode.SESSION_COOKIE));
+        pattern.addExploitAndAsset(new ExploitOfAsset("ed_sessionhijack", "as_sessioncookie"));
 end
 

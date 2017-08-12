@@ -44,12 +44,12 @@ public class StartAnalysisAction extends AbstractAction {
 			return;
 		}
 		
-		if (reportPath.equals("")) {	// TODO AFTER Remove or change report default location
-			MainWindow.getInstance().setReportDefaultLocation();
-			reportPath = MainWindow.getInstance().getReportLocation();
-			//String message = "Save report location can not be empty!\nPlease set location for the report file.";
-			//JOptionPane.showMessageDialog(MainWindow.getInstance(), message, "Wrong Report Location", JOptionPane.ERROR_MESSAGE);
-			//return;
+		if (reportPath.equals("")) {
+			//MainWindow.getInstance().setReportDefaultLocation();
+			//reportPath = MainWindow.getInstance().getReportLocation();
+			String message = "Save report location can not be empty!\nPlease set location for the report file.";
+			JOptionPane.showMessageDialog(MainWindow.getInstance(), message, "Wrong Report Location", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 
 		File diagram = new File(diagramPath);	

@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import javax.swing.SwingWorker.StateValue;
 
-import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
+import com.tas.utils.ProgressCode;
 
 public class WorkerChangeListener implements PropertyChangeListener {
 	

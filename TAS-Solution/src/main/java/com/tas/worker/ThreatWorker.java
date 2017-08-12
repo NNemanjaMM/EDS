@@ -12,7 +12,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.kie.api.runtime.StatelessKieSession;
 import org.xml.sax.SAXException;
 
-import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
 import com.tas.model.diagram.AssetDefinitions;
 import com.tas.model.diagram.Diagram;
@@ -27,6 +26,7 @@ import com.tas.utils.Decomposer;
 import com.tas.utils.KieRulesBase;
 import com.tas.utils.XMLLinker;
 import com.tas.utils.MergeDiagram;
+import com.tas.utils.ProgressCode;
 import com.tas.utils.Validator;
 
 public class ThreatWorker extends SwingWorker<Boolean, Object> {
@@ -62,40 +62,42 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(ProgressCode.STARTED);
 		
 		
 		/* 1 ********	VALIDATING XML DIAGRAM			**********	- DONE	*/
+		setProgress(ProgressCode.STARTED);
+		setProgress(ProgressCode.VALIDATING_DIAGRAM);
+		
 		if (!validateDiagram()) {
 			return false;
 		}		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
-		}
-		setProgress(ProgressCode.VALIDATED_DIAGRAM);
-		
+		}		
 
 		/* 1 ********	VALIDATING XML ASSETS			**********	- DONE	*/
+		setProgress(ProgressCode.VALIDATING_ASSETS);
+		
 		if (!validateAssetDefinitions()) {
 			return false;
 		}		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
-		}
-		setProgress(ProgressCode.VALIDATED_ASSETS);
-		
+		}		
 
 		/* 1 ********	VALIDATING XML EXPLOITS		**********	- DONE	*/
+		setProgress(ProgressCode.VALIDATING_EXPLOITS);
+		
 		if (!validateExploitDefinitions()) {
 			return false;
 		}		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
-		}
-		setProgress(ProgressCode.VALIDATED_EXPLOITS);
-		
+		}		
 
 		/* 2 ********	READING XML DIAGRAM TO MEMORY	**********	- DONE	*/
+		setProgress(ProgressCode.READING_DIAGRAM);
+		
 		if (!readDiagram()) {
 			return false;
 		}
@@ -103,10 +105,10 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(ProgressCode.READED_DIAGRAM);
-		
 
 		/* 2 ********	READING XML ASSETS TO MEMORY	**********	- DONE	*/
+		setProgress(ProgressCode.READING_ASSETS);
+		
 		if (!readAssetDefinitions()) {
 			return false;
 		}
@@ -114,20 +116,20 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(ProgressCode.READED_ASSETS);
-		
 
 		/* 3 ********	MERGING DIAGRAM	AND ASSETS		**********	- DONE	*/
+		setProgress(ProgressCode.MERGING_DIAGRAM_ASSETS);
+
 		MergeDiagram mergeAssets = new MergeDiagram(diagram, assetDefinitions);
 		diagram = mergeAssets.mergeAssetsToDiagram();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
-		setProgress(ProgressCode.MERGED_DIAGRAM_ASSETS);
-
 
 		/* 4 ********	DECOMPOSING XML DIAGRAM			**********	- DONE	*/
+		setProgress(ProgressCode.DECOMPOSING_DIAGRAM);
+		
 		Decomposer decomposer = new Decomposer(diagram);
 		patterns = decomposer.decomposeAllPatterns();
 		
@@ -141,11 +143,13 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(ProgressCode.DECOMPOSED_DIAGRAM);
-		
 
-		/* 5 ********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE	*/		
-		createAndFireRules();				
+		/* 5 ********	ANALYZING DIAGRAM COMPONENTS	**********	- DONE	*/
+		setProgress(ProgressCode.RULES_ANALYZING);
+				
+		if (!createAndFireRules()) {
+			return false;
+		}
 
 		//printRawExploitsForDiagramPatterns(patterns);
 		//if (patterns.size() > 0) return true;
@@ -153,7 +157,6 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(ProgressCode.RULES_ANALYZED);
 		
 		/* 5 ********	REQUEST TO NVD FOR VULNERABILITIES*********	- DONE  */	
 		if (analyseComponents) {
@@ -164,16 +167,9 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			 return false; 
 		}
 
-		/* 5 ********	READING EXPLOITS		 		**********	- DONE  */	
-		if (analyseComponents) {
-			analyzeVulnerabilitiesForComponentTechnologies();
-		}		
-
-		if(Thread.currentThread().isInterrupted()) {
-			 return false; 
-		}
-
-		/* 6 ********	READING EXPLOITS		 		**********	- DONE  */		
+		/* 6 ********	READING EXPLOITS		 		**********	- DONE  */	
+		setProgress(ProgressCode.READING_EXPLOITS);	
+		
 		if (!readExploitDefinitions()) {
 			return false;
 		}				
@@ -181,29 +177,29 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(ProgressCode.READED_EXPLOITS);	
 		
-		
-		/* 6 ********	MERGING EXPLOITS AND DIAGRAMS	**********	- DONE	*/	
+		/* 6 ********	MERGING EXPLOITS AND DIAGRAMS	**********	- DONE	*/
+		setProgress(ProgressCode.MERGING_DIAGRAM_EXPLOITS);	
+			
 		MergeDiagram mergeExploits = new MergeDiagram(patterns, exploitDefinitions, assetDefinitions);
 		patterns = mergeExploits.mergeExploitsAndAssetsToDiagramPieces();
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
-		setProgress(ProgressCode.MERGED_DIAGRAM_EXPLOITS);	
-		
 
 		/* 7 ********	CREATING REPORT	PATTERN			**********	-  */	
+		setProgress(ProgressCode.GENERATING_REPORT_PATTERNS);
+		
 		report = createReportPatternsFromDiagramPatterns();				
 		
 		if(Thread.currentThread().isInterrupted()) {
 			return false;
 		}
-		setProgress(ProgressCode.GENERATIED_REPORT_PATTERNS);
-		
 
 		/* 7 ********	CREATING XML REPORT				**********	-  */	
+		setProgress(ProgressCode.GENERATING_REPORT);
+
 		if (!createXMLReportFile()) {
 			return false;
 		}				
@@ -211,12 +207,12 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		if(Thread.currentThread().isInterrupted()) {
 			return false;
 		}
-		setProgress(ProgressCode.GENERATED_REPORT);
-
 		
 		/* ******************************************************* */	
+		
+		setProgress(ProgressCode.DONE);
 
-		printExploitsForDiagramPatterns(patterns);		
+		//printExploitsForDiagramPatterns(patterns);		
 		
 		return true;
 	}
@@ -383,13 +379,20 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		return true;
 	}
 	
-	private void createAndFireRules() {
+	private boolean createAndFireRules() {
 		
 		StatelessKieSession session = KieRulesBase.createStatelessSession();
 		
-		 for (DiagramPattern diagramPattern : patterns) {
-			 session.execute(diagramPattern);				
-		 }
+		if (session == null) {
+			String message = "There are no rules files locations defined!\nPlease check the 'resources/locations.txt' file.";
+			dialog.setErrorMessage(message);			
+			return false;
+		}
+		
+		for (DiagramPattern diagramPattern : patterns) {
+			session.execute(diagramPattern);				
+		}
+		return true;
 	}
 	
 	private void analyzeVulnerabilitiesForComponentTechnologies() {
@@ -405,7 +408,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 			}
 		}
 		
-		ReportClass report = new ReportClass(reports);
+		ReportClass report = new ReportClass(reports, diagramFile.getName());
 		
 		return report;
 	}

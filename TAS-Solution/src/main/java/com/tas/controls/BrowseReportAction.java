@@ -9,6 +9,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.tas.gui.MainWindow;
+import com.tas.utils.ResourcesLocation;
 
 public class BrowseReportAction extends AbstractAction {
 
@@ -21,7 +22,9 @@ public class BrowseReportAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		JFileChooser fileChooser = new JFileChooser();
+		String folderLocation = ResourcesLocation.getInstance().getReportLocationFolder();
+		
+		JFileChooser fileChooser = new JFileChooser(folderLocation);
 		FileFilter filter = new FileNameExtensionFilter("XML files (*.xml)", "xml");
 		fileChooser.setFileFilter(filter);
 		fileChooser.setDialogTitle("Save Report File");
@@ -41,6 +44,12 @@ public class BrowseReportAction extends AbstractAction {
 				}
 			}
 			MainWindow.getInstance().setReportLocation(fileLocation);
+
+		    int index = fileLocation.lastIndexOf('\\');		
+		    if (index == -1) {
+			    index = fileLocation.lastIndexOf('/');	
+		    }
+			ResourcesLocation.getInstance().setReportLocationFolder(fileLocation.substring(0,index));
 		}
 	}
 

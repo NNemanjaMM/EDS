@@ -1,29 +1,53 @@
 package com.tas.model.report;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-@XmlRootElement(name = "reports")
+@XmlRootElement(name = "report")
 public class ReportClass {
 	
-	private List<ReportPattern> report;
+	private String dateAndTimeOfGeneration;
+	private String diagramFileName;
+	private ReportPatterns patterns;
 
 	public ReportClass() {
 		
 	}
 
-	public ReportClass(List<ReportPattern> report) {
-		this.report = report;
+	public ReportClass(List<ReportPattern> patternList, String diagramFileName) {
+		this.patterns = new ReportPatterns(patternList);
+		this.diagramFileName = diagramFileName;
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy. HH:mm");
+		this.dateAndTimeOfGeneration = sdf.format(new Date());
 	}
 
-	public List<ReportPattern> getReport() {
-		return report;
+	public ReportPatterns getPatterns() {
+		return patterns;
 	}
 
-	public void setReport(List<ReportPattern> report) {
-		this.report = report;
+	public void setPatterns(ReportPatterns patterns) {
+		this.patterns = patterns;
 	}
+
+	public String getDateAndTimeOfGeneration() {
+		return dateAndTimeOfGeneration;
+	}
+
+	public void setDateAndTimeOfGeneration(String dateAndTimeOfGeneration) {
+		this.dateAndTimeOfGeneration = dateAndTimeOfGeneration;
+	}
+
+	public String getDiagramFileName() {
+		return diagramFileName;
+	}
+
+	public void setDiagramFileName(String diagramFileName) {
+		this.diagramFileName = diagramFileName;
+	}	
 	
 }

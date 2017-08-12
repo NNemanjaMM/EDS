@@ -5,8 +5,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import com.tas.worker.ThreatWorker;
-import com.tas.codes.ProgressCode;
 import com.tas.gui.WorkingDialog;
+import com.tas.utils.ProgressCode;
 
 public class CancelAnalysisAction extends AbstractAction {
 

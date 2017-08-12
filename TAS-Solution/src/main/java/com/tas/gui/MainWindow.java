@@ -24,7 +24,9 @@ import com.tas.controls.BrowseAssetAction;
 import com.tas.controls.BrowseDiagramAction;
 import com.tas.controls.BrowseExploitAction;
 import com.tas.controls.BrowseReportAction;
+import com.tas.controls.BrowseSchemaAction;
 import com.tas.controls.StartAnalysisAction;
+import com.tas.utils.ResourcesLocation;
 
 public class MainWindow extends JFrame {
 
@@ -33,6 +35,7 @@ public class MainWindow extends JFrame {
 	private static MainWindow instance = null;
 	
 	private JTextField contentDiagram;
+	private JTextField contentSchema;
 	private JTextField contentAssets;
 	private JTextField contentExploits;
 	private JTextField contentReport;
@@ -48,7 +51,7 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void initializeWindow() {
-		setSize(550,310);
+		setSize(560,350);
 		setTitle("Threat Analysis System");
 		try {
 			setIconImage(new ImageIcon(ImageIO.read(getClass().getResource("icon.png"))).getImage().getScaledInstance(32, 32, java.awt.Image.SCALE_SMOOTH));
@@ -62,38 +65,53 @@ public class MainWindow extends JFrame {
 		} catch (Exception e) {
 			System.out.println("Windows look and feel unsupported.");
 		}
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	ResourcesLocation.getInstance().saveAllParameters();
+		    	System.exit(0);
+		    }
+		});	
+		
 		setLocationRelativeTo(null);		
 	}
 	
 	private void initializeContent() {
 		setLayout(new GridBagLayout());
 
-		contentDiagram = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\resources\\test_diagram_1.xml"); // TODO AFTER remove default diagram
-		//contentDiagram = new JTextField("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\resources\\test_diagram_1.xml");
-		contentAssets = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\resources\\assets_definition.xml"); // TODO AFTER remove default assets
-		//contentAssets = new JTextField("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\resources\\assets_definition.xml");
-		contentExploits = new JTextField("D:\\Master\\work\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\resources\\exploits_definitions.xml"); // TODO AFTER remove default assets
-		//contentExploits = new JTextField("E:\\Users\\NemanjaM\\Documents\\Practice\\Master\\TAS\\TAS-Solution\\src\\main\\resources\\com\\tas\\xml\\resources\\exploits_definitions.xml");
+		String assetsLocation = ResourcesLocation.getInstance().getAssetLocation();
+		String exploitsLocation = ResourcesLocation.getInstance().getExploitLocation();
+		String schemaLocation = ResourcesLocation.getInstance().getSchemaLocation();
+		
+		contentDiagram = new JTextField();
+		contentSchema = new JTextField(schemaLocation);
+		contentAssets = new JTextField(assetsLocation);
+		contentExploits = new JTextField(exploitsLocation);
 
 		contentReport = new JTextField();
 		JLabel labelBrowse = new JLabel("Source diagram location: ");
+		JLabel labelSchema = new JLabel("Diagram XML schema location: ");
 		JLabel labelAssets = new JLabel("Assets definition location: ");
 		JLabel labelExploits = new JLabel("Exploits definition location: ");
 		JLabel labelReport = new JLabel("Save report location: ");
 		checkboxComponentsThreats = new JCheckBox("Analyse components vulnerabilities");
 		
 		JButton buttonBrowse = new JButton(new BrowseDiagramAction("..."));
+		JButton buttonSchema = new JButton(new BrowseSchemaAction("..."));
 		JButton buttonAssets = new JButton(new BrowseAssetAction("..."));
 		JButton buttonExploits = new JButton(new BrowseExploitAction("..."));
 		JButton buttonReport = new JButton(new BrowseReportAction("..."));
 		JButton buttonStart = new JButton(new StartAnalysisAction("Analyze diagram and Create report"));
 		
 		buttonBrowse.setPreferredSize(new Dimension(20, 25));	
+		buttonSchema.setPreferredSize(new Dimension(20, 25));
 		buttonAssets.setPreferredSize(new Dimension(20, 25));
 		buttonExploits.setPreferredSize(new Dimension(20, 25));
 		buttonReport.setPreferredSize(new Dimension(20, 25));
-		contentDiagram.setPreferredSize(new Dimension(350, 25));	
+		contentDiagram.setPreferredSize(new Dimension(350, 25));
+		contentSchema.setPreferredSize(new Dimension(350, 25));		
 		contentAssets.setPreferredSize(new Dimension(350, 25));	
 		contentExploits.setPreferredSize(new Dimension(350, 25));
 		contentReport.setPreferredSize(new Dimension(350, 25));
@@ -109,18 +127,22 @@ public class MainWindow extends JFrame {
 		add(buttonReport, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
 
 		add(new JSeparator(SwingConstants.HORIZONTAL), new GridBagConstraints(0, 2, 3, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(5,0,0,0), 5, 5));
+
+		add(labelSchema, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,0,0), 5, 5));
+		add(contentSchema, new GridBagConstraints(1, 3, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(10,0,5,0), 5, 5));
+		add(buttonSchema, new GridBagConstraints(2, 3, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(10,5,5,0), 5, 5));
 		
-		add(labelAssets, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));
-		add(contentAssets, new GridBagConstraints(1, 3, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
-		add(buttonAssets, new GridBagConstraints(2, 3, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
+		add(labelAssets, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));
+		add(contentAssets, new GridBagConstraints(1, 4, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
+		add(buttonAssets, new GridBagConstraints(2, 4, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
 		
-		add(labelExploits, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));
-		add(contentExploits, new GridBagConstraints(1, 4, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
-		add(buttonExploits, new GridBagConstraints(2, 4, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
+		add(labelExploits, new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));
+		add(contentExploits, new GridBagConstraints(1, 5, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
+		add(buttonExploits, new GridBagConstraints(2, 5, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,5,5,0), 5, 5));
 		
-		add(checkboxComponentsThreats, new GridBagConstraints(1, 5, 2, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
+		add(checkboxComponentsThreats, new GridBagConstraints(1, 6, 2, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(5,0,5,0), 5, 5));
 		
-		add(buttonStart, new GridBagConstraints(1, 6, 2, 1, 0, 0, GridBagConstraints.LINE_END, GridBagConstraints.NONE, new Insets(10,0,0,0), 5, 5));
+		add(buttonStart, new GridBagConstraints(1, 7, 2, 1, 0, 0, GridBagConstraints.LINE_END, GridBagConstraints.NONE, new Insets(10,0,0,0), 5, 5));
 	}
 	
 	public void setReportLocation(String location) {
@@ -137,6 +159,10 @@ public class MainWindow extends JFrame {
 	
 	public void setDiagramLocation(String location) {
 		contentDiagram.setText(location);		
+	}
+	
+	public void setSchemaLocation(String location) {
+		contentSchema.setText(location);		
 	}
 	
 	public void setReportDefaultLocation() {
@@ -161,6 +187,10 @@ public class MainWindow extends JFrame {
 	
 	public String getDiagramLocation() {
 		return contentDiagram.getText();		
+	}
+	
+	public String getSchemaLocation() {
+		return contentSchema.getText();		
 	}
 	
 	public boolean getComponentsThreatsSelected() {

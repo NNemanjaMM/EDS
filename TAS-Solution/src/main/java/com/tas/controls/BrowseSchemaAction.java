@@ -10,36 +10,40 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.tas.gui.MainWindow;
 import com.tas.utils.ResourcesLocation;
 
-public class BrowseDiagramAction extends AbstractAction {
+public class BrowseSchemaAction extends AbstractAction {
 
-	private static final long serialVersionUID = -7013513164077524833L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5609881124089381726L;
 
-	public BrowseDiagramAction(String title) {
+	public BrowseSchemaAction(String title) {
         putValue(NAME, title);
     }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		String folderLocation = ResourcesLocation.getInstance().getDiagramLocationFolder();
+		String folderLocation = ResourcesLocation.getInstance().getSchemaLocationFolder();
 		
-		JFileChooser fileChooser = new JFileChooser(folderLocation);		
-		FileFilter filter = new FileNameExtensionFilter("XML files (*.xml)", "xml");
+		JFileChooser fileChooser = new JFileChooser(folderLocation);
+		FileFilter filter = new FileNameExtensionFilter("XML Schema files (*.xsd)", "xsd");
 		fileChooser.setFileFilter(filter);
-		fileChooser.setDialogTitle("Choose Diagram File");
+		fileChooser.setDialogTitle("Choose Diagram XML Schema File");
 		fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
 		
 		int result = fileChooser.showOpenDialog(MainWindow.getInstance());		
 		
 		if (result == JFileChooser.APPROVE_OPTION) {
 			String fileLocation = fileChooser.getSelectedFile().getAbsolutePath();
-			MainWindow.getInstance().setDiagramLocation(fileLocation);
+			MainWindow.getInstance().setSchemaLocation(fileLocation);
 
 		    int index = fileLocation.lastIndexOf('\\');		
 		    if (index == -1) {
 			    index = fileLocation.lastIndexOf('/');	
-		    }	
-			ResourcesLocation.getInstance().setDiagramLocationFolder(fileLocation.substring(0,index));
-		}		
+		    }
+			ResourcesLocation.getInstance().setSchemaLocationFolder(fileLocation.substring(0,index));
+		}
 	}
 }
+

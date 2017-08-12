@@ -22,11 +22,11 @@ import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import com.tas.codes.ProgressCode;
 import com.tas.controls.CancelAnalysisAction;
 import com.tas.controls.CloseAnalysisAction;
 import com.tas.controls.OpenAnalysisAction;
 import com.tas.controls.ShowErrorDetailsAction;
+import com.tas.utils.ProgressCode;
 import com.tas.worker.ThreatWorker;
 
 public class WorkingDialog extends JDialog {
@@ -157,15 +157,15 @@ public class WorkingDialog extends JDialog {
 			case 1: 
 				progressBar.setIndeterminate(false);
 				labelNumber.setText("Phase: 1 of 7");
-				labelPhase.setText("Validating diagram");
+				labelPhase.setText("Validating resources");
 				break;
 			case 2: 
 				labelNumber.setText("Phase: 2 of 7");
-				labelPhase.setText("Importing diagram");
+				labelPhase.setText("Importing resources");
 				break;
 			case 3: 
 				labelNumber.setText("Phase: 3 of 7");
-				labelPhase.setText("Merging diagram and assets");
+				labelPhase.setText("Applying assets");
 				break;
 			case 4: 
 				labelNumber.setText("Phase: 4 of 7");
@@ -173,7 +173,7 @@ public class WorkingDialog extends JDialog {
 				break;
 			case 5: 
 				labelNumber.setText("Phase: 5 of 7");
-				labelPhase.setText("Analyzing diagram components");
+				labelPhase.setText("Analyzing diagram patterns");
 				break;
 			case 6: 
 				labelNumber.setText("Phase: 6 of 7");
@@ -211,19 +211,19 @@ public class WorkingDialog extends JDialog {
 		int phase = 0;
 		if (value == ProgressCode.INITIALIZED) {
 			phase = 0;
-		} else if (ProgressCode.STARTED <= value && value < ProgressCode.READED_DIAGRAM) {
+		} else if (ProgressCode.STARTED <= value && value < ProgressCode.READING_DIAGRAM) {
 			phase = 1;
-		} else if (ProgressCode.READED_DIAGRAM <= value && value < ProgressCode.MERGED_DIAGRAM_ASSETS) {
+		} else if (ProgressCode.READING_DIAGRAM <= value && value < ProgressCode.MERGING_DIAGRAM_ASSETS) {
 			phase = 2;
-		} else if (ProgressCode.MERGED_DIAGRAM_ASSETS <= value && value < ProgressCode.DECOMPOSED_DIAGRAM) {
+		} else if (ProgressCode.MERGING_DIAGRAM_ASSETS <= value && value < ProgressCode.DECOMPOSING_DIAGRAM) {
 			phase = 3;
-		} else if (ProgressCode.DECOMPOSED_DIAGRAM <= value && value < ProgressCode.RULES_ANALYZED) {
+		} else if (ProgressCode.DECOMPOSING_DIAGRAM <= value && value < ProgressCode.RULES_ANALYZING) {
 			phase = 4;
-		} else if (ProgressCode.RULES_ANALYZED <= value && value < ProgressCode.READED_EXPLOITS) {
+		} else if (ProgressCode.RULES_ANALYZING <= value && value < ProgressCode.READING_EXPLOITS) {
 			phase = 5;
-		} else if (ProgressCode.READED_EXPLOITS <= value && value < ProgressCode.GENERATIED_REPORT_PATTERNS) {
+		} else if (ProgressCode.READING_EXPLOITS <= value && value < ProgressCode.GENERATING_REPORT_PATTERNS) {
 			phase = 6;
-		} else if (ProgressCode.GENERATIED_REPORT_PATTERNS <= value && value < ProgressCode.DONE) {
+		} else if (ProgressCode.GENERATING_REPORT_PATTERNS <= value && value < ProgressCode.DONE) {
 			phase = 7;
 		} else if (value == ProgressCode.DONE) {
 			phase = 10;
