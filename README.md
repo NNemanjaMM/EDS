@@ -25,7 +25,7 @@ This system is created as master's thesis work. The overal goal is to create use
 
 ### Download and Install:
 (for Windows)
-- Open [download link](#) and download installation file
+- Open [download link](https://github.com/NNemanjaMM/EDS/blob/master/Setup/Setup.exe) and download installation file
 - Run installation file
 - Run the application after installation completes 
 
@@ -33,7 +33,7 @@ This system is created as master's thesis work. The overal goal is to create use
 + Nemanja Miladinović - [NNemanjaMM](https://github.com/NNemanjaMM)
 
 ## Additional info
-For more information see this repository's [wiki page](https://github.com/NNemanjaMM/TAS/wiki).
+For more information see this repository's [wiki page](https://github.com/NNemanjaMM/EDS/wiki/Wiki-Page).
 
 ## Licence
 This project is licensed under the terms of the MIT License - for more information take a look at [license page](https://github.com/NNemanjaMM/TAS/blob/master/LICENSE) 
