@@ -1,4 +1,7 @@
 # Exploits Detection System
+
+<p align="center"><img src="https://github.com/NNemanjaMM/EDS/blob/master/Wiki-Resources/icon.png"/></p>
+
 Exploits Detection System (EDS) is a system that analyzes given diagram in order to find potential security exploits.
 
 System diagrams created in accordance with given XML schema can be loaded into the EDS. After that, EDS decomposes input diagrams into risk patterns. A set of rules, which is defined in rule-based engine, is applied to every single risk pattern that was found. Rules analyze components, attributes and assets of every pattern in order to find potential exploits. List of exploits discovered for given patterns will be created for user as an XML repport, consisted of detail description and recommended countermeasures.
