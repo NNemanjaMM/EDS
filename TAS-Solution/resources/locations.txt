@@ -4,8 +4,8 @@ assetLocation = resources\diagrams\assets_definition.xml;
 assetLocationFolder = resources\diagrams;
 exploitLocation = resources\diagrams\exploits_definitions.xml;
 exploitLocationFolder = resources\diagrams;
-diagramLocationFolder = E:\Users\NemanjaM\Documents\Practice\Master\TAS\TAS-Solution\resources\diagrams;
-reportLocationFolder = E:\Users\NemanjaM\Desktop;
+diagramLocationFolder = D:\Master\work\TAS\TAS-Solution\resources\diagrams;
+reportLocationFolder = C:\Users\admin\Desktop;
 rulesLocations = resources/rules/rules_admin_password.drl,
 				resources/rules/rules_cookie.drl,
 				resources/rules/rules_pii.drl,
