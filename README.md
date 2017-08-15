@@ -32,7 +32,7 @@ This system is created as master's thesis work. The overall goal is to create us
 
 ### Download and Install:
 (for Windows)
-- Open [download link](https://github.com/NNemanjaMM/EDS/blob/master/Setup/Setup.exe) and download installation file
+- Open [download page](https://github.com/NNemanjaMM/EDS/blob/master/Setup/Setup.exe) and download installation file
 - Run installation file
 - Run the application after installation completes 
 
@@ -40,7 +40,7 @@ This system is created as master's thesis work. The overall goal is to create us
 + Nemanja Miladinović - [NNemanjaMM](https://github.com/NNemanjaMM)
 
 ## Additional info
-For more information see this repository's [wiki page](https://github.com/NNemanjaMM/EDS/wiki/Wiki-Page).
+For more information see this repository's [wiki page](https://github.com/NNemanjaMM/EDS/wiki/Exploits-Detection-System).
 
 ## Licence
 This project is licensed under the terms of the MIT License - for more information take a look at [license page](https://github.com/NNemanjaMM/TAS/blob/master/LICENSE) 
