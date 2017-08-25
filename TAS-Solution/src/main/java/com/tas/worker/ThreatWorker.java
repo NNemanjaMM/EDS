@@ -383,7 +383,15 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	
 	private boolean createAndFireRules() {
 		
-		StatelessKieSession session = KieRulesBase.createStatelessSession();
+		StatelessKieSession session = null;
+		
+		try {
+			session = KieRulesBase.createStatelessSession();
+		} catch (RuntimeException e) {
+			String message = "Rule base could not be built!\nThere is an error in rule definition files.";
+			dialog.setErrorMessage(message);
+			return false;
+		}
 		
 		if (session == null) {
 			String message = "There are no rules files locations defined!\nPlease check the 'resources/locations.txt' file.";

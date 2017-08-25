@@ -9,7 +9,7 @@ import org.kie.api.runtime.StatelessKieSession;
 
 public class KieRulesBase {
 
-	public static StatelessKieSession createStatelessSession() {
+	public static StatelessKieSession createStatelessSession() throws RuntimeException {
 		
 		KieServices kieServices = KieServices.Factory.get();
 		KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
