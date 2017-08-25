@@ -24,11 +24,18 @@ public class StartAnalysisAction extends AbstractAction {
 		String assetsPath = MainWindow.getInstance().getAssetLocation();
 		String exploitsPath = MainWindow.getInstance().getExploitLocation();
 		String reportPath = MainWindow.getInstance().getReportLocation();
+		String schemaPath = MainWindow.getInstance().getSchemaLocation();
 		boolean analyseComponents = MainWindow.getInstance().getComponentsThreatsSelected();
 		
 		if (diagramPath.equals("")) {
 			String message = "Diagram file name can not be empty!\nPlease locate the diagram file.";
 			JOptionPane.showMessageDialog(MainWindow.getInstance(), message, "Wrong Diagram File", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		if (schemaPath.equals("")) {
+			String message = "Diagram XML schema file name can not be empty!\nPlease locate the XML schema file.";
+			JOptionPane.showMessageDialog(MainWindow.getInstance(), message, "Wrong XML Schema File", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		
@@ -57,7 +64,7 @@ public class StartAnalysisAction extends AbstractAction {
 		File exploits = new File(exploitsPath);
 		File report = new File(reportPath);
 				
-		ThreatWorker analyzer = new ThreatWorker(diagram, assets, exploits, report, analyseComponents);		
+		ThreatWorker analyzer = new ThreatWorker(diagram, assets, exploits, report, schemaPath, analyseComponents);		
 		WorkingDialog dialog = new WorkingDialog(analyzer, diagram.getName(), report.getName(), reportPath);
 		analyzer.setDialog(dialog);
 		analyzer.addPropertyChangeListener(new WorkerChangeListener(dialog));

@@ -21,7 +21,7 @@ public class BrowseReportAction extends AbstractAction {
     
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+
 		String folderLocation = ResourcesLocation.getInstance().getReportLocationFolder();
 		
 		JFileChooser fileChooser = new JFileChooser(folderLocation);

@@ -29,8 +29,7 @@ public class Validator {
 		Document document = builder.parse(stream);
  	}
  
- 	public static void checkDiagramValidity(File xmlFile) throws SAXException, IOException {
- 		String schemaLocation = ResourcesLocation.getInstance().getSchemaLocation();
+ 	public static void checkDiagramValidity(File xmlFile, String schemaLocation) throws SAXException, IOException {
  		
 		Source schemaFile = new StreamSource(new File(schemaLocation));	 		
 		Source stream = new StreamSource(xmlFile);
@@ -42,8 +41,7 @@ public class Validator {
         validator.validate(stream);
 	 }
  
- 	public static void checkAssetDefinitionsValidity(File xmlFile) throws SAXException, IOException {
- 		String schemaLocation = ResourcesLocation.getInstance().getSchemaLocation();	
+ 	public static void checkAssetDefinitionsValidity(File xmlFile, String schemaLocation) throws SAXException, IOException {
  		
 		Source schemaFile = new StreamSource(new File(schemaLocation));	 		
 		Source stream = new StreamSource(xmlFile);
@@ -55,8 +53,7 @@ public class Validator {
         validator.validate(stream);
 	 }
  
- 	public static void checkExploitDefinitionsValidity(File xmlFile) throws SAXException, IOException {	
- 		String schemaLocation = ResourcesLocation.getInstance().getSchemaLocation();
+ 	public static void checkExploitDefinitionsValidity(File xmlFile, String schemaLocation) throws SAXException, IOException {	
  		
 		Source schemaFile = new StreamSource(new File(schemaLocation));	 		
 		Source stream = new StreamSource(xmlFile);

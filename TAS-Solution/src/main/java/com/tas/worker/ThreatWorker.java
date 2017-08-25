@@ -37,6 +37,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	private File assetsFile;
 	private File exploitsFile;
 	private File reportFile;
+	private String schemaPath;;
 	private boolean analyseComponents;
 	
 	private Diagram diagram;
@@ -48,11 +49,12 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 	
 	
 	
-	public ThreatWorker(File diagram, File assets, File exploits, File report, boolean analyseComponents) {
+	public ThreatWorker(File diagram, File assets, File exploits, File report, String schemaPath, boolean analyseComponents) {
 		this.diagramFile = diagram;
 		this.assetsFile = assets;
 		this.exploitsFile = exploits;
 		this.reportFile = report;
+		this.schemaPath = schemaPath;
 		this.analyseComponents = analyseComponents;
 	}
 
@@ -241,7 +243,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		try {
 			
-			Validator.checkDiagramValidity(diagramFile);
+			Validator.checkDiagramValidity(diagramFile, schemaPath);
 			
 		} catch (SAXException e) {
 			message = "XML Diagram is not valid!\nXML Diagram contains semantic errors. Please choose another diagram or fix current.";
@@ -280,7 +282,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		try {
 			
-			Validator.checkAssetDefinitionsValidity(assetsFile);
+			Validator.checkAssetDefinitionsValidity(assetsFile, schemaPath);
 			
 		} catch (SAXException e) {
 			message = "Asset Definitions XML file is not valid!\nXML File contains semantic errors. Please choose another file or fix current.";
@@ -319,7 +321,7 @@ public class ThreatWorker extends SwingWorker<Boolean, Object> {
 		
 		try {
 			
-			Validator.checkExploitDefinitionsValidity(exploitsFile);
+			Validator.checkExploitDefinitionsValidity(exploitsFile, schemaPath);
 			
 		} catch (SAXException e) {
 			message = "Exploit Definitions XML file is not valid!\nXML File has been unauthorizedly modified and contains semantic errors. Please contact the support.";
