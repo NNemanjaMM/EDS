@@ -7,9 +7,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import com.tas.model.diagram.AssetDefinitions;
-import com.tas.model.diagram.Diagram;
-import com.tas.model.diagram.ExploitDefinitions;
+import com.tas.EDS_Library.diagram.AssetDefinitions;
+import com.tas.EDS_Library.diagram.Diagram;
+import com.tas.EDS_Library.diagram.ExploitDefinitions;
 import com.tas.model.report.ReportClass;
 
 public class XMLLinker {

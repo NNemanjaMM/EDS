@@ -3,11 +3,11 @@ package com.tas.rules
 
 //list any import classes here.
 import com.tas.model.risk_pattern.*;
-import com.tas.model.diagram.Process;
-import com.tas.model.diagram.Element;
-import com.tas.model.diagram.*;
-import com.tas.model.diagram.Diagram.Flows.Http;
-import com.tas.model.diagram.Diagram.Elements.Browser;
+import com.tas.EDS_Library.diagram.Process;
+import com.tas.EDS_Library.diagram.Element;
+import com.tas.EDS_Library.diagram.Diagram.Flows.Http;
+import com.tas.EDS_Library.diagram.Diagram.Elements.Browser;
+import com.tas.EDS_Library.diagram.*;
 import com.tas.model.risk_pattern.ExploitOfAsset;
 import java.util.List;
 

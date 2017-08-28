@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
 
-import com.tas.model.diagram.BlockElement;
-import com.tas.model.diagram.Diagram;
-import com.tas.model.diagram.Element;
-import com.tas.model.diagram.Flow;
+import com.tas.EDS_Library.diagram.BlockElement;
+import com.tas.EDS_Library.diagram.Diagram;
+import com.tas.EDS_Library.diagram.Element;
+import com.tas.EDS_Library.diagram.Flow;
 import com.tas.model.risk_pattern.DiagramPattern;
 
 public class Decomposer {

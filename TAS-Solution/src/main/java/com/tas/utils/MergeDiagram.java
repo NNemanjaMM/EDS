@@ -5,17 +5,17 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import com.tas.model.diagram.AssetDefinition;
-import com.tas.model.diagram.AssetDefinitions;
-import com.tas.model.diagram.Assets.Asset;
-import com.tas.model.diagram.BlockElement;
-import com.tas.model.diagram.Diagram;
-import com.tas.model.diagram.ExploitDefinition;
-import com.tas.model.diagram.ExploitDefinitions;
-import com.tas.model.diagram.Exploits.Exploit;
-import com.tas.model.diagram.Flow;
-import com.tas.model.diagram.ImportAssets;
-import com.tas.model.diagram.ImportExploits;
+import com.tas.EDS_Library.diagram.AssetDefinition;
+import com.tas.EDS_Library.diagram.AssetDefinitions;
+import com.tas.EDS_Library.diagram.Assets.Asset;
+import com.tas.EDS_Library.diagram.BlockElement;
+import com.tas.EDS_Library.diagram.Diagram;
+import com.tas.EDS_Library.diagram.ExploitDefinition;
+import com.tas.EDS_Library.diagram.ExploitDefinitions;
+import com.tas.EDS_Library.diagram.Exploits.Exploit;
+import com.tas.EDS_Library.diagram.Flow;
+import com.tas.EDS_Library.diagram.ImportAssets;
+import com.tas.EDS_Library.diagram.ImportExploits;
 import com.tas.model.risk_pattern.DiagramPattern;
 import com.tas.model.risk_pattern.ExploitOfAsset;
 

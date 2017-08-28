@@ -1,6 +1,6 @@
 package com.tas.model.report;
 
-import com.tas.model.diagram.BlockElement;
+import com.tas.EDS_Library.diagram.BlockElement;
 
 public class ReportPatternElement {
 

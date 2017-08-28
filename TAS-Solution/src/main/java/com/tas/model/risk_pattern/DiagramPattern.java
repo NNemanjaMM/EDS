@@ -3,10 +3,10 @@ package com.tas.model.risk_pattern;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tas.model.diagram.AssetDefinition;
-import com.tas.model.diagram.BlockElement;
-import com.tas.model.diagram.Element;
-import com.tas.model.diagram.ExploitDefinition;
+import com.tas.EDS_Library.diagram.AssetDefinition;
+import com.tas.EDS_Library.diagram.BlockElement;
+import com.tas.EDS_Library.diagram.Element;
+import com.tas.EDS_Library.diagram.ExploitDefinition;
 
 public class DiagramPattern {
 

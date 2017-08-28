@@ -13,11 +13,11 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.xml.sax.SAXException;
 
 import com.tas.gui.WorkingDialog;
-import com.tas.model.diagram.AssetDefinitions;
-import com.tas.model.diagram.Diagram;
-import com.tas.model.diagram.Element;
-import com.tas.model.diagram.ExploitDefinition;
-import com.tas.model.diagram.ExploitDefinitions;
+import com.tas.EDS_Library.diagram.AssetDefinitions;
+import com.tas.EDS_Library.diagram.Diagram;
+import com.tas.EDS_Library.diagram.Element;
+import com.tas.EDS_Library.diagram.ExploitDefinition;
+import com.tas.EDS_Library.diagram.ExploitDefinitions;
 import com.tas.model.report.ReportClass;
 import com.tas.model.report.ReportPattern;
 import com.tas.model.risk_pattern.DiagramPattern;
