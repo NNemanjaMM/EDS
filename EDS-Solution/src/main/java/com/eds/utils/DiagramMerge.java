@@ -19,33 +19,33 @@ import com.eds.EDS_Library.diagram.Flow;
 import com.eds.EDS_Library.diagram.ImportAssets;
 import com.eds.EDS_Library.diagram.ImportExploits;
 
-public class MergeDiagram {
+public class DiagramMerge {
 	
 	private Diagram diagram;
 	private AssetDefinitions assetDefinitions;
 	private List<DiagramPattern> diagramPatterns;
 	private ExploitDefinitions exploitDefinitions;
 
-	public MergeDiagram(Diagram diagram, ExploitDefinitions exploitDefinitions) {
+	public DiagramMerge(Diagram diagram, ExploitDefinitions exploitDefinitions) {
 		this.diagram = diagram;
 		this.exploitDefinitions = exploitDefinitions;
 		this.assetDefinitions = null;
 	}
 
-	public MergeDiagram(Diagram diagram, AssetDefinitions assetDefinitions) {
+	public DiagramMerge(Diagram diagram, AssetDefinitions assetDefinitions) {
 		this.diagram = diagram;
 		this.assetDefinitions = assetDefinitions;
 		this.exploitDefinitions = null;
 	}
 
-	public MergeDiagram(List<DiagramPattern> diagramPatterns, ExploitDefinitions exploitDefinitions) {
+	public DiagramMerge(List<DiagramPattern> diagramPatterns, ExploitDefinitions exploitDefinitions) {
 		this.diagramPatterns = diagramPatterns;
 		this.exploitDefinitions = exploitDefinitions;
 		this.assetDefinitions = null;
 		this.diagram = null;
 	}
 
-	public MergeDiagram(List<DiagramPattern> diagramPatterns, ExploitDefinitions exploitDefinitions, AssetDefinitions assetDefinitions) {
+	public DiagramMerge(List<DiagramPattern> diagramPatterns, ExploitDefinitions exploitDefinitions, AssetDefinitions assetDefinitions) {
 		this.diagramPatterns = diagramPatterns;
 		this.exploitDefinitions = exploitDefinitions;
 		this.assetDefinitions = assetDefinitions;

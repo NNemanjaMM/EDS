@@ -4,7 +4,7 @@ import com.eds.model.risk_pattern.DiagramPattern;
 
 public class ReportPattern {
 
-	private static int counter = 10000000;
+	private static int counter = 0;
 	private int id;
 	private ReportPatternElement destinationElement;
 	private ReportPatternElement sourceElement;

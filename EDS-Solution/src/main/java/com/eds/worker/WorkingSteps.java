@@ -19,7 +19,7 @@ import com.eds.model.risk_pattern.DiagramPattern;
 import com.eds.model.risk_pattern.ExploitOfAsset;
 import com.eds.utils.Decomposer;
 import com.eds.utils.KieRulesBase;
-import com.eds.utils.MergeDiagram;
+import com.eds.utils.DiagramMerge;
 import com.eds.utils.ProgressCode;
 import com.eds.utils.Validator;
 import com.eds.utils.XMLLinker;
@@ -63,8 +63,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		
 		if(Thread.currentThread().isInterrupted()) {
 			 return false;
-		}
-		
+		}		
 		
 		/* 1 ********	VALIDATING XML DIAGRAM			**********	- DONE	*/
 		setProgress(ProgressCode.STARTED);
@@ -122,7 +121,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		/* 2 ********	MERGING DIAGRAM	AND ASSETS		**********	- DONE	*/
 		setProgress(ProgressCode.MERGING_DIAGRAM_ASSETS);
 
-		MergeDiagram mergeAssets = new MergeDiagram(diagram, assetDefinitions);
+		DiagramMerge mergeAssets = new DiagramMerge(diagram, assetDefinitions);
 		diagram = mergeAssets.mergeAssetsToDiagram();
 		
 		if(Thread.currentThread().isInterrupted()) {
@@ -183,7 +182,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		/* 5 ********	MERGING EXPLOITS AND DIAGRAMS	**********	- DONE	*/
 		setProgress(ProgressCode.MERGING_DIAGRAM_EXPLOITS);	
 			
-		MergeDiagram mergeExploits = new MergeDiagram(patterns, exploitDefinitions, assetDefinitions);
+		DiagramMerge mergeExploits = new DiagramMerge(patterns, exploitDefinitions, assetDefinitions);
 		patterns = mergeExploits.mergeExploitsAndAssetsToDiagramPieces();
 		
 		if(Thread.currentThread().isInterrupted()) {

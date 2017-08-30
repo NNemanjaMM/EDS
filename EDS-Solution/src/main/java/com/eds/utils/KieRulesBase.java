@@ -11,12 +11,12 @@ public class KieRulesBase {
 
 	public static StatelessKieSession createStatelessSession() throws RuntimeException {
 		
-		KieServices kieServices = KieServices.Factory.get();
-		KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-		
 		if (ResourcesLocation.getInstance().getRulesLocations().size() == 0) {
 			return null;
 		}
+		
+		KieServices kieServices = KieServices.Factory.get();
+		KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
 		
 		for (String rule_location : ResourcesLocation.getInstance().getRulesLocations()) {
 			kieFileSystem.write(kieServices.getResources().newFileSystemResource(new File(rule_location)));			

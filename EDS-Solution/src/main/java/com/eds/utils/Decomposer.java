@@ -31,17 +31,13 @@ public class Decomposer {
 		ArrayList<DiagramPattern> patterns = new ArrayList<DiagramPattern>();
 
 		for (JAXBElement<? extends BlockElement> blockElement : diagramElements) {
-			patterns.addAll(decomposePattern(blockElement.getValue()));
+			patterns.addAll(getPatternsForElement(blockElement.getValue()));
 		}
 		
 		return patterns;
 	}
 	
 	public List<DiagramPattern> decomposeSinglePatterns(BlockElement blockElement) {
-		return decomposePattern(blockElement);
-	}
-
-	private List<DiagramPattern> decomposePattern(BlockElement blockElement) {
 		return getPatternsForElement(blockElement);
 	}
 	
@@ -51,7 +47,7 @@ public class Decomposer {
 		HashSet<String> analyzedElements = new HashSet<>();
 		HashSet<String> addedElements = new HashSet<>();
 		Stack<BlockElement> toAnalyzeElements = new Stack<BlockElement>();
-		Stack<Element> analyzingRow = new Stack<Element>();
+		Stack<Element> analyzingSequence = new Stack<Element>();
 		
 		toAnalyzeElements.push(baseAnalyzeElement);	
 		analyzedElements.add(baseAnalyzeElement.getId());
@@ -77,14 +73,14 @@ public class Decomposer {
 				}
 			}
 
-			analyzingRow.push(analyzeElement);	
+			analyzingSequence.push(analyzeElement);	
 			if (linkingFlow != null) {
-				analyzingRow.push(linkingFlow);
+				analyzingSequence.push(linkingFlow);
 			}
 			
 			if (baseAnalyzeElement.getId() != analyzeElement.getId() && !addedElements.contains(analyzeElement.getId())) {
 				@SuppressWarnings({ "unchecked", "rawtypes" })
-				List<Element> traceList = new ArrayList(analyzingRow);
+				List<Element> traceList = new ArrayList(analyzingSequence);
 				traceList.remove(0);	//	uklanja se element do kog vodi trace (onaj koji se analizira)
 				Collections.reverse(traceList);
 				if (traceList.get(0) instanceof Flow) {
@@ -95,13 +91,13 @@ public class Decomposer {
 				addedElements.add(((BlockElement)traceList.get(0)).getId());
 			}
 
-			if (!discoveredNew && !analyzingRow.isEmpty()) {
+			if (!discoveredNew && !analyzingSequence.isEmpty()) {
 				toAnalyzeElements.pop();
-				analyzingRow.pop();	
-				if (!analyzingRow.isEmpty()) {
-					analyzingRow.pop();
-					if (!analyzingRow.isEmpty()) {
-						analyzingRow.pop();
+				analyzingSequence.pop();	
+				if (!analyzingSequence.isEmpty()) {
+					analyzingSequence.pop();
+					if (!analyzingSequence.isEmpty()) {
+						analyzingSequence.pop();
 					}
 				}
 			}
