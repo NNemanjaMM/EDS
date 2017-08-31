@@ -1,3 +1,6 @@
+cd EDS-Solution
+mkdir lib
+cd ..
 mkdir temp
 cd temp
 xjc -p com.eds.EDS_Library.diagram %~f1
