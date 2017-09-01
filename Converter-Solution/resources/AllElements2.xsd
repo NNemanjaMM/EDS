@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/ThreatModeling.Model.Abstracts" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/ThreatModeling.Model.Abstracts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:element name="GenericTypeId" type="xs:string" />
+  <xs:element name="Guid" type="xs:string" />
+  <xs:element name="Properties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" ref="q1:anyType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TypeId" type="xs:string" />
+  <xs:element name="Height" type="xs:unsignedShort" />
+  <xs:element name="Left" type="xs:unsignedShort" />
+  <xs:element name="StrokeDashArray" nillable="true" />
+  <xs:element name="StrokeThickness" type="xs:unsignedByte" />
+  <xs:element name="Top" type="xs:unsignedShort" />
+  <xs:element name="Width" type="xs:unsignedShort" />
+  <xs:element name="HandleX" type="xs:unsignedShort" />
+  <xs:element name="HandleY" type="xs:unsignedShort" />
+  <xs:element name="PortSource" type="xs:string" />
+  <xs:element name="PortTarget" type="xs:string" />
+  <xs:element name="SourceGuid" type="xs:string" />
+  <xs:element name="SourceX" type="xs:unsignedShort" />
+  <xs:element name="SourceY" type="xs:unsignedShort" />
+  <xs:element name="TargetGuid" type="xs:string" />
+  <xs:element name="TargetX" type="xs:unsignedShort" />
+  <xs:element name="TargetY" type="xs:unsignedShort" />
+</xs:schema>

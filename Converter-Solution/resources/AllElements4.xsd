@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/ThreatModeling.KnowledgeBase" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/ThreatModeling.KnowledgeBase" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/ThreatModeling.Interfaces" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/ThreatModeling.Model" />
+  <xs:element name="DisplayName" type="xs:string" />
+  <xs:element name="Name" type="xs:string" />
+  <xs:element name="Value" nillable="true">
+    <xs:complexType mixed="true">
+      <xs:sequence minOccurs="0">
+        <xs:element maxOccurs="unbounded" xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" ref="q1:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SelectedIndex" type="xs:unsignedByte" />
+  <xs:element name="ChangedBy" nillable="true" />
+  <xs:element name="DrawingSurfaceGuid" type="xs:string" />
+  <xs:element name="FlowGuid" type="xs:string" />
+  <xs:element name="Id" type="xs:unsignedByte" />
+  <xs:element name="InteractionKey" type="xs:string" />
+  <xs:element name="InteractionString" nillable="true" />
+  <xs:element name="ModifiedAt" type="xs:dateTime" />
+  <xs:element name="Priority" type="xs:string" />
+  <xs:element name="Properties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" ref="q2:KeyValueOfstringstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SourceGuid" type="xs:string" />
+  <xs:element name="State" type="xs:string" />
+  <xs:element name="StateInformation" nillable="true" />
+  <xs:element name="TargetGuid" type="xs:string" />
+  <xs:element name="Title" nillable="true" />
+  <xs:element name="TypeId" type="xs:string" />
+  <xs:element name="Upgraded" type="xs:boolean" />
+  <xs:element name="UserThreatCategory" nillable="true" />
+  <xs:element name="UserThreatDescription" nillable="true" />
+  <xs:element name="UserThreatShortDescription" nillable="true" />
+  <xs:element name="Wide" type="xs:boolean" />
+  <xs:element name="Validation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ElementGuids">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" ref="q3:guid" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Enabled" type="xs:boolean" />
+        <xs:element name="Guid" type="xs:string" />
+        <xs:element name="IssueGuid" type="xs:string" />
+        <xs:element name="Items" />
+        <xs:element name="Message" type="xs:string" />
+        <xs:element name="Source" />
+        <xs:element name="SourceGuid" type="xs:string" />
+      </xs:sequence>
+      <xs:attribute xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" ref="q4:Id" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GenericElements">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="ElementType">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IsExtension" type="xs:boolean" />
+              <xs:element name="Attributes">
+                <xs:complexType>
+                  <xs:sequence minOccurs="0">
+                    <xs:element maxOccurs="unbounded" name="Attribute">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="IsExtension" type="xs:boolean" />
+                          <xs:element name="AttributeValues">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element maxOccurs="unbounded" xmlns:q5="http://schemas.datacontract.org/2004/07/ThreatModeling.Interfaces" ref="q5:Value" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="DisplayName" type="xs:string" />
+                          <xs:element name="Inheritance" type="xs:string" />
+                          <xs:element name="Mode" type="xs:string" />
+                          <xs:element name="Name" type="xs:string" />
+                          <xs:element name="Type" type="xs:string" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="AvailableToBaseModels" />
+              <xs:element name="Behavior" nillable="true" />
+              <xs:element name="Description" type="xs:string" />
+              <xs:element name="Hidden" type="xs:boolean" />
+              <xs:element name="Id" type="xs:string" />
+              <xs:element name="ImageLocation" nillable="true" type="xs:string" />
+              <xs:element name="ImageSource" nillable="true" type="xs:string" />
+              <xs:element name="ImageStream" nillable="true" />
+              <xs:element name="Name" type="xs:string" />
+              <xs:element name="ParentId" type="xs:string" />
+              <xs:element name="Representation" type="xs:string" />
+              <xs:element name="Shape" nillable="true" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Manifest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Author" type="xs:string" />
+        <xs:element name="Id" type="xs:string" />
+        <xs:element name="Name" type="xs:string" />
+        <xs:element name="Version" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StandardElements">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="ElementType">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IsExtension" type="xs:boolean" />
+              <xs:element name="Attributes">
+                <xs:complexType>
+                  <xs:sequence minOccurs="0">
+                    <xs:element maxOccurs="unbounded" name="Attribute">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="IsExtension" type="xs:boolean" />
+                          <xs:element name="AttributeValues">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element maxOccurs="unbounded" xmlns:q6="http://schemas.datacontract.org/2004/07/ThreatModeling.Interfaces" ref="q6:Value" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="DisplayName" type="xs:string" />
+                          <xs:element name="Inheritance" type="xs:string" />
+                          <xs:element name="Mode" type="xs:string" />
+                          <xs:element name="Name" type="xs:string" />
+                          <xs:element name="Type" type="xs:string" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="AvailableToBaseModels" />
+              <xs:element name="Behavior" nillable="true" />
+              <xs:element name="Description" type="xs:string" />
+              <xs:element name="Hidden" type="xs:boolean" />
+              <xs:element name="Id" type="xs:string" />
+              <xs:element name="ImageLocation" type="xs:string" />
+              <xs:element name="ImageSource" type="xs:string" />
+              <xs:element name="ImageStream" nillable="true" />
+              <xs:element name="Name" type="xs:string" />
+              <xs:element name="ParentId" type="xs:string" />
+              <xs:element name="Representation" type="xs:string" />
+              <xs:element name="Shape" nillable="true" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ThreatCategories">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="ThreatCategory">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IsExtension" type="xs:boolean" />
+              <xs:element name="Id" type="xs:string" />
+              <xs:element name="LongDescription" />
+              <xs:element name="Name" type="xs:string" />
+              <xs:element name="ShortDescription" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ThreatMetaData">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/ThreatModeling.Model" ref="q7:IsPriorityUsed" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/ThreatModeling.Model" ref="q8:IsStatusUsed" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/ThreatModeling.Model" ref="q9:PropertiesMetaData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ThreatTypes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="ThreatType">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IsExtension" type="xs:boolean" />
+              <xs:element name="Category" type="xs:string" />
+              <xs:element name="Description" type="xs:string" />
+              <xs:element name="GenerationFilters">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Exclude" type="xs:string" />
+                    <xs:element name="Include" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Id" type="xs:string" />
+              <xs:element name="PropertiesMetaData">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" xmlns:q10="http://schemas.datacontract.org/2004/07/ThreatModeling.Model" ref="q10:ThreatMetaDatum" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="RelatedCategory" nillable="true" />
+              <xs:element name="ShortTitle" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

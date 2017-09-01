@@ -104,10 +104,10 @@ public class ResourcesLocation {
 
 		String rulesLocationString = "";
 		for (String ruleLocation : getRulesLocations()) {
-			rulesLocationString = rulesLocationString + ruleLocation + ",\n\t\t\t\t";
+			rulesLocationString = rulesLocationString + ruleLocation + ",\n\t\t";
 		}
 		if (rulesLocationString.length() > 1) {
-			rulesLocationString = rulesLocationString.substring(0, rulesLocationString.length() - 6);
+			rulesLocationString = rulesLocationString.substring(0, rulesLocationString.length() - 4);
 		}
 		
 		fileContentBuilder.append("rulesLocations = " + rulesLocationString + ";");
