@@ -50,7 +50,10 @@ public class App {
         }
         
         Converter converter = new Converter(inputDiagram);
-        Diagram outputDiagram = converter.convert();
+        if (!converter.convert()) {
+        	return;
+        }
+        	
         /*
         if (!writeOutputDiagram(outputDiagram, outputDiagramFile)) {
         	return;

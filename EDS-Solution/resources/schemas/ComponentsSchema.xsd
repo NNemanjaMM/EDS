@@ -76,6 +76,13 @@
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
+        <xs:complexType name="shape">
+            <xs:complexContent>
+                <xs:extension base="es:shape">
+                    <xs:attributeGroup ref="es:additionalBoundaryProperties"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
     </xs:redefine>
     <xs:group name="processElements">
         <xs:choice>
@@ -247,8 +254,24 @@
     </xs:group>
     <xs:group name="boundaryElements">
         <xs:choice>
-            <xs:element name="internetBoundary" type="es:shape"/>
-            <xs:element name="machineBoundary" type="es:shape"/>
+            <xs:element name="internetBoundary">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="es:shape">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="machineBoundary">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="es:shape">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="localDMZBoundary" type="es:shape"/>
             <xs:element name="appContainerBoundary" type="es:shape"/>
         </xs:choice>
@@ -287,4 +310,5 @@
     <xs:attributeGroup name="additionaDatastoreProperties"/>
     <xs:attributeGroup name="additionalExternalEntityProperties"/>
     <xs:attributeGroup name="additionalSectionProperties"/>
+    <xs:attributeGroup name="additionalBoundaryProperties"/>
 </xs:schema>

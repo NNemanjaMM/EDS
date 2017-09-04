@@ -22,16 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="shape">
  *   &lt;complexContent>
- *     &lt;extension base="{https://www.eds.org/eds-schemas}shape">
- *       &lt;redefine>
- *         &lt;complexType name="shape">
- *           &lt;complexContent>
- *             &lt;extension base="{https://www.eds.org/eds-schemas}base">
- *             &lt;/extension>
- *           &lt;/complexContent>
- *         &lt;/complexType>
- *       &lt;/redefine>
- *       &lt;attGroup ref="{https://www.eds.org/eds-schemas}additionalBoundaryProperties"/>
+ *     &lt;extension base="{https://www.eds.org/eds-schemas}base">
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -40,14 +31,12 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "shape")
+@XmlType(name = "")
 @XmlSeeAlso({
-    com.eds.Converter_Solution.model.output.Diagram.Boundaries.InternetBoundary.class,
-    com.eds.Converter_Solution.model.output.Diagram.Boundaries.MachineBoundary.class,
-    OriginalBlockShape.class
+    Shape.class
 })
-public class Shape
-    extends OriginalShape
+public class OriginalShape
+    extends Base
 {
 
 
