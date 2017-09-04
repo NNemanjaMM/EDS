@@ -104,8 +104,7 @@
                 <xs:element name="sections">
                     <xs:complexType>
                         <xs:choice maxOccurs="unbounded" minOccurs="0">
-                            <xs:group ref="es:networkSections"/>
-                            <xs:group ref="es:trustSections"/>
+                            <xs:group ref="es:sections"/>
                         </xs:choice>
                     </xs:complexType>
                 </xs:element>
@@ -231,11 +230,8 @@
     <xs:group name="flows">
         <xs:choice> </xs:choice>
     </xs:group>
-    <xs:group name="trustSections">
+    <xs:group name="sections">
         <xs:choice> </xs:choice>
-    </xs:group>
-    <xs:group name="networkSections">
-        <xs:choice/>
     </xs:group>
     <xs:group name="boundaries">
         <xs:choice> </xs:choice>

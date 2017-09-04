@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -13,16 +12,12 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.eds.Converter_Solution.Dididid;
-import com.eds.EDS_Library.diagram.Diagram;
+import com.eds.Converter_Solution.model.input.ThreatModel;
+import com.eds.Converter_Solution.model.output.Diagram;
 
 public class XMLBridge {
 
@@ -35,23 +30,12 @@ public class XMLBridge {
 		
 		Document document = builder.parse(stream);
  	}
- 
- 	public static void checkExploitDefinitionsValidity(File inputDiagramFile, File inputDiagramSchema) throws SAXException, IOException {	
- 			
-		Source stream = new StreamSource(inputDiagramFile);
-		
-	    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	    Schema schema = factory.newSchema(inputDiagramSchema);
-	    javax.xml.validation.Validator validator = schema.newValidator();	
-	    
-        validator.validate(stream);
-	}
 
-	public static Dididid readInputDiagram(File inputDiagramFile) throws JAXBException {
+	public static ThreatModel readInputDiagram(File inputDiagramFile) throws JAXBException {
 		
-		JAXBContext jaxbContext = JAXBContext.newInstance(Diagram.class);
+		JAXBContext jaxbContext = JAXBContext.newInstance(ThreatModel.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		Dididid inputDiagram = (Dididid) jaxbUnmarshaller.unmarshal(inputDiagramFile);
+		ThreatModel inputDiagram = (ThreatModel) jaxbUnmarshaller.unmarshal(inputDiagramFile);
 		
 		return inputDiagram;
 	}
