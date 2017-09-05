@@ -281,7 +281,15 @@
     </xs:group>
     <xs:group name="networkSectionElements">
         <xs:choice>
-            <xs:element name="internetDmz" type="es:blockShape"/>
+            <xs:element name="internetDmz">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="es:blockShape">
+                            <xs:attribute name="nothing" use="prohibited"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="officeNetwork" type="es:blockShape"/>
             <xs:element name="sharedNetwork" type="es:blockShape"/>
             <xs:element name="companyTrustSection">

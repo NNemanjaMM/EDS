@@ -13,6 +13,7 @@ import org.xml.sax.SAXException;
 import com.eds.Converter_Solution.model.input.ThreatModel;
 import com.eds.Converter_Solution.model.output.Diagram;
 import com.eds.Converter_Solution.utils.Converter;
+import com.eds.Converter_Solution.utils.DiagramBuilder;
 import com.eds.Converter_Solution.utils.XMLAdjuster;
 import com.eds.Converter_Solution.utils.XMLBridge;
 
@@ -20,29 +21,33 @@ public class App {
 	
     public static void main(String[] args) {
     	
-        if (args.length < 2){
+        if (args.length < 1){
         	System.out.println("ERROR: You have to pass data flow diagram location!");
         	System.out.println("ERROR: Parameter 1 - Location of an input diagram");
-        	System.out.println("ERROR: Parameter 2 - Location where an output diagram will be stored");
             return;
         }
         
         String inputDiagramLocation = args[0];
-        String outputDiagramLocation = args[1];
         String inputDiagramSchemaLocation = "resources\\TM7Schema.xsd";
-        String preparedInputDiagramLocation = "temp.xml";
-        
-        File inputDiagramFile = new File(inputDiagramLocation);
-        File outputDiagramFile = new File(outputDiagramLocation);
+        String preparedInputDiagramLocation = "temp1.xml";
+        String rawOutputDiagramLocation = "temp2.xml";
+
+        File inputDiagramFile = new File(inputDiagramLocation);        
         File inputDiagramSchemaFile = new File(inputDiagramSchemaLocation);
         File preparedInputDiagramFile = new File(preparedInputDiagramLocation);
+        File rawOutputDiagramFile = new File(rawOutputDiagramLocation);
         
+    	String outputDiagramLocation = inputDiagramFile.getName().substring(0, inputDiagramFile.getName().lastIndexOf(".")) + ".xml";
+        File outputDiagramFile = new File(outputDiagramLocation);
                 
+        
         if (!checkInputDiagram(inputDiagramFile, inputDiagramSchemaFile)) {
         	return;
         }
         
-        adjustInputDiagram(inputDiagramFile, preparedInputDiagramFile);
+        if (!adjustInputDiagram(inputDiagramFile, preparedInputDiagramFile)) {
+        	return;
+        }
         
         ThreatModel inputDiagram = readInputDiagram(preparedInputDiagramFile);
         if (inputDiagram == null) {
@@ -53,16 +58,22 @@ public class App {
         if (!converter.convert()) {
         	return;
         }
-        	
-        /*
-        if (!writeOutputDiagram(outputDiagram, outputDiagramFile)) {
+        
+        DiagramBuilder builder = new DiagramBuilder(converter);
+        Diagram outputDiagram = builder.buildDiagram();
+        
+        if (!writeOutputDiagram(outputDiagram, rawOutputDiagramFile)) {
         	return;
         }
-    	*/
         
-        //preparedInputDiagramFile.delete();
+        if (!adjustOutputDiagram(rawOutputDiagramFile, outputDiagramFile)) {
+        	return;
+        }       
         
-        System.out.println("DONE");
+        preparedInputDiagramFile.delete();
+        rawOutputDiagramFile.delete();
+        
+        System.out.println("Info: Done!");
     }
     
     private static boolean checkInputDiagram(File inputDiagramFile, File inputDiagramSchema) {
@@ -109,6 +120,16 @@ public class App {
 		}
     	
     	return true;
+    }
+    
+    private static boolean adjustOutputDiagram(File outputDiagramFile, File preparedOutputDiagramFile) {
+    	
+    	XMLAdjuster adjuster = new XMLAdjuster(outputDiagramFile, preparedOutputDiagramFile);
+    	
+		adjuster.adjustOutputFile();
+    	
+    	return true;
+    	
     }
     
     private static ThreatModel readInputDiagram(File inputDiagramFile) {    	

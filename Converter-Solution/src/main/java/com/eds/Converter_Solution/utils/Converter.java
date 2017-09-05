@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 import com.eds.Converter_Solution.model.input.ThreatModel;
 import com.eds.Converter_Solution.model.input.ThreatModel.Borders.AKeyValueOfguidanyType;
@@ -13,18 +14,15 @@ import com.eds.Converter_Solution.model.input.ThreatModel.ThreatInstances.AKeyVa
 import com.eds.Converter_Solution.model.output.BlockElement;
 import com.eds.Converter_Solution.model.output.BlockShape;
 import com.eds.Converter_Solution.model.output.DataStore;
-import com.eds.Converter_Solution.model.output.Diagram;
-import com.eds.Converter_Solution.model.output.Process;
-import com.eds.Converter_Solution.model.output.Shape;
 import com.eds.Converter_Solution.model.output.Diagram.Boundaries.InternetBoundary;
 import com.eds.Converter_Solution.model.output.Diagram.Boundaries.MachineBoundary;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.Browser;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.CloudStorage;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.ExternalWebApplication;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.ExternalWebService;
+import com.eds.Converter_Solution.model.output.Diagram.Elements.FileSystem;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.NoSqlDatabase;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.SqlDatabase;
-import com.eds.Converter_Solution.model.output.Diagram.Elements.FileSystem;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.ThickClient;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.WebApplication;
 import com.eds.Converter_Solution.model.output.Diagram.Elements.WebServer;
@@ -36,25 +34,23 @@ import com.eds.Converter_Solution.model.output.Diagram.Sections.CompanyTrustSect
 import com.eds.Converter_Solution.model.output.Diagram.Sections.SandboxTrustSection;
 import com.eds.Converter_Solution.model.output.ExternalEntity;
 import com.eds.Converter_Solution.model.output.Flow;
+import com.eds.Converter_Solution.model.output.Process;
+import com.eds.Converter_Solution.model.output.Shape;
 
 public class Converter {
-	
-	private ThreatModel inputDiagram;
 	
 	private List<AKeyValueOfguidanyType> nodesSectionsAnnotations;
 	private List<com.eds.Converter_Solution.model.input.ThreatModel.Lines.AKeyValueOfguidanyType> flowsBorders;
 	private List<AKeyValueOfstringThreatpcP0PhOB> flowEndpoints;
 	
 
-	private List<BlockElement> convertedElements;
-	private List<BlockShape> convertedSections;
-	private List<Flow> convertedFlows;
-	private List<Shape> convertedBoundaries;
+	private List<JAXBElement<? extends BlockElement>> convertedElements;
+	private List<JAXBElement<? extends BlockShape>> convertedSections;
+	private List<JAXBElement<? extends Flow>> convertedFlows;
+	private List<JAXBElement<? extends Shape>> convertedBoundaries;
 	
 	
 	public Converter(ThreatModel inputDiagram) {
-		this.inputDiagram = inputDiagram;
-
 		nodesSectionsAnnotations = inputDiagram.getBorders().getAKeyValueOfguidanyType();
 		flowsBorders = inputDiagram.getLines().getAKeyValueOfguidanyType();
 		flowEndpoints = inputDiagram.getThreatInstances().getAKeyValueOfstringThreatpcP0PhOB();
@@ -71,8 +67,6 @@ public class Converter {
 		
 		convertFlowsAndBorders();
 		
-		connectNodesByFlows();
-		
 		return true;
 	}
 	
@@ -88,81 +82,120 @@ public class Converter {
 			
 			String type = element.getAValue().getTypeId().getValue();
 			
-			String id = element.getAValue().getGuid().getValue();
+			String id = "m" + element.getAValue().getGuid().getValue();
 			
 			//PROCESI
 			if (type.equals("SE.P.TMCore.WebApp")) {
 				WebApplication instance = new WebApplication();
 				instance.setId(id);
 				fillProcesAttributes(instance, element);
-				convertedElements.add(instance);
+				
+				JAXBElement<WebApplication> jaxbElement =  new JAXBElement(new QName("webApplication"), WebApplication.class, null);
+		        jaxbElement.setValue(instance); 				
+				convertedElements.add(jaxbElement);
 			} else if (type.equals("SE.P.TMCore.WebServer")) {
 				WebServer instance = new WebServer();
 				instance.setId(id);
 				fillProcesAttributes(instance, element);
-				convertedElements.add(instance);
+				
+				JAXBElement<WebServer> jaxbElement =  new JAXBElement(new QName("webServer"), WebServer.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);
 			} else if (type.equals("SE.P.TMCore.WebSvc")) {
 				WebService instance = new WebService();
 				instance.setId(id);
 				fillProcesAttributes(instance, element);
-				convertedElements.add(instance);
+				
+				JAXBElement<WebService> jaxbElement =  new JAXBElement(new QName("webService"), WebService.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);
 			} else if (type.equals("SE.P.TMCore.ThickClient")) {
 				ThickClient instance = new ThickClient();
 				instance.setId(id);
 				fillProcesAttributes(instance, element);
-				convertedElements.add(instance);
+				
+				JAXBElement<ThickClient> jaxbElement =  new JAXBElement(new QName("thickClient"), ThickClient.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);
 				
 			//SPOLJASNJI
 			} else if (type.equals("SE.EI.TMCore.Browser")) {
 				Browser instance = new Browser();
 				instance.setId(id);
 				fillExternalEntityAttributes(instance, element);
-				convertedElements.add(instance);				
+				
+				JAXBElement<Browser> jaxbElement =  new JAXBElement(new QName("browser"), Browser.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);				
 			} else if (type.equals("SE.EI.TMCore.WebApp")) {
 				ExternalWebApplication instance = new ExternalWebApplication();
 				instance.setId(id);
 				fillExternalEntityAttributes(instance, element);
-				convertedElements.add(instance);				
+				
+				JAXBElement<ExternalWebApplication> jaxbElement =  new JAXBElement(new QName("externalWebApplication"), ExternalWebApplication.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);				
 			} else if (type.equals("SE.EI.TMCore.WebSvc")) {
 				ExternalWebService instance = new ExternalWebService();
 				instance.setId(id);
 				fillExternalEntityAttributes(instance, element);
-				convertedElements.add(instance);				
+				
+				JAXBElement<ExternalWebService> jaxbElement =  new JAXBElement(new QName("externalWebService"), ExternalWebService.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);				
 				
 			//SKLADISTA
 			} else if (type.equals("SE.DS.TMCore.CloudStorage")) {
 				CloudStorage instance = new CloudStorage();
 				instance.setId(id);
 				fillDataStoreAttributes(instance, element);
-				convertedElements.add(instance);		
+				
+				JAXBElement<CloudStorage> jaxbElement =  new JAXBElement(new QName("cloudStorage"), CloudStorage.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);		
 			} else if (type.equals("SE.DS.TMCore.SQL")) {
 				SqlDatabase instance = new SqlDatabase();
 				instance.setId(id);
 				fillDataStoreAttributes(instance, element);
-				convertedElements.add(instance);		
+				
+				JAXBElement<SqlDatabase> jaxbElement =  new JAXBElement(new QName("sqlDatabase"), SqlDatabase.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);		
 			} else if (type.equals("SE.DS.TMCore.NoSQL")) {
 				NoSqlDatabase instance = new NoSqlDatabase();
 				instance.setId(id);
 				fillDataStoreAttributes(instance, element);
-				convertedElements.add(instance);		
+				
+				JAXBElement<NoSqlDatabase> jaxbElement =  new JAXBElement(new QName("noSqlDatabase"), NoSqlDatabase.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);		
 			} else if (type.equals("SE.DS.TMCore.FS")) {
 				FileSystem instance = new FileSystem();
 				instance.setId(id);
 				fillDataStoreAttributes(instance, element);
-				convertedElements.add(instance);		
+				
+				JAXBElement<FileSystem> jaxbElement =  new JAXBElement(new QName("fileSystem"), FileSystem.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);		
 				
 			//SEKCIJE
 			} else if (type.equals("SE.TB.B.TMCore.CorpNet")) {
 				CompanyTrustSection instance = new CompanyTrustSection();
 				instance.setId(id);
 				fillSectionAttributes(instance, element);
-				convertedSections.add(instance);		
+				
+				JAXBElement<CompanyTrustSection> jaxbElement =  new JAXBElement(new QName("companyTrustSection"), CompanyTrustSection.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedSections.add(jaxbElement);		
 						
 			} else if (type.equals("SE.TB.B.TMCore.Sandbox")) {
 				SandboxTrustSection instance = new SandboxTrustSection();
 				instance.setId(id);
 				fillSectionAttributes(instance, element);
-				convertedSections.add(instance);					
+				
+				JAXBElement<SandboxTrustSection> jaxbElement =  new JAXBElement(new QName("sandboxTrustSection"), SandboxTrustSection.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedSections.add(jaxbElement);					
 			}
 		}		
 	}
@@ -176,80 +209,55 @@ public class Converter {
 
 			String type = element.getAValue().getTypeId().getValue();
 			
-			String id = element.getAValue().getGuid().getValue();
+			String id = "m" + element.getAValue().getGuid().getValue();
 
 			//TOKOVI
 			if (type.equals("SE.DF.TMCore.HTTP")) {
 				Http instance = new Http();
 				instance.setId(id);
-				fillFlowAttributes(instance, element);
-				convertedFlows.add(instance);
+				fillFlowAttributes(instance, element);	
+
+				JAXBElement<Http> jaxbElement =  new JAXBElement(new QName("http"), Http.class, null);
+	        	jaxbElement.setValue(instance); 
+				convertedFlows.add(jaxbElement);
 			} else if (type.equals("SE.DF.TMCore.HTTPS")) {
 				Https instance = new Https();
 				instance.setId(id);
 				fillFlowAttributes(instance, element);
-				convertedFlows.add(instance);
+
+				JAXBElement<Https> jaxbElement =  new JAXBElement(new QName("https"), Https.class, null);
+	        	jaxbElement.setValue(instance); 
+				convertedFlows.add(jaxbElement);
 			} else if (type.equals("SE.DF.TMCore.Binary")) {
 				Binary instance = new Binary();
 				instance.setId(id);
 				fillFlowAttributes(instance, element);
-				convertedFlows.add(instance);
+
+				JAXBElement<Binary> jaxbElement =  new JAXBElement(new QName("binary"), Binary.class, null);
+	        	jaxbElement.setValue(instance); 
+				convertedFlows.add(jaxbElement);
 				
 			//GRANICE
 			} else if (type.equals("SE.TB.L.TMCore.Machine")) {
 				MachineBoundary instance = new MachineBoundary();
 				instance.setId(id);
 				fillBoundaryAttributes(instance, element);
-				convertedBoundaries.add(instance);
+				
+				JAXBElement<MachineBoundary> jaxbElement =  new JAXBElement(new QName("machineBoundary"), MachineBoundary.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedBoundaries.add(jaxbElement);
 			} else if (type.equals("SE.TB.L.TMCore.Internet")) {
 				InternetBoundary instance = new InternetBoundary();
 				instance.setId(id);
 				fillBoundaryAttributes(instance, element);
-				convertedBoundaries.add(instance);
+				
+				JAXBElement<InternetBoundary> jaxbElement =  new JAXBElement(new QName("internetBoundary"), InternetBoundary.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedBoundaries.add(jaxbElement);
 			}
 		}		
 	}
-		
-	private void connectNodesByFlows() {
-		
-		for (AKeyValueOfstringThreatpcP0PhOB endpoint : flowEndpoints) {
 			
-			String flowId = endpoint.getAValue().getBFlowGuid();
-			String sourceId = endpoint.getAValue().getBSourceGuid();
-			String targetId = endpoint.getAValue().getBTargetGuid();
-			
-			Flow connectingFlow = convertedFlows.stream().filter(f -> ((Flow)f).getId().equals(flowId)).collect(Collectors.toList()).get(0);		
-			
-			if (connectingFlow.getDestination() == null || connectingFlow.getDestination().equals("")) {				
-				connectingFlow.setSource(sourceId);
-				connectingFlow.setDestination(targetId);
-			}
-			/*
-			List<BlockElement> source = convertedElements.stream().filter(f -> ((BlockElement)f).getId().equals(sourceId)).collect(Collectors.toList());
-			List<BlockElement> dest = convertedElements.stream().filter(f -> ((BlockElement)f).getId().equals(targetId)).collect(Collectors.toList());
-			
-			if (name.size() > 0 && source.size() > 0 && dest.size() > 0) 
-				System.out.println("flow " + name.get(0).getName() + " connects " +source.get(0).getName() +" with " +dest.get(0).getName());
-			else 
-				System.out.println("flow " + flowId + " connects " +sourceId +" with " +targetId);
-			*/
-			//System.out.println("flow " + name.size()  + " source " +source.size() +" targ " +dest.size());
-			
-			
-		}
-		/*
-		System.out.println();
-		for (Flow shape : convertedFlows) {
-			System.out.println(shape.getId());
-		}
-		
-		System.out.println();
-		for (BlockElement shape : convertedElements) {
-			System.out.println(shape.getId());
-		}
-		*/
-	}
-	
 
 	private void fillProcesAttributes(Process instance, AKeyValueOfguidanyType source) {
 		//Atributi: Predefined Static Attributes,Code Type,Configurable Attributes,As Generic Process,Running As,Accepts Input From,Implements or Uses a Communication Protocol
@@ -389,6 +397,30 @@ public class Converter {
 			}
 				
 		}
+			
+		String flowId = instance.getId().substring(1);
+		
+		List<AKeyValueOfstringThreatpcP0PhOB> endpoints = flowEndpoints.stream().filter(f -> ((AKeyValueOfstringThreatpcP0PhOB)f).getAValue().getBFlowGuid().equals(flowId)).collect(Collectors.toList());		
+
+		for (AKeyValueOfstringThreatpcP0PhOB endpoint : endpoints) {
+			
+			String sourceId = "m" + endpoint.getAValue().getBSourceGuid();
+			String targetId = "m" + endpoint.getAValue().getBTargetGuid();
+			
+			if (sourceId != null && !sourceId.equals("") && targetId != null && !targetId.equals("")) {
+				BlockElement sourceElement = convertedElements.stream().filter(e -> ((BlockElement)e.getValue()).getId().equals(sourceId)).collect(Collectors.toList()).get(0).getValue();	
+				BlockElement destinationElement = convertedElements.stream().filter(e -> ((BlockElement)e.getValue()).getId().equals(targetId)).collect(Collectors.toList()).get(0).getValue();		
+				
+				if (sourceElement != null && destinationElement != null) {
+					if (instance.getDestination() == null || instance.getDestination().equals("")) {				
+						instance.setSource(sourceElement);
+						instance.setDestination(destinationElement);
+						break;
+					}
+				}
+			}
+		}
+		
 	}
 	
 	private void fillBoundaryAttributes(Shape instance, com.eds.Converter_Solution.model.input.ThreatModel.Lines.AKeyValueOfguidanyType source) {
@@ -405,25 +437,24 @@ public class Converter {
 
 	
 	
-	
-	
-	public List<BlockElement> getConvertedElements() {
+	public List<JAXBElement<? extends BlockElement>> getConvertedElements() {
 		return convertedElements;
 	}
-	
 
-	public List<BlockShape> getConvertedSections() {
+	public List<JAXBElement<? extends BlockShape>> getConvertedSections() {
 		return convertedSections;
 	}
-	
 
-	public List<Flow> getConvertedFlows() {
+	public List<JAXBElement<? extends Flow>> getConvertedFlows() {
 		return convertedFlows;
 	}
-	
 
-	public List<Shape> getConvertedBoundaries() {
+	public List<JAXBElement<? extends Shape>> getConvertedBoundaries() {
 		return convertedBoundaries;
 	}
+
+	
+	
+	
 	
 }

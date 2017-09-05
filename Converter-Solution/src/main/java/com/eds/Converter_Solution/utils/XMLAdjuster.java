@@ -25,13 +25,13 @@ import org.xml.sax.SAXException;
 
 public class XMLAdjuster {
 	
-	private File inputFile;
+	private File rawFile;
 	private File tempDiagramFile;
-	private File usableInputFile;
+	private File usableFile;
 	
-	public XMLAdjuster(File inputDiagramFile, File usableInputFile) {
-		this.inputFile = inputDiagramFile;
-		this.usableInputFile = usableInputFile;
+	public XMLAdjuster(File rawFile, File usableFile) {
+		this.rawFile = rawFile;
+		this.usableFile = usableFile;
 		this.tempDiagramFile = new File("tempDiagram.xml");
 	}
 
@@ -75,7 +75,7 @@ public class XMLAdjuster {
         xmlDoc.appendChild(root);
 
         Source source = new DOMSource(xmlDoc);
-        StreamResult result =  new StreamResult(usableInputFile);
+        StreamResult result =  new StreamResult(usableFile);
         Transformer xformer = TransformerFactory.newInstance().newTransformer();
         xformer.transform(source, result);
 	}
@@ -91,7 +91,7 @@ public class XMLAdjuster {
         FileWriter writer = null;
         
         try {
-            reader = new BufferedReader(new FileReader(inputFile));             
+            reader = new BufferedReader(new FileReader(rawFile));             
             String line = reader.readLine();
             
             while (line != null) {
@@ -103,6 +103,35 @@ public class XMLAdjuster {
             newContent = newContent.replaceAll(search2, replacement2);
              
             writer = new FileWriter(tempDiagramFile);             
+            writer.write(newContent);
+
+            reader.close();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public void adjustOutputFile() {
+		String search = "xmlns=\"\"";
+		String replacement = "";
+				
+        StringBuilder builder = new StringBuilder();
+        BufferedReader reader = null;         
+        FileWriter writer = null;
+        
+        try {
+            reader = new BufferedReader(new FileReader(rawFile));             
+            String line = reader.readLine();
+            
+            while (line != null) {
+            	builder.append(line + System.lineSeparator());                 
+                line = reader.readLine();
+            }
+            
+            String newContent = builder.toString().replaceAll(search, replacement);
+             
+            writer = new FileWriter(usableFile);             
             writer.write(newContent);
 
             reader.close();

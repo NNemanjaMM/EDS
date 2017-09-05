@@ -180,8 +180,8 @@
                     </xs:element>
                     <xs:element maxOccurs="1" minOccurs="0" name="assets" type="es:assets"/>
                 </xs:sequence>
-                <xs:attribute name="source" type="es:typeIdRef" use="required"/>
-                <xs:attribute name="destination" type="es:typeIdRef" use="required"/>
+                <xs:attribute name="source" type="es:typeIdRef" use="optional"/>
+                <xs:attribute name="destination" type="es:typeIdRef" use="optional"/>
                 <xs:attribute default="false" name="containsCookies" type="xs:boolean"/>
                 <xs:attribute default="false" name="containsXML" type="xs:boolean"/>
             </xs:extension>
