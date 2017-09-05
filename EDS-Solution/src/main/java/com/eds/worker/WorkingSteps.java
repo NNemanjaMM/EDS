@@ -61,7 +61,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 	@Override
 	protected Boolean doInBackground() throws Exception {		
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false;
 		}		
 		
@@ -72,7 +72,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		if (!validateDiagram()) {
 			return false;
 		}		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false;
 		}		
 
@@ -82,7 +82,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		if (!validateAssetDefinitions()) {
 			return false;
 		}		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false;
 		}		
 
@@ -92,7 +92,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		if (!validateExploitDefinitions()) {
 			return false;
 		}		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false;
 		}		
 
@@ -103,7 +103,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 			return false;
 		}
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
 
@@ -114,7 +114,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 			return false;
 		}
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
 
@@ -124,7 +124,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		DiagramMerge mergeAssets = new DiagramMerge(diagram, assetDefinitions);
 		diagram = mergeAssets.mergeAssetsToDiagram();
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false;
 		}
 
@@ -141,7 +141,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		//printDiagramPatterns(patterns);
 		//if (patterns.size() > 0) return true;
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
 
@@ -155,7 +155,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		//printRawExploitsForDiagramPatterns(patterns);
 		//if (patterns.size() > 0) return true;
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
 		
@@ -164,7 +164,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 			analyzeVulnerabilitiesForComponentTechnologies();
 		}		
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
 
@@ -175,7 +175,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 			return false;
 		}				
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
 		
@@ -185,7 +185,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		DiagramMerge mergeExploits = new DiagramMerge(patterns, exploitDefinitions, assetDefinitions);
 		patterns = mergeExploits.mergeExploitsAndAssetsToDiagramPieces();
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			 return false; 
 		}
 
@@ -194,7 +194,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 		
 		report = createReportPatternsFromDiagramPatterns();				
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			return false;
 		}
 
@@ -205,7 +205,7 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 			return false;
 		}				
 		
-		if(Thread.currentThread().isInterrupted()) {
+		if (Thread.currentThread().isInterrupted()) {
 			return false;
 		}
 		
@@ -496,5 +496,11 @@ public class WorkingSteps extends SwingWorker<Boolean, Object> {
 	public void setDialog(WorkingDialog dialog) {
 		this.dialog = dialog;
 	}
+
+	public File getReportFile() {
+		return reportFile;
+	}
+	
+	
 
 }

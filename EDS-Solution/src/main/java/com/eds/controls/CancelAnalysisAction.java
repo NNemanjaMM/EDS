@@ -23,8 +23,11 @@ public class CancelAnalysisAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		dialog.setProgressBarValue(ProgressCode.CANCELED);
+		dialog.setWorkerProgress(ProgressCode.CANCELED);
 		backgroundProcess.cancel(true);
+		if (backgroundProcess.getReportFile().exists()) {
+			backgroundProcess.getReportFile().delete();
+		}
 	}
 
 }

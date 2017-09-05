@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -27,6 +28,7 @@ import com.eds.controls.CloseAnalysisAction;
 import com.eds.controls.OpenAnalysisAction;
 import com.eds.controls.ShowErrorDetailsAction;
 import com.eds.utils.ProgressCode;
+import com.eds.utils.ResourcesLocation;
 import com.eds.worker.WorkingSteps;
 
 public class WorkingDialog extends JDialog {
@@ -72,7 +74,24 @@ public class WorkingDialog extends JDialog {
 		} catch (Exception e) {
 			System.out.println("Windows look and feel unsupported.");
 		}
-		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	CloseAnalysisAction closeAction = new CloseAnalysisAction("", WorkingDialog.this);
+				if (!WorkingDialog.this.backgroundWork.isCancelled() && !WorkingDialog.this.backgroundWork.isDone()) {
+					int dialogResult = JOptionPane.showConfirmDialog (null, "Are you shre you want to cancel diagram analysis?", "Canceling Analysis", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					if (dialogResult == JOptionPane.YES_OPTION){
+						CancelAnalysisAction cancelAction = new CancelAnalysisAction("", backgroundWork, WorkingDialog.this);
+						cancelAction.actionPerformed(null);
+			    		closeAction.actionPerformed(null);
+					}					
+				} else {
+		    		closeAction.actionPerformed(null);
+				}
+		    }
+		});	
 		setLocationRelativeTo(MainWindow.getInstance());		
 	}
 
@@ -125,7 +144,7 @@ public class WorkingDialog extends JDialog {
 
 		buttonOpen.setVisible(false);
 		buttonClose.setVisible(false);
-		setPhase(0);
+		setPhaseAndProgressBar(0, 0);
 		
 		add(labelNumber, new GridBagConstraints(0, 0, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10,0,0,0), 5, 5));		
 		add(labelPhase, new GridBagConstraints(0, 1, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,0,0,0), 5, 5));		
@@ -144,11 +163,29 @@ public class WorkingDialog extends JDialog {
 		add(scrollError, new GridBagConstraints(0, 8, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,0,10,0), 5, 5));
 	}
 
-	private void setPhase(int progressValue) {
+	private void setPhaseAndProgressBar(int progressPhase, int progressValue) {
+
+		if (backgroundWork.isCancelled() || backgroundWork.isDone()) {
+			switch (progressPhase) {
+				case 10: 
+					progressBar.setIndeterminate(false);
+					buttonCancel.setVisible(false);
+					break;
+				case 11:
+					progressBar.setIndeterminate(true);
+					buttonCancel.setEnabled(false);
+					labelNumber.setText("Canceling");
+					labelPhase.setText("Waiting for process to stop");
+					setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					break;
+			}
+			progressBar.setValue(progressValue);
+			return;
+		}
+
 		progressBar.setIndeterminate(false);
 		
-		
-		switch (progressValue) {
+		switch (progressPhase) {
 			case 0: 
 				progressBar.setIndeterminate(true);
 				labelNumber.setText("Initializing");
@@ -179,18 +216,8 @@ public class WorkingDialog extends JDialog {
 				labelNumber.setText("Phase: 6 of 6");
 				labelPhase.setText("Creating report");
 				break;
-			case 10: 
-				progressBar.setIndeterminate(false);
-				buttonCancel.setVisible(false);
-				break;
-			case 11:
-				progressBar.setIndeterminate(true);
-				buttonCancel.setEnabled(false);
-				labelNumber.setText("Canceling");
-				labelPhase.setText("Waiting for process to stop");
-				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				break;
-		}		
+		}	
+		progressBar.setValue(progressValue);	
 	}
 	
 	public void setErrorVisibility(boolean visibility) {
@@ -202,8 +229,7 @@ public class WorkingDialog extends JDialog {
 		scrollError.setVisible(visibility);
 	}
 	
-	public void setProgressBarValue(int value) {
-		progressBar.setValue(value);
+	public void setWorkerProgress(int value) {
 		int phase = 0;
 		if (value == ProgressCode.INITIALIZED) {
 			phase = 0;
@@ -226,10 +252,13 @@ public class WorkingDialog extends JDialog {
 		} else if (value == ProgressCode.CANCELED) {
 			phase = 11;
 		}
-		setPhase(phase);
+		setPhaseAndProgressBar(phase, value);
 	}
 	
 	public void setErrorMessage(String error) {
+		if (backgroundWork.isCancelled() || backgroundWork.isDone()) {
+			return;
+		}
 		textError.setText("An error occured while working:\n" + error);
 		separator.setVisible(true);
 		labelError.setVisible(true);

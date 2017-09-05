@@ -23,7 +23,7 @@ public class WorkerChangeListener implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		switch (event.getPropertyName()) {
 			case "progress":
-				dialog.setProgressBarValue((Integer) event.getNewValue());
+				dialog.setWorkerProgress((Integer) event.getNewValue());
 				break;
 			case "state":
 				switch ((StateValue) event.getNewValue()) {
@@ -34,7 +34,7 @@ public class WorkerChangeListener implements PropertyChangeListener {
 						dialog.setVisible(true);
 						break;
 					case DONE:
-						dialog.setProgressBarValue(ProgressCode.DONE);
+						dialog.setWorkerProgress(ProgressCode.DONE);
 						try {
 							@SuppressWarnings("rawtypes")
 							boolean result = (boolean) ((SwingWorker)event.getSource()).get();
