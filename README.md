@@ -8,9 +8,11 @@ EDS decomposes the input diagrams into risk patterns. The risk pattern consists 
 
 Exploits and assets are defined in separate XML files and can easily be changed. Rules are written using drools.
 
+The system contains two tools. The first tool is used to apply changes in XML schema by creating a library with classes corresponding to XML schema elements. The second one can be used to convert DFDs created with Microsoft Threat Modelling Tool to DFDs suitable for this system.
+
 System structure alongside with its input and output can be seen in the image below.
 
-<p align="center"><img width="400" src="https://github.com/NNemanjaMM/EDS/blob/master/Wiki-Resources/structure.png"/></p>
+<p align="center"><img width="600" src="https://github.com/NNemanjaMM/EDS/blob/master/Wiki-Resources/structure.png"/></p>
 
 ## Motivation
 This system is created as master's thesis work. The overall goal is to create useful software for detecting security exploits over the given system diagram. Moreover, this is a great opportunity for improving knowledge and capabilities in the domain of IT security and rule-based systems.
@@ -29,12 +31,13 @@ This system is created as master's thesis work. The overall goal is to create us
 ## Install
 ### Prerequisites:
 - Installed Java 1.8
+- Java is set as an environment variable
 
 ### Download and Install:
 (for Windows)
 - Open [download page](https://github.com/NNemanjaMM/EDS/blob/master/Setup/Setup.exe) and download installation file
 - Run installation file
-- Run the application after installation completes 
+- After installation completes run the application or tools 
 
 ## Author
 + Nemanja Miladinović - [NNemanjaMM](https://github.com/NNemanjaMM)
