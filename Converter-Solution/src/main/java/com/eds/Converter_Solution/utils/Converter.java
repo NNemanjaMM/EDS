@@ -117,6 +117,14 @@ public class Converter {
 				JAXBElement<ThickClient> jaxbElement =  new JAXBElement(new QName("thickClient"), ThickClient.class, null);
 		        jaxbElement.setValue(instance); 	
 				convertedElements.add(jaxbElement);
+			} else if (type.contains("SE.P") || type.contains("GE.P")) {		// make sql database if something else
+				WebServer instance = new WebServer();
+				instance.setId(id);
+				fillProcesAttributes(instance, element);
+				
+				JAXBElement<WebServer> jaxbElement =  new JAXBElement(new QName("webServer"), WebServer.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);
 				
 			//SPOLJASNJI
 			} else if (type.equals("SE.EI.TMCore.Browser")) {
@@ -143,6 +151,14 @@ public class Converter {
 				JAXBElement<ExternalWebService> jaxbElement =  new JAXBElement(new QName("externalWebService"), ExternalWebService.class, null);
 		        jaxbElement.setValue(instance); 	
 				convertedElements.add(jaxbElement);				
+			} else if (type.contains("SE.EI")) {		// make sql database if something else
+				Browser instance = new Browser();
+				instance.setId(id);
+				fillExternalEntityAttributes(instance, element);
+				
+				JAXBElement<Browser> jaxbElement =  new JAXBElement(new QName("browser"), Browser.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);	
 				
 			//SKLADISTA
 			} else if (type.equals("SE.DS.TMCore.CloudStorage")) {
@@ -177,7 +193,15 @@ public class Converter {
 				JAXBElement<FileSystem> jaxbElement =  new JAXBElement(new QName("fileSystem"), FileSystem.class, null);
 		        jaxbElement.setValue(instance); 	
 				convertedElements.add(jaxbElement);		
+			} else if (type.contains("SE.DS")) {		// make sql database if something else
+				SqlDatabase instance = new SqlDatabase();
+				instance.setId(id);
+				fillDataStoreAttributes(instance, element);
 				
+				JAXBElement<SqlDatabase> jaxbElement =  new JAXBElement(new QName("sqlDatabase"), SqlDatabase.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedElements.add(jaxbElement);		
+				 
 			//SEKCIJE
 			} else if (type.equals("SE.TB.B.TMCore.CorpNet")) {
 				CompanyTrustSection instance = new CompanyTrustSection();
@@ -196,6 +220,15 @@ public class Converter {
 				JAXBElement<SandboxTrustSection> jaxbElement =  new JAXBElement(new QName("sandboxTrustSection"), SandboxTrustSection.class, null);
 		        jaxbElement.setValue(instance); 	
 				convertedSections.add(jaxbElement);					
+			} else if (type.contains("SE.TB.B")) {		// make CompanyTrustSection if something else
+				CompanyTrustSection instance = new CompanyTrustSection();
+				instance.setId(id);
+				fillSectionAttributes(instance, element);
+				
+				JAXBElement<CompanyTrustSection> jaxbElement =  new JAXBElement(new QName("companyTrustSection"), CompanyTrustSection.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedSections.add(jaxbElement);		
+						
 			}
 		}		
 	}
@@ -236,6 +269,14 @@ public class Converter {
 				JAXBElement<Binary> jaxbElement =  new JAXBElement(new QName("binary"), Binary.class, null);
 	        	jaxbElement.setValue(instance); 
 				convertedFlows.add(jaxbElement);
+			} else if (type.contains("SE.DF")) {		// make http if something else
+				Http instance = new Http();
+				instance.setId(id);
+				fillFlowAttributes(instance, element);
+
+				JAXBElement<Http> jaxbElement =  new JAXBElement(new QName("http"), Http.class, null);
+	        	jaxbElement.setValue(instance); 
+				convertedFlows.add(jaxbElement);
 				
 			//GRANICE
 			} else if (type.equals("SE.TB.L.TMCore.Machine")) {
@@ -247,6 +288,14 @@ public class Converter {
 		        jaxbElement.setValue(instance); 	
 				convertedBoundaries.add(jaxbElement);
 			} else if (type.equals("SE.TB.L.TMCore.Internet")) {
+				InternetBoundary instance = new InternetBoundary();
+				instance.setId(id);
+				fillBoundaryAttributes(instance, element);
+				
+				JAXBElement<InternetBoundary> jaxbElement =  new JAXBElement(new QName("internetBoundary"), InternetBoundary.class, null);
+		        jaxbElement.setValue(instance); 	
+				convertedBoundaries.add(jaxbElement);
+			} else if (type.contains("SE.TB.L")) {		// make internet boundary if something else
 				InternetBoundary instance = new InternetBoundary();
 				instance.setId(id);
 				fillBoundaryAttributes(instance, element);
@@ -402,20 +451,30 @@ public class Converter {
 		
 		List<AKeyValueOfstringThreatpcP0PhOB> endpoints = flowEndpoints.stream().filter(f -> ((AKeyValueOfstringThreatpcP0PhOB)f).getAValue().getBFlowGuid().equals(flowId)).collect(Collectors.toList());		
 
+		if (endpoints.size() == 0) {
+			System.out.println("WARNING: Some of flows can not connect elements! Flow ID: " + flowId + " Flow Name: " + instance.getName());
+		}
+		
 		for (AKeyValueOfstringThreatpcP0PhOB endpoint : endpoints) {
 			
 			String sourceId = "m" + endpoint.getAValue().getBSourceGuid();
 			String targetId = "m" + endpoint.getAValue().getBTargetGuid();
 			
 			if (sourceId != null && !sourceId.equals("") && targetId != null && !targetId.equals("")) {
-				BlockElement sourceElement = convertedElements.stream().filter(e -> ((BlockElement)e.getValue()).getId().equals(sourceId)).collect(Collectors.toList()).get(0).getValue();	
-				BlockElement destinationElement = convertedElements.stream().filter(e -> ((BlockElement)e.getValue()).getId().equals(targetId)).collect(Collectors.toList()).get(0).getValue();		
+				List<JAXBElement<? extends BlockElement>> sourceElements = convertedElements.stream().filter(e -> ((BlockElement)e.getValue()).getId().equals(sourceId)).collect(Collectors.toList());	
+				List<JAXBElement<? extends BlockElement>> destinationElements = convertedElements.stream().filter(e -> ((BlockElement)e.getValue()).getId().equals(targetId)).collect(Collectors.toList());	
 				
-				if (sourceElement != null && destinationElement != null) {
-					if (instance.getDestination() == null || instance.getDestination().equals("")) {				
-						instance.setSource(sourceElement);
-						instance.setDestination(destinationElement);
-						break;
+				if (sourceElements.size() > 0 && destinationElements.size() > 0) {
+				
+					BlockElement sourceElement = sourceElements.get(0).getValue();
+					BlockElement destinationElement = destinationElements.get(0).getValue();
+					
+					if (sourceElement != null && destinationElement != null) {
+						if (instance.getDestination() == null || instance.getDestination().equals("")) {				
+							instance.setSource(sourceElement);
+							instance.setDestination(destinationElement);
+							break;
+						}
 					}
 				}
 			}

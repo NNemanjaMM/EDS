@@ -21,14 +21,12 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
-import javax.swing.WindowConstants;
 
 import com.eds.controls.CancelAnalysisAction;
 import com.eds.controls.CloseAnalysisAction;
 import com.eds.controls.OpenAnalysisAction;
 import com.eds.controls.ShowErrorDetailsAction;
 import com.eds.utils.ProgressCode;
-import com.eds.utils.ResourcesLocation;
 import com.eds.worker.WorkingSteps;
 
 public class WorkingDialog extends JDialog {
