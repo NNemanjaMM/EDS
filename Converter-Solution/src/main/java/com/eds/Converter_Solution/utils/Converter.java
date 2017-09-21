@@ -117,7 +117,7 @@ public class Converter {
 				JAXBElement<ThickClient> jaxbElement =  new JAXBElement(new QName("thickClient"), ThickClient.class, null);
 		        jaxbElement.setValue(instance); 	
 				convertedElements.add(jaxbElement);
-			} else if (type.contains("SE.P") || type.contains("GE.P")) {		// make sql database if something else
+			} else if (type.contains("SE.P") || type.contains("GE.P")) {		// make web server if something else
 				WebServer instance = new WebServer();
 				instance.setId(id);
 				fillProcesAttributes(instance, element);
@@ -151,7 +151,7 @@ public class Converter {
 				JAXBElement<ExternalWebService> jaxbElement =  new JAXBElement(new QName("externalWebService"), ExternalWebService.class, null);
 		        jaxbElement.setValue(instance); 	
 				convertedElements.add(jaxbElement);				
-			} else if (type.contains("SE.EI")) {		// make sql database if something else
+			} else if (type.contains("SE.EI") || type.contains("GE.EI")) {		// make browser if something else
 				Browser instance = new Browser();
 				instance.setId(id);
 				fillExternalEntityAttributes(instance, element);
@@ -193,7 +193,7 @@ public class Converter {
 				JAXBElement<FileSystem> jaxbElement =  new JAXBElement(new QName("fileSystem"), FileSystem.class, null);
 		        jaxbElement.setValue(instance); 	
 				convertedElements.add(jaxbElement);		
-			} else if (type.contains("SE.DS")) {		// make sql database if something else
+			} else if (type.contains("SE.DS") || type.contains("GE.DS")) {		// make sql database if something else
 				SqlDatabase instance = new SqlDatabase();
 				instance.setId(id);
 				fillDataStoreAttributes(instance, element);
