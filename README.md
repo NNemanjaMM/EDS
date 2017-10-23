@@ -26,7 +26,15 @@ This system is created as master's thesis work. The overall goal is to create us
 - Clone or download project
 - Open project with your Java IDE (Eclipse, IntelliJ, or some other)
 - Build project (Maven will automatically download required libraries)
-- Run application
+
+###### Run EDS Application:
+- Run application from your IDE
+
+###### Run DFD Converter:
+- Run application from your IDE and set TMTs DFD as command line argument
+
+###### Run Apply XML Schama Tool:
+- Run `ApplySchemaDev.bat` from CMD and set DFDs XML Schema location as parameter
 
 ## Install
 ### Prerequisites:
@@ -37,7 +45,19 @@ This system is created as master's thesis work. The overall goal is to create us
 (for Windows)
 - Open [download page](https://github.com/NNemanjaMM/EDS/blob/master/Setup/Setup.exe) and download installation file
 - Run installation file
-- After installation completes run the application or tools 
+
+###### Run EDS Application:
+- Run application from desktop icon
+
+###### Run DFD Converter:
+- Run CMD as administrator
+- Position to `converter.jar` location (located in application's instalation folder)
+- Run `java -jar converter.jar [location of TMTs DFD]`
+
+###### Run Apply XML Schama Tool:
+- Run CMD as administrator
+- Position to `ApplySchema.bat` location (located in application's instalation folder)
+- Run `ApplySchema [location of DFDs XML Schama]`
 
 ## Author
 + Nemanja Miladinović - [NNemanjaMM](https://github.com/NNemanjaMM)
